@@ -163,7 +163,7 @@ export function renderShelfPage({ books, meta }) {
 <meta name="description" content="Markdown から自動製本された 3D ブックの本棚。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&amp;family=Noto+Serif+JP:wght@400;600;700;900&amp;display=swap" rel="stylesheet">
 <style>
 ${BASE_CSS}
 ${SHELF_CSS}
@@ -197,7 +197,7 @@ ${SHELF_PAGE_CSS}
   <p class="shelf-hint">クリック / Enter で取り出す · contents/ に Markdown を置くと自動で並びます</p>
 </main>
 
-<footer class="shelf-footer">3D BOOKS · Markdown → Bookshelf → Vercel</footer>
+<footer class="shelf-footer">3D BOOKS · v0.1.0 Prototype · Markdown → Bookshelf → Vercel</footer>
 
 <script>
 ${TAKEOUT_JS}

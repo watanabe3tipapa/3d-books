@@ -575,7 +575,7 @@ export function renderSitePage({ books, meta }) {
   };
 
   const diagram = meta.mechanismAvailable
-    ? `<iframe src="./mechanism.html?theme=dark&embed=1" title="3D BOOKS 自動製本パイプラインの仕組み" loading="lazy"></iframe>`
+    ? `<iframe src="./mechanism.html?theme=dark&amp;embed=1" title="3D BOOKS 自動製本パイプラインの仕組み" loading="lazy"></iframe>`
     : `<div class="diagram-missing">仕組み図は <code>site/mechanism.html</code> に配置すると表示されます。<br>Archify で生成したワークフロー図をここに載せています。</div>`;
 
   return `<!DOCTYPE html>
@@ -587,7 +587,7 @@ export function renderSitePage({ books, meta }) {
 <meta name="description" content="contents/ に Markdown を置くと、3D 本棚と一冊の 3D ブックが自動生成され、Vercel と GitHub Pages に公開されます。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&amp;family=Noto+Serif+JP:wght@400;600;700;900&amp;display=swap" rel="stylesheet">
 <style>
 ${BASE_CSS}
 ${SITE_CSS}
@@ -611,7 +611,7 @@ ${SITE_CSS}
 <header class="hero">
   <div class="wrap hero-grid">
     <div>
-      <div class="hero-label">Automated 3D book bindery</div>
+      <div class="hero-label">v0.1.0 / Prototype · Automated 3D book bindery</div>
       <h1>置くだけで、<br><em>本になる。</em></h1>
       <p class="hero-lead">
         <code>contents/</code> に Markdown を置くと、3D 本棚と一冊の 3D ブックが生まれます。
@@ -721,7 +721,7 @@ ${SITE_CSS}
       <div class="publish-card">
         <span class="pc-role">Vercel</span>
         <h3>本棚 / 3D ブック</h3>
-        <p>背表紙が並ぶ本棚と、取り出しアニメーション付きの 3D ブックを配信します。Vercel のビルドでも <code>contents/</code> から自動製本されます。</p>
+        <p>背表紙が並ぶ本棚と、取り出しアニメーション付きの 3D ブックを配信します。リポジトリを接続すると、Vercel のビルドでも <code>contents/</code> から自動製本されます。</p>
         <a href="${escapeHtml(shelfUrl)}" target="_blank" rel="noopener">本棚を開く ↗</a>
       </div>
     </div>
@@ -742,8 +742,8 @@ ${SITE_CSS}
         <ul>
           <li><code>npm run dev</code> — contents/ を監視して即時製本</li>
           <li><code>npm run preview</code> — ローカルで LP と本棚を確認</li>
-          <li><code>npm run build</code> — books/ と site/ を一括生成</li>
-          <li>push — GitHub Actions が LP を、Vercel が本棚を公開</li>
+          <li><code>npm run build</code> — books/ と site/index.html を一括生成</li>
+          <li>push — GitHub Actions が LP を公開。Vercel 接続時は本棚も更新</li>
         </ul>
       </div>
 
@@ -773,7 +773,7 @@ ${SITE_CSS}
 
 <footer class="site-footer">
   <strong>3D BOOKS</strong>
-  <p>Markdown → Bookshelf → Vercel / GitHub Pages · Generated ${escapeHtml(meta.generated)}</p>
+  <p>v0.1.0 Prototype · Markdown → Bookshelf → Vercel / GitHub Pages · Generated ${escapeHtml(meta.generated)}</p>
 </footer>
 
 <script>

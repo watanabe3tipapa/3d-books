@@ -1,6 +1,6 @@
 {
   "name": "3d-books",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "description": "contents/*.md を 3D 本棚と 3D ブックに自動製本する静的サイトジェネレーター",

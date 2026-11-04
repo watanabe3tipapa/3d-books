@@ -8,10 +8,14 @@
 
 3d-books is a static site generator that turns `contents/*.md` into a 3D bookshelf and a page-turning 3D book. The build runs on the Node.js standard library alone, and every artifact is static HTML, CSS, and JavaScript. The bookshelf and books are published on Vercel; the landing page and mechanism diagram are published on GitHub Pages.
 
+> **Status:** v0.1.0 is a **prototype**. It validates the basic flow from a single manuscript to a bookshelf and a 3D book. Multi-book operation, image layout, full-text search, and other capabilities remain future work.
+
 > **The manuscript stays in charge:** manuscripts remain plain Markdown files in `contents/`. There is no proprietary database or admin UI.
 
-> **Two ways to trigger a build:** locally, the `npm run dev` watcher binds on save. Remotely, a push that touches `contents/**` starts the GitHub Actions build.
+> **Two ways to trigger a build:** locally, the `npm run dev` watcher starts a build on save. Remotely, a push that touches `contents/**` starts the GitHub Actions build.
 
+[![Version](https://img.shields.io/badge/version-v0.1.0-blue.svg)](https://github.com/watanabe3tipapa/3d-books)
+[![Phase](https://img.shields.io/badge/phase-prototype-orange.svg)](https://github.com/watanabe3tipapa/3d-books)
 [![Vercel](https://img.shields.io/badge/Vercel-live-black.svg)](https://3d-books.vercel.app/)
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-live-222.svg)](https://watanabe3tipapa.github.io/3d-books/)
 [![Node](https://img.shields.io/badge/Node.js-%3E%3D20-339933.svg)](https://nodejs.org/)
@@ -210,7 +214,7 @@ Body text...
 npm run dev
 ```
 
-The watcher rebuilds on changes in `contents/`. When you push to GitHub, GitHub Actions rebuilds the LP and Vercel rebuilds the bookshelf and books.
+The watcher rebuilds on changes in `contents/`. When you push to GitHub, GitHub Actions rebuilds the LP. If the repository is connected to Vercel, Vercel also rebuilds the bookshelf and books.
 
 ### 3. Read
 
@@ -266,7 +270,7 @@ Connect the repository to Vercel and `vercel.json` defines the build and output:
 - `/mcp-a2a.html` serves a 3D book
 - `/manifest.json` serves the bibliography
 
-Vercel also binds from `contents/`, so pushing a manuscript updates the shelf.
+Once connected, Vercel also builds from `contents/`, so pushing a manuscript updates the shelf.
 
 ### Local
 
@@ -274,7 +278,7 @@ Vercel also binds from `contents/`, so pushing a manuscript updates the shelf.
 
 ## Known limitations and roadmap
 
-### Available now
+### Available in v0.1.0 (prototype)
 
 - [x] Automatic binding from `contents/*.md`
 - [x] 3D bookshelf and spine take-out animation

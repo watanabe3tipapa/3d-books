@@ -8,10 +8,14 @@
 
 3d-books は、`contents/*.md` を解析して 3D 本棚とページめくり可能な 3D ブックを生成する静的サイトジェネレーターです。ビルドは Node.js の標準モジュールだけで動き、生成物は HTML / CSS / JavaScript の静的ファイルだけ。本棚と本は Vercel、LP と仕組み図は GitHub Pages で公開します。
 
+> **位置付け:** v0.1.0 は**プロトタイプ**です。1 冊の原稿から本棚と 3D ブックを生成する基本フローを検証するための版で、複数冊の運用、画像組版、本文検索などは今後の課題です。
+
 > **原稿が主役:** 原稿はプレーンな Markdown のまま `contents/` に残ります。専用データベースや管理画面はありません。
 
 > **発火は 2 経路:** ローカルでは `npm run dev` の watcher が保存の瞬間に製本し、リモートでは `contents/**` を含む push が GitHub Actions のビルドを起動します。
 
+[![Version](https://img.shields.io/badge/version-v0.1.0-blue.svg)](https://github.com/watanabe3tipapa/3d-books)
+[![Phase](https://img.shields.io/badge/phase-prototype-orange.svg)](https://github.com/watanabe3tipapa/3d-books)
 [![Vercel](https://img.shields.io/badge/Vercel-live-black.svg)](https://3d-books.vercel.app/)
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-live-222.svg)](https://watanabe3tipapa.github.io/3d-books/)
 [![Node](https://img.shields.io/badge/Node.js-%3E%3D20-339933.svg)](https://nodejs.org/)
@@ -210,7 +214,7 @@ order: 1
 npm run dev
 ```
 
-`contents/` の変更を検知して自動でビルドします。GitHub へ push した場合は GitHub Actions が LP を、Vercel が本棚と本を再ビルドします。
+`contents/` の変更を検知して自動でビルドします。GitHub へ push した場合は GitHub Actions が LP を再ビルドします。リポジトリを Vercel に接続している場合は、Vercel も本棚と本を再ビルドします。
 
 ### 3. 読む
 
@@ -266,7 +270,7 @@ BOOKS_BASE_URL=https://your-project.vercel.app node scripts/build.mjs
 - `/mcp-a2a.html` が各 3D ブック
 - `/manifest.json` が書誌一覧
 
-Vercel 側でも `contents/` から自動製本されるため、原稿を push するだけで本棚が更新されます。
+接続後は Vercel 側でも `contents/` から自動製本されるため、原稿を push するだけで本棚が更新されます。
 
 ### ローカル
 
@@ -274,7 +278,7 @@ Vercel 側でも `contents/` から自動製本されるため、原稿を push 
 
 ## 既知の制約とロードマップ
 
-### 現在できること
+### v0.1.0（プロトタイプ）でできること
 
 - [x] `contents/*.md` からの自動製本
 - [x] 3D 本棚と背表紙の取り出しアニメーション

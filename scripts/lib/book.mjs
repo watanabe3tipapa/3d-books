@@ -487,22 +487,23 @@ const BOOK_CSS = `
   color: var(--text);
 }
 .about-meta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   margin-top: 22px;
   border-top: 1px solid var(--paper-line);
-}
-.about-meta div {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--paper-line);
   font-size: 0.7rem;
 }
-.about-meta dt { flex: 0 0 auto; color: #8c8271; letter-spacing: 0.08em; }
+.about-meta dt {
+  padding: 8px 16px 8px 0;
+  border-bottom: 1px solid var(--paper-line);
+  color: #8c8271;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
 .about-meta dd {
   min-width: 0;
-  max-width: 64%;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--paper-line);
   color: #2b3040;
   font-family: var(--mono);
   text-align: right;
@@ -894,11 +895,11 @@ function aboutFace(book, meta) {
         <p class="about-desc">${inline(book.description)}</p>
         ${tags}
         <dl class="about-meta">
-          <div><dt>原稿</dt><dd>contents/${escapeHtml(meta.slug)}.md</dd></div>
-          <div><dt>製本</dt><dd>books/${escapeHtml(meta.slug)}.html</dd></div>
-          <div><dt>ページ</dt><dd>${meta.pageCount} pages</dd></div>
-          <div><dt>生成</dt><dd>${escapeHtml(meta.date)}</dd></div>
-          <div><dt>公開</dt><dd>Vercel / GitHub Pages</dd></div>
+          <dt>原稿</dt><dd>contents/${escapeHtml(meta.slug)}.md</dd>
+          <dt>製本</dt><dd>books/${escapeHtml(meta.slug)}.html</dd>
+          <dt>ページ</dt><dd>${meta.pageCount} pages</dd>
+          <dt>生成</dt><dd>${escapeHtml(meta.date)}</dd>
+          <dt>公開</dt><dd>Vercel / GitHub Pages</dd>
         </dl>
         <p class="about-note">この本は <strong>contents/*.md</strong> から自動製本されました。Markdown を置くと、本棚と 3D ブックが更新されます。</p>
       </div>
@@ -1224,12 +1225,19 @@ export function renderBookPage({ book, pages, books, meta }) {
 <meta name="description" content="${escapeHtml(book.description)}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&amp;family=Noto+Serif+JP:wght@400;600;700;900&amp;display=swap" rel="stylesheet">
 <style>
 ${BASE_CSS}
 ${SHELF_CSS}
 ${BOOK_CSS}
 </style>
+<noscript>
+  <style>
+    #intro { display: none !important; }
+    #reader { opacity: 1 !important; visibility: visible !important; }
+    .book { transform: none !important; }
+  </style>
+</noscript>
 </head>
 <body>
 
@@ -1270,14 +1278,6 @@ ${BOOK_CSS}
     <button class="nav-btn" id="nextBtn" type="button" aria-label="次のページ">&#9654;</button>
   </nav>
 </div>
-
-<noscript>
-  <style>
-    #intro { display: none !important; }
-    #reader { opacity: 1 !important; visibility: visible !important; }
-    .book { transform: none !important; }
-  </style>
-</noscript>
 
 <script>
 ${TAKEOUT_JS}
