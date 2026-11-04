@@ -12,7 +12,7 @@
 
 > **原稿が主役:** 原稿はプレーンな Markdown のまま `contents/` に残ります。専用データベースや管理画面はありません。
 
-> **発火は 2 経路:** ローカルでは `npm run dev` の watcher が保存の瞬間に製本し、リモートでは `contents/**` を含む push が GitHub Actions（LP）と Vercel（本棚・本）のビルドを起動します。
+> **発火は 2 経路:** ローカルでは `npm run dev` の watcher（または macOS の常駐 watcher）が保存の瞬間に製本し、リモートでは `contents/**` を含む push が GitHub Actions（LP）と Vercel（本棚・本）のビルドを起動します。
 
 [![Version](https://img.shields.io/badge/version-v0.1.0-blue.svg)](https://github.com/watanabe3tipapa/3d-books)
 [![Phase](https://img.shields.io/badge/phase-prototype-orange.svg)](https://github.com/watanabe3tipapa/3d-books)
@@ -170,6 +170,28 @@ npm run preview
 # Book   : http://localhost:4173/books/mcp-a2a.html
 ```
 
+### 常駐 watcher（macOS）
+
+ターミナルを開きっぱなしにせず、`.md` を置くだけで製本したい場合は、macOS の LaunchAgent に登録します。
+
+```bash
+npm run watcher:install
+```
+
+ログイン中は watcher が常駐し、`contents/*.md` の追加・保存・削除を監視します。プロセス名は `node` ではなく **`3d-books`** として表示されます。
+
+```bash
+npm run watcher:status     # 状態確認（state / pid / program）
+npm run watcher:restart    # 設定変更後の再起動
+npm run watcher:uninstall  # 常駐を解除
+```
+
+- ログ: `.logs/watcher.log`
+- 実行ファイル: `.bin/3d-books`（Node へのランチャー）
+- 常駐 watcher は `BOOKS_ONLY=1` で動き、**本棚と本だけ**を更新します。LP は `npm run build` または push 時に更新されます
+- `npm run dev` とは同時に動かさないでください（二重ビルドになります）
+- Node.js を更新したら `npm run watcher:install` を再実行してください
+
 ### 主要コマンド
 
 | コマンド | 用途 |
@@ -178,6 +200,10 @@ npm run preview
 | `npm run dev` | `contents/` を監視して即時製本（ローカル用の相対 URL） |
 | `npm run watch` | 監視のみ。`BOOKS_BASE_URL` は環境変数に従う |
 | `npm run preview` | ビルドして `http://localhost:4173` で確認 |
+| `npm run watcher:install` | macOS の LaunchAgent に watcher を登録 |
+| `npm run watcher:status` | 常駐 watcher の状態確認 |
+| `npm run watcher:restart` | 常駐 watcher の再起動 |
+| `npm run watcher:uninstall` | 常駐 watcher の解除 |
 | `npm run clean` | `books/` と `site/index.html` を削除 |
 
 ## 使い方
@@ -214,7 +240,7 @@ order: 1
 npm run dev
 ```
 
-`contents/` の変更を検知して自動でビルドします。GitHub へ push した場合は GitHub Actions が LP を再ビルドします。リポジトリを Vercel に接続している場合は、Vercel も本棚と本を再ビルドします。
+`contents/` の変更を検知して自動でビルドします。常駐 watcher を導入済みなら、`npm run dev` を起動しなくても同じように製本されます。GitHub へ push した場合は GitHub Actions が LP を再ビルドします。リポジトリを Vercel に接続している場合は、Vercel も本棚と本を再ビルドします。
 
 ### 3. 読む
 
@@ -316,6 +342,7 @@ contents/
 scripts/
 ├── build.mjs                   # 一括ビルド
 ├── watch.mjs                   # contents/ の監視
+├── launchd.mjs                 # macOS 常駐 watcher の登録 / 解除
 ├── serve.mjs                   # ローカル確認用サーバー
 └── lib/
     ├── markdown.mjs            # front matter / ブロック / インライン解析

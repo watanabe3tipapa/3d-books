@@ -12,7 +12,7 @@
 
 > **The manuscript stays in charge:** manuscripts remain plain Markdown files in `contents/`. There is no proprietary database or admin UI.
 
-> **Two ways to trigger a build:** locally, the `npm run dev` watcher starts a build on save. Remotely, a push that touches `contents/**` starts the GitHub Actions build for the LP and the Vercel build for the shelf and books.
+> **Two ways to trigger a build:** locally, the `npm run dev` watcher (or the persistent macOS watcher) starts a build on save. Remotely, a push that touches `contents/**` starts the GitHub Actions build for the LP and the Vercel build for the shelf and books.
 
 [![Version](https://img.shields.io/badge/version-v0.1.0-blue.svg)](https://github.com/watanabe3tipapa/3d-books)
 [![Phase](https://img.shields.io/badge/phase-prototype-orange.svg)](https://github.com/watanabe3tipapa/3d-books)
@@ -170,6 +170,28 @@ npm run preview
 # Book   : http://localhost:4173/books/mcp-a2a.html
 ```
 
+### Persistent watcher (macOS)
+
+To bind books by placing a `.md` file without keeping a terminal open, register the watcher as a macOS LaunchAgent.
+
+```bash
+npm run watcher:install
+```
+
+While you are logged in, the watcher monitors `contents/*.md` for additions, saves, and deletions. The process is named **`3d-books`**, not `node`.
+
+```bash
+npm run watcher:status     # state / pid / program
+npm run watcher:restart    # restart after configuration changes
+npm run watcher:uninstall  # remove the LaunchAgent
+```
+
+- Log: `.logs/watcher.log`
+- Launcher: `.bin/3d-books` (a symlink to Node)
+- The persistent watcher runs with `BOOKS_ONLY=1`, so it updates **only the shelf and books**. The LP is updated by `npm run build` or a push
+- Do not run it at the same time as `npm run dev` (that would cause duplicate builds)
+- Re-run `npm run watcher:install` after upgrading Node.js
+
 ### Commands
 
 | Command | Purpose |
@@ -178,6 +200,10 @@ npm run preview
 | `npm run dev` | Watch `contents/` and bind immediately (local relative URLs) |
 | `npm run watch` | Watch only. `BOOKS_BASE_URL` comes from the environment |
 | `npm run preview` | Build and preview at `http://localhost:4173` |
+| `npm run watcher:install` | Register the watcher as a macOS LaunchAgent |
+| `npm run watcher:status` | Show the persistent watcher status |
+| `npm run watcher:restart` | Restart the persistent watcher |
+| `npm run watcher:uninstall` | Remove the persistent watcher |
 | `npm run clean` | Remove `books/` and `site/index.html` |
 
 ## Usage
@@ -214,7 +240,7 @@ Body text...
 npm run dev
 ```
 
-The watcher rebuilds on changes in `contents/`. When you push to GitHub, GitHub Actions rebuilds the LP. If the repository is connected to Vercel, Vercel also rebuilds the bookshelf and books.
+The watcher rebuilds on changes in `contents/`. If the persistent watcher is installed, books are bound even without starting `npm run dev`. When you push to GitHub, GitHub Actions rebuilds the LP. If the repository is connected to Vercel, Vercel also rebuilds the bookshelf and books.
 
 ### 3. Read
 
@@ -316,6 +342,7 @@ contents/
 scripts/
 ├── build.mjs                   # full build
 ├── watch.mjs                   # watch contents/
+├── launchd.mjs                 # install / remove the macOS watcher
 ├── serve.mjs                   # local preview server
 └── lib/
     ├── markdown.mjs            # front matter, block, and inline parsing

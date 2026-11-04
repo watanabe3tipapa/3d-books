@@ -1,5 +1,7 @@
 node_modules/
 .shots/
 .vercel/
+.logs/
+.bin/
 .DS_Store
 *.log

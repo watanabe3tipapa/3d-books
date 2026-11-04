@@ -9,6 +9,10 @@
     "dev": "BOOKS_BASE_URL=../books node scripts/watch.mjs",
     "watch": "node scripts/watch.mjs",
     "preview": "BOOKS_BASE_URL=../books node scripts/build.mjs && node scripts/serve.mjs",
+    "watcher:install": "node scripts/launchd.mjs install",
+    "watcher:status": "node scripts/launchd.mjs status",
+    "watcher:restart": "node scripts/launchd.mjs restart",
+    "watcher:uninstall": "node scripts/launchd.mjs uninstall",
     "clean": "rm -rf books site/index.html"
   },
   "engines": {

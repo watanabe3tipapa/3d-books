@@ -16,6 +16,7 @@ const SITE_DIR = path.join(ROOT, "site");
 const BOOKS_BASE_URL =
   process.env.BOOKS_BASE_URL ||
   "https://3d-books.vercel.app";
+const BOOKS_ONLY = process.env.BOOKS_ONLY === "1";
 const SITE_URL =
   process.env.SITE_URL ||
   (BOOKS_BASE_URL.startsWith(".")
@@ -190,22 +191,28 @@ function main() {
   });
   write(path.join(BOOKS_DIR, "index.html"), shelfHtml);
 
-  const mechanismAvailable = fs.existsSync(path.join(SITE_DIR, "mechanism.html"));
-  const siteHtml = renderSitePage({
-    books: publicBooks,
-    meta: {
-      generated: GENERATED,
-      booksBaseUrl: BOOKS_BASE_URL,
-      siteUrl: SITE_URL,
-      mechanismAvailable,
-    },
-  });
-  write(path.join(SITE_DIR, "index.html"), siteHtml);
+  if (BOOKS_ONLY) {
+    console.log(`\n  ✓ books/index.html（本棚）`);
+    console.log(`  ✓ books/manifest.json（${publicBooks.length} 冊）`);
+    console.log(`  · site/index.html（BOOKS_ONLY のためスキップ）`);
+  } else {
+    const mechanismAvailable = fs.existsSync(path.join(SITE_DIR, "mechanism.html"));
+    const siteHtml = renderSitePage({
+      books: publicBooks,
+      meta: {
+        generated: GENERATED,
+        booksBaseUrl: BOOKS_BASE_URL,
+        siteUrl: SITE_URL,
+        mechanismAvailable,
+      },
+    });
+    write(path.join(SITE_DIR, "index.html"), siteHtml);
 
-  console.log(`\n  ✓ books/index.html（本棚）`);
-  console.log(`  ✓ books/manifest.json（${publicBooks.length} 冊）`);
-  console.log(`  ✓ site/index.html（LP）`);
-  console.log(`  ✓ site/mechanism.html ${mechanismAvailable ? "検出" : "未配置"}`);
+    console.log(`\n  ✓ books/index.html（本棚）`);
+    console.log(`  ✓ books/manifest.json（${publicBooks.length} 冊）`);
+    console.log(`  ✓ site/index.html（LP）`);
+    console.log(`  ✓ site/mechanism.html ${mechanismAvailable ? "検出" : "未配置"}`);
+  }
   console.log(`\n  ${((Date.now() - started) / 1000).toFixed(2)}s で完了\n`);
 }
 
