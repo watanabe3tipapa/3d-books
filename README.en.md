@@ -12,7 +12,7 @@
 
 > **The manuscript stays in charge:** manuscripts remain plain Markdown files in `contents/`. There is no proprietary database or admin UI.
 
-> **Two ways to trigger a build:** locally, the `npm run dev` watcher starts a build on save. Remotely, a push that touches `contents/**` starts the GitHub Actions build.
+> **Two ways to trigger a build:** locally, the `npm run dev` watcher starts a build on save. Remotely, a push that touches `contents/**` starts the GitHub Actions build for the LP and the Vercel build for the shelf and books.
 
 [![Version](https://img.shields.io/badge/version-v0.1.0-blue.svg)](https://github.com/watanabe3tipapa/3d-books)
 [![Phase](https://img.shields.io/badge/phase-prototype-orange.svg)](https://github.com/watanabe3tipapa/3d-books)
@@ -335,6 +335,11 @@ books/
 site/
 ├── index.html                  # landing page (GitHub Pages)
 └── mechanism.html              # Archify workflow diagram
+
+sample/                         # reference HTML from early exploration (not built)
+├── 3d_book_design_proposal.html
+├── 3d_book_programming_markdown.html
+└── 3d_book_threejs.html
 
 .archify/
 └── workflow-3d-books-20261104-095119/

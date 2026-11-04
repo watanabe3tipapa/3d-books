@@ -12,7 +12,7 @@
 
 > **原稿が主役:** 原稿はプレーンな Markdown のまま `contents/` に残ります。専用データベースや管理画面はありません。
 
-> **発火は 2 経路:** ローカルでは `npm run dev` の watcher が保存の瞬間に製本し、リモートでは `contents/**` を含む push が GitHub Actions のビルドを起動します。
+> **発火は 2 経路:** ローカルでは `npm run dev` の watcher が保存の瞬間に製本し、リモートでは `contents/**` を含む push が GitHub Actions（LP）と Vercel（本棚・本）のビルドを起動します。
 
 [![Version](https://img.shields.io/badge/version-v0.1.0-blue.svg)](https://github.com/watanabe3tipapa/3d-books)
 [![Phase](https://img.shields.io/badge/phase-prototype-orange.svg)](https://github.com/watanabe3tipapa/3d-books)
@@ -335,6 +335,11 @@ books/
 site/
 ├── index.html                  # LP（GitHub Pages）
 └── mechanism.html              # Archify のワークフロー図
+
+sample/                         # 初期検討で使った参考 HTML（ビルド対象外）
+├── 3d_book_design_proposal.html
+├── 3d_book_programming_markdown.html
+└── 3d_book_threejs.html
 
 .archify/
 └── workflow-3d-books-20261104-095119/
