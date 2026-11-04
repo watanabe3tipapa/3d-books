@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>プログラム言語とマークダウン記法 - 3Dブック</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #1a1a2e;
+  --surface: #16213e;
+  --ink: #e94560;
+  --muted: #a0a0a0;
+  --accent: #0f3460;
+  --paper: #f5f0e8;
+  --paper-dark: #e8e0d4;
+  --text: #2c2c2c;
+  --text-light: #555;
+  --shadow: rgba(0,0,0,0.4);
+  --radius: 4px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* 3D Book Scene */
+.scene {
+  perspective: 2000px;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.book {
+  position: relative;
+  width: 900px;
+  height: 600px;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+}
+
+.book-spine {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 60px;
+  height: 100%;
+  background: linear-gradient(90deg, #0a1a2f 0%, var(--accent) 40%, var(--surface) 100%);
+  transform: rotateY(-90deg) translateZ(30px);
+  transform-origin: left center;
+  border-radius: 2px 0 0 2px;
+  box-shadow: inset -4px 0 8px rgba(0,0,0,0.3);
+}
+
+.page-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+/* Individual Page */
+.page {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: var(--paper);
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transform-origin: left center;
+  backface-visibility: hidden;
+  box-shadow: 
+    inset -2px 0 4px rgba(0,0,0,0.05),
+    4px 4px 20px var(--shadow);
+  overflow: hidden;
+}
+
+.page.right-side {
+  left: 50%;
+  transform-origin: left center;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.page.left-side {
+  left: 0;
+  transform-origin: right center;
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+
+/* Flipped state */
+.page.flipped {
+  transform: rotateY(-180deg);
+}
+
+.page.right-side.flipped {
+  transform: rotateY(180deg);
+}
+
+/* Page faces */
+.page-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 40px 36px;
+  backface-visibility: hidden;
+  overflow-y: auto;
+}
+
+.page-front {
+  background: var(--paper);
+}
+
+.page-back {
+  background: var(--paper-dark);
+  transform: rotateY(180deg);
+}
+
+/* Cover styling */
+.cover-front {
+  background: linear-gradient(135deg, var(--surface) 0%, var(--accent) 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.cover-back {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--surface) 100%);
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+
+.cover-front h1 {
+  font-family: "Noto Serif JP", serif;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-weight: 700;
+  margin-bottom: 16px;
+  letter-spacing: 0.05em;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.cover-front .subtitle {
+  font-size: clamp(1rem, 1.5vw, 1.3rem);
+  font-weight: 300;
+  opacity: 0.9;
+  margin-bottom: 40px;
+}
+
+.cover-front .author {
+  font-size: 0.95rem;
+  opacity: 0.7;
+  margin-top: 60px;
+}
+
+.cover-decoration {
+  width: 120px;
+  height: 3px;
+  background: var(--ink);
+  margin: 20px auto;
+  border-radius: 2px;
+}
+
+/* Page content styling */
+.page-content h2 {
+  font-family: "Noto Serif JP", serif;
+  font-size: 1.5rem;
+  color: var(--surface);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+}
+
+.page-content h3 {
+  font-size: 1.1rem;
+  color: var(--accent);
+  margin: 18px 0 10px;
+}
+
+.page-content p {
+  font-size: 0.92rem;
+  line-height: 1.8;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.page-content ul, .page-content ol {
+  margin-left: 20px;
+  margin-bottom: 14px;
+}
+
+.page-content li {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.code-block {
+  background: #2d2d2d;
+  color: #f8f8f2;
+  padding: 14px 18px;
+  border-radius: 6px;
+  font-family: "Courier New", Consolas, monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  margin: 14px 0;
+  overflow-x: auto;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.code-block .comment { color: #75715e; }
+.code-block .keyword { color: #66d9ef; }
+.code-block .string { color: #a6e22e; }
+.code-block .function { color: #fd971f; }
+
+.md-example {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 14px 18px;
+  margin: 12px 0;
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+.md-result {
+  background: #f0f4f8;
+  border-left: 3px solid var(--ink);
+  padding: 10px 16px;
+  margin: 10px 0 16px;
+  font-size: 0.88rem;
+  border-radius: 0 6px 6px 0;
+}
+
+.two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 14px 0;
+}
+
+.two-column .col h4 {
+  font-size: 0.85rem;
+  color: var(--ink);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.lang-tag {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+
+/* Page number */
+.page-number {
+  position: absolute;
+  bottom: 16px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.page-front .page-number { right: 24px; }
+.page-back .page-number { left: 24px; }
+
+/* Navigation */
+.nav-controls {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  z-index: 100;
+  background: rgba(26, 26, 46, 0.9);
+  padding: 10px 24px;
+  border-radius: 30px;
+  backdrop-filter: blur(8px);
+}
+
+.nav-btn {
+  background: transparent;
+  border: 1px solid var(--ink);
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  background: var(--ink);
+  transform: scale(1.1);
+}
+
+.page-indicator {
+  color: #fff;
+  font-size: 0.9rem;
+  min-width: 80px;
+  text-align: center;
+}
+
+/* TOC */
+.toc-list {
+  list-style: none;
+  margin: 20px 0;
+}
+
+.toc-list li {
+  padding: 10px 0;
+  border-bottom: 1px dashed #ccc;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.toc-list li:hover {
+  color: var(--ink);
+}
+
+.toc-list .toc-page {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .book {
+    width: 100%;
+    max-width: 500px;
+    height: 700px;
+  }
+  .page {
+    width: 100%;
+    left: 0 !important;
+  }
+  .page.right-side {
+    left: 0;
+    border-radius: var(--radius);
+  }
+  .page.left-side {
+    border-radius: var(--radius);
+  }
+  .two-column {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page { transition: none; }
+  .book { transition: none; }
+}
+
+/* Print */
+@media print {
+  body { background: #fff; }
+  .nav-controls { display: none; }
+  .page {
+    position: relative;
+    width: 100%;
+    height: auto;
+    page-break-after: always;
+    transform: none !important;
+  }
+}
+
+/* Hidden pages for single-page view on mobile */
+.page.hidden {
+  display: none;
+}
+</style>
+</head>
+<body>
+
+<div class="scene">
+  <div class="book" id="book">
+    <div class="book-spine"></div>
+    <div class="page-container" id="pageContainer">
+
+      <!-- Page 1: Front Cover (right side) -->
+      <div class="page right-side" data-index="0">
+        <div class="page-face page-front cover-front">
+          <div class="cover-decoration"></div>
+          <h1>プログラム言語と<br>マークダウン記法</h1>
+          <p class="subtitle">3Dインタラクティブブック</p>
+          <div class="cover-decoration"></div>
+          <p class="author">基礎から学ぶガイド</p>
+          <span class="page-number">1</span>
+        </div>
+        <div class="page-face page-back cover-back">
+          <span class="page-number">2</span>
+        </div>
+      </div>
+
+      <!-- Page 2: TOC left / Content right -->
+      <div class="page left-side" data-index="1">
+        <div class="page-face page-front">
+          <div class="page-content">
+            <h2>目次</h2>
+            <ul class="toc-list">
+              <li onclick="goToPage(2)"><span>プログラム言語とは</span><span class="toc-page">p.3</span></li>
+              <li onclick="goToPage(3)"><span>主要なプログラム言語</span><span class="toc-page">p.5</span></li>
+              <li onclick="goToPage(4)"><span>言語の分類と特徴</span><span class="toc-page">p.7</span></li>
+              <li onclick="goToPage(5)"><span>マークダウン記法とは</span><span class="toc-page">p.9</span></li>
+              <li onclick="goToPage(6)"><span>基本の書き方</span><span class="toc-page">p.11</span></li>
+              <li onclick="goToPage(7)"><span>発展的な記法</span><span class="toc-page">p.13</span></li>
+              <li onclick="goToPage(8)"><span>活用シーン</span><span class="toc-page">p.15</span></li>
+            </ul>
+          </div>
+          <span class="page-number">3</span>
+        </div>
+        <div class="page-face page-back">
+          <div class="page-content">
+            <h2>プログラム言語とは</h2>
+            <p>プログラム言語とは、コンピュータに指示を出すために人間が使う形式的な言語です。自然言語（日本語や英語）とは異なり、厳密な文法と意味論よって定義されています。</p>
+            <h3>なぜ必要か</h3>
+            <p>コンピュータは0と1の機械語しか理解できません。人間が直接機械語を書くのは非常に困難なため、人間にとって理解しやすい形で指示を記述し、それを機械語に変換（コンパイル・インタープリト）する仕組みが必要でした。</p>
+            <h3>高級言語と低級言語</h3>
+            <ul>
+              <li><strong>低級言語</strong>：機械語やアセンブリに近い。硬件に依存。</li>
+              <li><strong>高級言語</strong>：人間の言語に近い。Python、JavaScriptなど。</li>
+            </ul>
+          </div>
+          <span class="page-number">4</span>
+        </div>
+      </div>
+
+      <!-- Page 3: left / right -->
+      <div class="page right-side" data-index="2">
+        <div class="page-face page-front">
+          <div class="page-content">
+            <h2>主要なプログラム言語</h2>
+            <h3>Python</h3>
+            <p>読みやすさを重視した言語。AI、データ分析、Web開発など幅広く使われています。</p>
+            <div class="code-block">
+<span class="keyword">def</span> <span class="function">hello</span>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="function">print</span>(<span class="string">"Hello, World!"</span>)
+            </div>
+            <h3>JavaScript</h3>
+            <p>Webページに動的な機能を追加する言語。フロントエンドからサーバーサイドまで対応。</p>
+            <div class="code-block">
+<span class="keyword">const</span> greet = () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.log(<span class="string">"Hello!"</span>);<br>
+};
+            </div>
+          </div>
+          <span class="page-number">5</span>
+        </div>
+        <div class="page-face page-back">
+          <div class="page-content">
+            <h2>主要なプログラム言語（続き）</h2>
+            <h3>Java</h3>
+            <p>「一度書けば、どこでも動く」を理念とした言語。企業システムやAndroidアプリで広く使用。</p>
+            <div class="code-block">
+<span class="keyword">public class</span> Main {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public static void</span> <span class="function">main</span>(String[] args) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(<span class="string">"Hello"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+            </div>
+            <h3>C / C++</h3>
+            <p>OSや組み込みシステム、ゲームエンジンなど高性能が求められる分野で活躍。</p>
+            <div class="code-block">
+<span class="comment">// C++ の例</span><br>
+#include &lt;iostream&gt;<br>
+<span class="keyword">int</span> <span class="function">main</span>() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;std::cout &lt;&lt; <span class="string">"Hello"</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> 0;<br>
+}
+            </div>
+          </div>
+          <span class="page-number">6</span>
+        </div>
+      </div>
+
+      <!-- Page 4: left / right -->
+      <div class="page left-side" data-index="3">
+        <div class="page-face page-front">
+          <div class="page-content">
+            <h2>言語の分類と特徴</h2>
+            <h3>パラダイムによる分類</h3>
+            <ul>
+              <li><strong>手続き型</strong>：C、Pascal など。順番に処理を記述。</li>
+              <li><strong>オブジェクト指向</strong>：Java、C++ など。データと処理をオブジェクトにまとめる。</li>
+              <li><strong>関数型</strong>：Haskell、Scala など。関数の合成を重視。</li>
+              <li><strong>スクリプト型</strong>：Python、Ruby など。手軽に自動化を実現。</li>
+            </ul>
+            <h3>型システム</h3>
+            <p>静的型付け（Java、C）と動的型付け（Python、JavaScript）の2大分類があります。静的型付けは実行前に型チェックを行い安全性が高く、動的型付けは柔軟で開発が速いという特徴があります。</p>
+          </div>
+          <span class="page-number">7</span>
+        </div>
+        <div class="page-face page-back">
+          <div class="page-content">
+            <h2>マークダウン記法とは</h2>
+            <p>マークダウン（Markdown）は、John Gruber によって2004年に作られた軽量マークアップ言語です。HTMLなどに比べて読み書きが容易な記法で、プレーンテキストを構造化されたドキュメントに変換できます。</p>
+            <h3>主な特徴</h3>
+            <ul>
+              <li>プレーンテキストなので、どのエディタでも編集可能</li>
+              <li>ソース自体が人間にとって読みやすい</li>
+              <li>HTMLへの変換が容易</li>
+              <li>GitHub、Notion、Slackなど多くのサービスで採用</li>
+            </ul>
+            <h3>なぜ人気か</h3>
+            <p>技術文書の作成、READMEの記述、ブログ記事、メモなど、日常的な文書作成の多くでマークダウンが使われています。学習コストが低く、すぐに実践で使える点が魅力です。</p>
+          </div>
+          <span class="page-number">8</span>
+        </div>
+      </div>
+
+      <!-- Page 5: right -->
+      <div class="page right-side" data-index="4">
+        <div class="page-face page-front">
+          <div class="page-content">
+            <h2>基本の書き方</h2>
+            <h3>見出し</h3>
+            <div class="two-column">
+              <div class="col">
+                <h4>マークダウン</h4>
+                <div class="md-example">
+# 見出し1<br>
+## 見出し2<br>
+### 見出し3
+                </div>
+              </div>
+              <div class="col">
+                <h4>表示結果</h4>
+                <div class="md-result">
+                  <h1 style="font-size:1.3rem;margin:0">見出し1</h1>
+                  <h2 style="font-size:1.15rem;margin:6px 0 0">見出し2</h2>
+                  <h3 style="font-size:1rem;margin:6px 0 0">見出し3</h3>
+                </div>
+              </div>
+            </div>
+
+            <h3>強調とリスト</h3>
+            <div class="two-column">
+              <div class="col">
+                <h4>マークダウン</h4>
+                <div class="md-example">
+**字** と *斜体*<br><br>
+- 項目1<br>
+- 項目2<br>
+&nbsp;&nbsp;- ネスト
+                </div>
+              </div>
+              <div class="col">
+                <h4>表示結果</h4>
+                <div class="md-result">
+                  <strong>太字</strong> と <em>斜体</em><br><br>
+                  • 項目1<br>
+                  • 項目2<br>
+                  &nbsp;&nbsp;• ネスト
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="page-number">9</span>
+        </div>
+        <div class="page-face page-back">
+          <div class="page-content">
+            <h2>基本の書き方（続き）</h2>
+            <h3>リンクと画像</h3>
+            <div class="two-column">
+              <div class="col">
+                <h4>マークダウン</h4>
+                <div class="md-example">
+[リンクテキスト](https://example.com)<br><br>
+![代替テキスト](image.jpg)
+                </div>
+              </div>
+              <div class="col">
+                <h4>表示結果</h4>
+                <div class="md-result">
+                  <a href="#">リンクテキスト</a><br><br>
+                  <em>［画像が表示されます］</em>
+                </div>
+              </div>
+            </div>
+
+            <h3>コード</h3>
+            <div class="two-column">
+              <div class="col">
+                <h4>マークダウン</h4>
+                <div class="md-example">
+`インラインコード`<br><br>
+```python<br>
+def hello():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;print("Hi")<br>
+```
+                </div>
+              </div>
+              <div class="col">
+                <h4>表示結果</h4>
+                <div class="md-result">
+                  <code style="background:#eee;padding:2px 6px;border-radius:3px">インラインコード</code><br><br>
+                  <div style="background:#2d2d2d;color:#f8f8f2;padding:8px;border-radius:4px;font-family:monospace;font-size:0.8rem">
+def hello():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;print("Hi")
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="page-number">10</span>
+        </div>
+      </div>
+
+      <!-- Page 6: left -->
+      <div class="page left-side" data-index="5">
+        <div class="page-face page-front">
+          <div class="page-content">
+            <h2>発展的な記法</h2>
+            <h3>テーブル（表）</h3>
+            <div class="md-example">
+| 言語 | 用途 | 難易度 |<br>
+|------|------|--------|<br>
+| Python | AI・Web | 低い |<br>
+| C++ | システム | 高い |<br>
+| JS | フロント | 中程度 |
+            </div>
+            <h3>引用</h3>
+            <div class="md-example">
+&gt; これは引用文です。<br>
+&gt; 複数行にわたります。
+            </div>
+            <div class="md-result" style="border-left-color:#666">
+              <em>これは引用文です。複数行にわたります。</em>
+            </div>
+
+            <h3>水平線</h3>
+            <div class="md-example">
+---
+            </div>
+            <hr style="border:none;border-top:1px solid #ccc;margin:10px 0">
+          </div>
+          <span class="page-number">11</span>
+        </div>
+        <div class="page-face page-back">
+          <div class="page-content">
+            <h2>発展的な記法（続き）</h2>
+            <h3>タスクリスト</h3>
+            <div class="md-example">
+- [x] 完了したタスク<br>
+- [ ] 未完了のタスク<br>
+- [ ] チェックボックス
+            </div>
+            <div class="md-result">
+              ☑ 完了したタスク<br>
+              ☐ 未完了のタスク<br>
+              ☐ チェックボックス
+            </div>
+
+            <h3>エスケープ</h3>
+            <p>マークダウン記号をそのまま表示したい場合は、バックスラッシュ \ を使います。</p>
+            <div class="md-example">
+\* これは箇条書ではありません \*
+            </div>
+            <div class="md-result">
+              * これは箇条書きではありません *
+            </div>
+
+            <h3>HTMLの混在</h3>
+            <p>マークダウン内ではHTMLタグも使えます。より細かいレイアウト調整が必要な場合に便利です。</p>
+          </div>
+          <span class="page-number">12</span>
+        </div>
+      </div>
+
+      <!-- Page 7: right -->
+      <div class="page right-side" data-index="6">
+        <div class="page-face page-front">
+          <div class="page-content">
+            <h2>活用シーン</h2>
+            <h3>GitHub / GitLab</h3>
+            <p>リポジトリのREADME.mdはマークダウン形式です。プロジェクトの説明、インスール方法、使い方、貢献ガイドラインなどを記述します。</p>
+            <h3>技術ブログ</h3>
+            <p>多くの静的サイトジェネレーター（Jekyll、Hugo、Gatsbyなど）はマークダウンを入力として使います。執筆に集中でき、HTMLの煩わしさから解放されます。</p>
+            <h3>ドキュメント</h3>
+            <p>APIドキュメント、マニュアル、社内Wikiなど、構造化された文書の作成に適しています。バージョン管理も容易です。</p>
+            <h3>メモ・ノート</h3>
+            <p>Notion、Obsidian、Bearなどのノートアプリでもマークダウン（またはその拡張）が使われています。</p>
+          </div>
+          <span class="page-number">13</span>
+        </div>
+        <div class="page-face page-back">
+          <div class="page-content">
+            <h2>まとめ</h2>
+            <p>プログラム言語はコンピュータとの対話手段であり、目的や分野に応じて様々な言語が存在します。初心者にはPythonやJavaScriptがおすすめです。</p>
+            <p>マークダウン記法は、技術文書を手軽に作成するための強力なツールです。基本的な記法は数時間で習得でき、すぐに実践で活用できます。</p>
+            <h3>次のステップ</h3>
+            <ul>
+              <li>実際にエディタでマークダウンを書いてみる</li>
+              <li>GitHubでREADMEを作成する</li>
+              <li>興味のあるプログラム言語を1つ選んで学び始める</li>
+              <li>静的サイトジェネレーターでブログを作ってみる</li>
+            </ul>
+            <p style="margin-top:30px;text-align:center;color:var(--muted);font-size:0.85rem">
+              この3DブックはHTML/CSS/JavaScriptのみで作成されています。
+            </p>
+          </div>
+          <span class="page-number">14</span>
+        </div>
+      </div>
+
+      <!-- Page 8: Back Cover left -->
+      <div class="page left-side" data-index="7">
+        <div class="page-face page-front">
+          <div class="page-content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center">
+            <h2 style="border:none;color:var(--surface)">おわり</h2>
+            <div class="cover-decoration" style="background:var(--ink);width:80px"></div>
+            <p style="color:var(--muted);font-size:0.9rem">プログラム言語とマークダウン記法の<br>基礎を学びました。</p>
+            <p style="color:var(--muted);font-size:0.85rem;margin-top:40px">3Dフリップブック</p>
+          </div>
+          <span class="page-number">15</span>
+        </div>
+        <div class="page-face page-back cover-back" style="border-radius:var(--radius) 0 0 var(--radius)">
+          <span class="page-number">16</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="nav-controls">
+  <button class="nav-btn" id="prevBtn" onclick="prevPage()">&#9664;</button>
+  <span class="page-indicator" id="pageIndicator">1 / 8</span>
+  <button class="nav-btn" id="nextBtn" onclick="nextPage()">&#9654;</button>
+</div>
+
+<script>
+let currentPage = 0;
+const totalPages = 8;
+const pages = document.querySelectorAll('.page');
+
+function updatePages() {
+  pages.forEach((page, index) => {
+    page.classList.remove('flipped');
+    // Z-index management for stacking
+    if (page.classList.contains('right-side')) {
+      if (index < currentPage) {
+        page.classList.add('flipped');
+        page.style.zIndex = totalPages - index;
+      } else {
+        page.style.zIndex = totalPages - index;
+      }
+    } else {
+      if (index < currentPage) {
+        page.classList.add('flipped');
+        page.style.zIndex = index + 1;
+      } else {
+        page.style.zIndex = index + 1;
+      }
+    }
+  });
+
+  document.getElementById('pageIndicator').textContent = (currentPage + 1) + ' / ' + totalPages;
+  document.getElementById('prevBtn').disabled = currentPage === 0;
+  document.getElementById('nextBtn').disabled = currentPage === totalPages - 1;
+  document.getElementById('prevBtn').style.opacity = currentPage === 0 ? '0.4' : '1';
+  document.getElementById('nextBtn').style.opacity = currentPage === totalPages - 1 ? '0.4' : '1';
+}
+
+function nextPage() {
+  if (currentPage < totalPages - 1) {
+    currentPage++;
+    updatePages();
+  }
+}
+
+function prevPage() {
+  if (currentPage > 0) {
+    currentPage--;
+    updatePages();
+  }
+}
+
+function goToPage(pageNum) {
+  if (pageNum >= 0 && pageNum < totalPages) {
+    currentPage = pageNum;
+    updatePages();
+  }
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') nextPage();
+  if (e.key === 'ArrowLeft') prevPage();
+});
+
+// Touch / swipe support
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+document.addEventListener('touchend', e => {
+  const diff = touchStartX - e.changedTouches[0].screenX;
+  if (Math.abs(diff) > 50) {
+    diff > 0 ? nextPage() : prevPage();
+  }
+});
+
+// Initialize
+updatePages();
+</script>
+
+</body>
+</html>

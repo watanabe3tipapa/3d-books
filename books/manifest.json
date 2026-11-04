@@ -1,0 +1,25 @@
+{
+  "generated": "2026.11.04",
+  "generatedAt": "2026-11-04T01:01:59.916Z",
+  "booksBaseUrl": "https://3d-books.vercel.app",
+  "siteUrl": "https://watanabe3tipapa.github.io/3d-books/",
+  "books": [
+    {
+      "slug": "mcp-a2a",
+      "title": "MCP と A2A",
+      "subtitle": "マルチエージェント時代の接続プロトコル",
+      "author": "Notes - Tech",
+      "description": "AIの手「MCP」とAIの口「A2A」。2026-07-28 の最新仕様、比較、セルフホスト、実践ユースケースまでを一冊に。",
+      "tags": [
+        "MCP",
+        "A2A",
+        "AIエージェント",
+        "プロトコル"
+      ],
+      "pages": 44,
+      "href": "mcp-a2a.html",
+      "updated": "2026-11-04T00:37:51.625Z",
+      "volume": 1
+    }
+  ]
+}

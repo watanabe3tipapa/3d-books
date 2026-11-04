@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>プログラム言語とマークダウン記法 - Three.js 3Dブック</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  background: #1a1a2e;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+#canvas-container {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0; left: 0;
+}
+
+#loading {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #1a1a2e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  color: #e94560;
+  transition: opacity 0.8s ease;
+}
+#loading.hidden { opacity: 0; pointer-events: none; }
+#loading h2 {
+  font-family: "Noto Serif JP", serif;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  letter-spacing: 0.1em;
+}
+#loading .progress-bar {
+  width: 200px;
+  height: 3px;
+  background: #0f3460;
+  border-radius: 2px;
+  overflow: hidden;
+}
+#loading .progress-fill {
+  width: 0%;
+  height: 100%;
+  background: #e94560;
+  transition: width 0.3s ease;
+}
+
+.nav-controls {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  z-index: 100;
+  background: rgba(22, 33, 62, 0.9);
+  padding: 12px 28px;
+  border-radius: 30px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(233, 69, 96, 0.2);
+}
+.nav-btn {
+  background: transparent;
+  border: 1px solid #e94560;
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+.nav-btn:hover:not(:disabled) {
+  background: #e94560;
+  transform: scale(1.1);
+}
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  border-color: #555;
+}
+.page-indicator {
+  color: #fff;
+  font-size: 0.95rem;
+  min-width: 90px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.hint {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.5);
+  font-size: 0.8rem;
+  z-index: 100;
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .nav-controls { padding: 10px 20px; }
+  .nav-btn { width: 38px; height: 38px; }
+}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <h2>3Dブックを読み込み中...</h2>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+
+<div id="canvas-container"></div>
+
+<div class="hint">← → キーまたはスワイプでページをめくる</div>
+
+<div class="nav-controls">
+  <button class="nav-btn" id="prevBtn" onclick="book.prevPage()" disabled>&#9664;</button>
+  <span class="page-indicator" id="pageIndicator">1 / 8</span>
+  <button class="nav-btn" id="nextBtn" onclick="book.nextPage()">&#9654;</button>
+</div>
+
+<script>
+// ============================
+// Page Content Renderer (Canvas)
+// ============================
+const PAGE_WIDTH = 512;
+const PAGE_HEIGHT = 700;
+const BG_COLOR = '#f5f0e8';
+const BG_DARK = '#e8e0d4';
+const TEXT_COLOR = '#2c2c2c';
+const MUTED = '#6b6257';
+const ACCENT = '#e94560';
+const SURFACE = '#16213e';
+const ACCENT_BLUE = '#0f3460';
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  const chars = text.split('');
+  let line = '';
+  let cy = y;
+  for (let i = 0; i < chars.length; i++) {
+    const testLine = line + chars[i];
+    const metrics = ctx.measureText(testLine);
+    if (metrics.width > maxWidth && i > 0) {
+      ctx.fillText(line, x, cy);
+      line = chars[i];
+      cy += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, x, cy);
+  return cy + lineHeight;
+}
+
+function drawCodeBlock(ctx, x, y, w, code, lang) {
+  const pad = 14;
+  const lineH = 18;
+  const lines = code.split('\n');
+  const h = pad * 2 + lines.length * lineH;
+
+  ctx.fillStyle = '#2d2d2d';
+  roundRect(ctx, x, y, w, h, 6);
+  ctx.fill();
+
+  if (lang) {
+    ctx.fillStyle = '#555';
+    ctx.font = '10px "Noto Sans JP", sans-serif';
+    ctx.fillText(lang, x + pad, y - 6);
+  }
+
+  ctx.font = '12px "Courier New", monospace';
+  let cy = y + pad + 12;
+  lines.forEach(line => {
+    let px = x + pad;
+    // Simple syntax highlighting
+    const tokens = tokenizeCode(line);
+    tokens.forEach(tok => {
+      if (tok.type === 'comment') ctx.fillStyle = '#75715e';
+      else if (tok.type === 'keyword') ctx.fillStyle = '#66d9ef';
+      else if (tok.type === 'string') ctx.fillStyle = '#a6e22e';
+      else if (tok.type === 'function') ctx.fillStyle = '#fd971f';
+      else ctx.fillStyle = '#f8f8f2';
+      ctx.fillText(tok.text, px, cy);
+      px += ctx.measureText(tok.text).width;
+    });
+    cy += lineH;
+  });
+  return y + h + 14;
+}
+
+function tokenizeCode(line) {
+  const keywords = ['def','return','import','from','class','if','else','for','while','const','let','var','function','=>','public','static','void','int','#include'];
+  const tokens = [];
+  let remaining = line;
+  while (remaining.length > 0) {
+    // comment
+    if (remaining.match(/^\/\/.*/) || remaining.match(/^#.*/)) {
+      tokens.push({text: remaining, type: 'comment'});
+      break;
+    }
+    // string
+    const strMatch = remaining.match(/^"[^"]*"/) || remaining.match(/^'[^']*'/);
+    if (strMatch) {
+      tokens.push({text: strMatch[0], type: 'string'});
+      remaining = remaining.slice(strMatch[0].length);
+      continue;
+    }
+    // keyword / identifier
+    const wordMatch = remaining.match(/^[A-Za-z_#][A-Za-z0-9_]*/);
+    if (wordMatch) {
+      const w = wordMatch[0];
+      const type = keywords.includes(w) || keywords.some(k => w.includes(k)) ? 'keyword' : 
+                   remaining.length > w.length && remaining[w.length] === '(' ? 'function' : 'normal';
+      tokens.push({text: w, type: type === 'normal' ? 'normal' : type});
+      remaining = remaining.slice(w.length);
+      continue;
+    }
+    // other char
+    tokens.push({text: remaining[0], type: 'normal'});
+    remaining = remaining.slice(1);
+  }
+  return tokens;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function drawMdExample(ctx, x, y, w, md) {
+  const pad = 12;
+  ctx.fillStyle = '#fff';
+  roundRect(ctx, x, y, w, 80, 6);
+  ctx.fill();
+  ctx.strokeStyle = '#ddd';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.fillStyle = TEXT_COLOR;
+  ctx.font = '12px "Noto Sans JP", sans-serif';
+  const lines = md.split('\n');
+  let cy = y + pad + 12;
+  lines.forEach(ln => {
+    ctx.fillText(ln, x + pad, cy);
+    cy += 16;
+  });
+  return y + 80 + 10;
+}
+
+function drawMdResult(ctx, x, y, w, lines) {
+  const pad = 10;
+  const lineH = 18;
+  const h = pad * 2 + lines.length * lineH;
+  ctx.fillStyle = '#f0f4f8';
+  ctx.beginPath();
+  ctx.moveTo(x + 3, y);
+  ctx.lineTo(x + w, y);
+  ctx.lineTo(x + w, y + h);
+  ctx.lineTo(x + 3, y + h);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = ACCENT;
+  ctx.fillRect(x, y, 3, h);
+  ctx.fillStyle = TEXT_COLOR;
+  ctx.font = '12px "Noto Sans JP", sans-serif';
+  let cy = y + pad + 12;
+  lines.forEach(ln => {
+    ctx.fillText(ln, x + pad + 6, cy);
+    cy += lineH;
+  });
+  return y + h + 12;
+}
+
+// ============================
+// Page Data
+// ============================
+const pageData = [
+  { type: 'cover', title: 'プログラム言語と\nマークダウン記法', subtitle: 'Three.js 3Dインタラクティブブック', author: '基礎から学ぶガイド' },
+  { type: 'toc', items: [
+    {label: 'プログラム言語とは', page: 3},
+    {label: '主要なプログラム言語', page: 5},
+    {label: '言語の分類と特徴', page: 7},
+    {label: 'マークダウン記法とは', page: 9},
+    {label: '基本の書き方', page: 11},
+    {label: '発展的な記法', page: 13},
+    {label: '活用シーン', page: 15},
+  ]},
+  { type: 'content', title: 'プログラム言語とは', body: [
+    {p: 'プログラム言語とは、コンピュータに指示を出すために人間が使う形式的な言語です。自然言語とは異なり、厳密な文法と意味論によって定義されています。'},
+    {h3: 'なぜ必要か'},
+    {p: 'コンピュータは0と1の機械語しか理解できません。人間が直接機械語を書くのは非常に困難なため、人間にとって理解しやすい形で指示を記述し、それを機械語に変換する仕組みが必要でした。'},
+    {h3: '高級言語と低級言語'},
+    {ul: ['低級言語：機械語やアセンブリに近い。硬件に依存。','高級言語：人間の言語に近い。Python、JavaScriptなど。']}
+  ]},
+  { type: 'content', title: '主要なプログラム言語', body: [
+    {h3: 'Python'},
+    {p: '読みやすさを重視した言語。AI、データ分析、Web開発など幅広く使われています。'},
+    {code: 'def hello():\n    print("Hello, World!")', lang: 'python'},
+    {h3: 'JavaScript'},
+    {p: 'Webページに動的な機能を追加する言語。フロントエンドからサーバーサイドまで対応。'},
+    {code: 'const greet = () => {\n    console.log("Hello!");\n};', lang: 'javascript'}
+  ]},
+  { type: 'content', title: '主要なプログラム言語（続き）', body: [
+    {h3: 'Java'},
+    {p: '「一度書けば、どこでも動く」を理念とした言語。企業システムやAndroidアプリで広く使用。'},
+    {code: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello");\n    }\n}', lang: 'java'},
+    {h3: 'C / C++'},
+    {p: 'OSや組み込みシステム、ゲームエンジンなど高性能が求められる分野で活躍。'},
+    {code: '// C++ の例\n#include <iostream>\nint main() {\n    std::cout << "Hello";\n    return 0;\n}', lang: 'cpp'}
+  ]},
+  { type: 'content', title: '言語の分類と特徴', body: [
+    {h3: 'パラダイムによる分類'},
+    {ul: ['手続き型：C、Pascal など。順番に処理を記述。','オブジェクト指向：Java、C++ など。データと処理をオブジェクトにまとめる。','関数型：Haskell、Scala など。関数の合成を重視。','スクリプト型：Python、Ruby など。手軽に自動化を実現。']},
+    {h3: '型システム'},
+    {p: '静的型付け（Java、C）と動的型付け（Python、JavaScript）の2大分類があります。静的型付けは実行前に型チェックを行い安全性が高く、動的型付けは柔軟で開発が速いという特徴があります。'}
+  ]},
+  { type: 'content', title: 'マークダウン記法とは', body: [
+    {p: 'マークダウン（Markdown）は、John Gruber によって2004年に作られた軽量マークアップ言語です。HTMLなどに比べて読み書きが容易な記法で、プレーンテキストを構造化されたドキュメントに変換できます。'},
+    {h3: '主な特徴'},
+    {ul: ['プレーンテキストなので、どのエディタでも編集可能','ソース自体が人間にとって読みやすい','HTMLへの変換が容易','GitHub、Notion、Slackなど多くのサービスで採用']},
+    {h3: 'なぜ人気か'},
+    {p: '技術文書の作成、READMEの記述、ブログ記事、メモなど、日常的な文書作成の多くでマークダウンが使われています。学習コストが低く、すぐに実践で使える点が魅力です。'}
+  ]},
+  { type: 'content', title: '基本の書き方', body: [
+    {h3: '見出し'},
+    {md: '# 見出し1\n## 見出し2\n### 見出し3'},
+    {result: ['見出し1', '見出し2', '見出し3']},
+    {h3: '強調とリスト'},
+    {md: '**太字** と *斜体*\n\n- 項目1\n- 項目2\n  - ネスト'},
+    {result: ['太字 と 斜体', '', '• 項目1', '• 項目2', '  • ネスト']}
+  ]},
+  { type: 'content', title: '基本の書き方（続き）', body: [
+    {h3: 'リンクと画像'},
+    {md: '[リンクテキスト](https://example.com)\n\n![代替テキスト](image.jpg)'},
+    {result: ['[リンクテキスト]', '', '［画像が表示されます］']},
+    {h3: 'コード'},
+    {md: '`インラインコード`\n\n```python\ndef hello():\n    print("Hi")\n```'},
+    {result: ['インラインコード', '', 'def hello():', '    print("Hi")']}
+  ]},
+  { type: 'content', title: '発展的な記法', body: [
+    {h3: 'テーブル（表）'},
+    {md: '| 言語 | 用途 | 難易度 |\n|------|------|--------|\n| Python | AI・Web | 低い |\n| C++ | シスム | 高い |'},
+    {result: ['言語    用途    難易度', 'Python  AI・Web  低い', 'C++     システム 高い']},
+    {h3: '引用'},
+    {md: '> これは引用文です。\n> 複数行にわたります。'},
+    {result: ['"これは引用文です。複数行にわたります。"']},
+    {h3: '水平線'},
+    {md: '---'},
+    {result: ['─────────────']}
+  ]},
+  { type: 'content', title: '発展的な記法（続き）', body: [
+    {h3: 'タスクリスト'},
+    {md: '- [x] 完了したタスク\n- [ ] 未完了のタスク\n- [ ] チェックボックス'},
+    {result: ['☑ 完了したタスク', '☐ 未完了のタスク', '☐ チェックボックス']},
+    {h3: 'エスケープ'},
+    {p: 'マークダウン記号をそのまま表示したい場合は、バックスラッシュ を使います。'},
+    {md: '\* これは箇条書きではありません \*'},
+    {result: ['* これは箇条書きではありません *']},
+    {h3: 'HTMLの混在'},
+    {p: 'マークダウン内ではHTMLタグも使えます。より細かいレイアウト調整が必要な場合に便利です。'}
+  ]},
+  { type: 'content', title: '活用シーン', body: [
+    {h3: 'GitHub / GitLab'},
+    {p: 'リポジトリのREADME.mdはマークダウン形式です。プロジェクトの説明、インストール方法、使い方、貢献ガイドラインなどを記述します。'},
+    {h3: '技術ブログ'},
+    {p: '多くの静的サイトジェネレーター（Jekyll、Hugo、Gatsbyなど）はマークダウンを入力として使います。執筆に集中でき、HTMLの煩わしさから解放されます。'},
+    {h3: 'ドキュメント'},
+    {p: 'APIドキュメント、マニュアル、社内Wikiなど、構造化された文書の作成に適しています。バージョン管理も容易です。'},
+    {h3: 'メモ・ノート'},
+    {p: 'Notion、Obsidian、Bearなどのノートアプリでもマークダウン（またはその拡張）が使われています。'}
+  ]},
+  { type: 'content', title: 'まとめ', body: [
+    {p: 'プログラム言語はコンピュータとの対話手段であり、目的や分野に応じて様々な言語が存在します。初心者にはPythonやJavaScriptがおすすめです。'},
+    {p: 'マークダウン記法は、技術文書を手軽に作成するための強力なツールです。基本的な記法は数時間で習得でき、すぐに実践で活用できます。'},
+    {h3: '次のステップ'},
+    {ul: ['実際にエディタでマークダウンを書いてみる','GitHubでREADMEを作成する','興味のあるプログラム言語を1つ選んで学び始める','静的サイトジェネレーターでブログを作ってみる']},
+    {center: 'この3Dブックは Three.js + GSAP で作成されています。'}
+  ]},
+  { type: 'back', text: 'おわり', sub: 'プログラム言語とマークダウン記法の\n基礎を学びました。' }
+];
+
+function renderPageToCanvas(pageIndex, isBack = false) {
+  const canvas = document.createElement('canvas');
+  canvas.width = PAGE_WIDTH;
+  canvas.height = PAGE_HEIGHT;
+  const ctx = canvas.getContext('2d');
+  const data = pageData[pageIndex];
+
+  if (!data) return canvas;
+
+  // Background
+  ctx.fillStyle = isBack ? BG_DARK : BG_COLOR;
+  ctx.fillRect(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
+
+  // Page shadow gradient at spine
+  const grad = ctx.createLinearGradient(isBack ? PAGE_WIDTH - 30 : 0, 0, isBack ? PAGE_WIDTH : 30, 0);
+  grad.addColorStop(0, 'rgba(0,0,0,0)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.06)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(isBack ? PAGE_WIDTH - 30 : 0, 0, 30, PAGE_HEIGHT);
+
+  if (data.type === 'cover') {
+    const grd = ctx.createLinearGradient(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
+    grd.addColorStop(0, SURFACE);
+    grd.addColorStop(1, ACCENT_BLUE);
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
+
+    ctx.fillStyle = ACCENT;
+    ctx.fillRect(PAGE_WIDTH/2 - 60, PAGE_HEIGHT/2 - 60, 120, 3);
+
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.font = '700 28px "Noto Serif JP", serif';
+    const titleLines = data.title.split('\n');
+    let ty = PAGE_HEIGHT/2 - 20;
+    titleLines.forEach(ln => {
+      ctx.fillText(ln, PAGE_WIDTH/2, ty);
+      ty += 38;
+    });
+
+    ctx.font = '300 16px "Noto Sans JP", sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.fillText(data.subtitle, PAGE_WIDTH/2, ty + 20);
+
+    ctx.fillStyle = ACCENT;
+    ctx.fillRect(PAGE_WIDTH/2 - 60, ty + 40, 120, 3);
+
+    ctx.font = '14px "Noto Sans JP", sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.fillText(data.author, PAGE_WIDTH/2, PAGE_HEIGHT - 80);
+    ctx.textAlign = 'left';
+  }
+  else if (data.type === 'back') {
+    const grd = ctx.createLinearGradient(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
+    grd.addColorStop(0, ACCENT_BLUE);
+    grd.addColorStop(1, SURFACE);
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#fff';
+    ctx.font = '700 32px "Noto Serif JP", serif';
+    ctx.fillText(data.text, PAGE_WIDTH/2, PAGE_HEIGHT/2 - 20);
+    ctx.fillStyle = ACCENT;
+    ctx.fillRect(PAGE_WIDTH/2 - 40, PAGE_HEIGHT/2 + 10, 80, 3);
+    ctx.font = '14px "Noto Sans JP", sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    const subLines = data.sub.split('\n');
+    let sy = PAGE_HEIGHT/2 + 40;
+    subLines.forEach(ln => {
+      ctx.fillText(ln, PAGE_WIDTH/2, sy);
+      sy += 22;
+    });
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '12px "Noto Sans JP", sans-serif';
+    ctx.fillText('Three.js 3Dフリップブック', PAGE_WIDTH/2, PAGE_HEIGHT - 60);
+    ctx.textAlign = 'left';
+  }
+  else if (data.type === 'toc') {
+    ctx.fillStyle = TEXT_COLOR;
+    ctx.font = '700 22px "Noto Serif JP", serif';
+    ctx.fillText('目次', 40, 60);
+    ctx.fillStyle = ACCENT;
+    ctx.fillRect(40, 72, 60, 3);
+
+    let ty = 110;
+    ctx.font = '14px "Noto Sans JP", sans-serif';
+    data.items.forEach(item => {
+      ctx.fillStyle = '#ccc';
+      ctx.fillRect(40, ty + 4, PAGE_WIDTH - 80, 1);
+      ctx.fillStyle = TEXT_COLOR;
+      ctx.fillText(item.label, 40, ty + 22);
+      ctx.fillStyle = MUTED;
+      ctx.fillText('p.' + item.page, PAGE_WIDTH - 70, ty + 22);
+      ty += 44;
+    });
+  }
+  else if (data.type === 'content') {
+    const margin = 36;
+    const w = PAGE_WIDTH - margin * 2;
+    let y = 50;
+
+    ctx.fillStyle = SURFACE;
+    ctx.font = '700 20px "Noto Serif JP", serif';
+    ctx.fillText(data.title, margin, y);
+    y += 10;
+    ctx.fillStyle = ACCENT;
+    ctx.fillRect(margin, y, 80, 3);
+    y += 28;
+
+    ctx.font = '13px "Noto Sans JP", sans-serif';
+
+    data.body.forEach(block => {
+      if (block.h3) {
+        ctx.fillStyle = ACCENT_BLUE;
+        ctx.font = '700 14px "Noto Sans JP", sans-serif';
+        ctx.fillText(block.h3, margin, y);
+        y += 22;
+      }
+      if (block.p) {
+        ctx.fillStyle = TEXT_COLOR;
+        ctx.font = '13px "Noto Sans JP", sans-serif';
+        y = wrapText(ctx, block.p, margin, y, w, 20) + 6;
+      }
+      if (block.ul) {
+        block.ul.forEach(item => {
+          ctx.fillStyle = ACCENT;
+          ctx.beginPath();
+          ctx.arc(margin + 4, y - 4, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = TEXT_COLOR;
+          ctx.font = '12px "Noto Sans JP", sans-serif';
+          // Bold parts
+          const parts = item.split('：');
+          if (parts.length === 2) {
+            ctx.font = '700 12px "Noto Sans JP", sans-serif';
+            ctx.fillText(parts[0] + '：', margin + 14, y);
+            const bw = ctx.measureText(parts[0] + '：').width;
+            ctx.font = '12px "Noto Sans JP", sans-serif';
+            ctx.fillText(parts[1], margin + 14 + bw, y);
+          } else {
+            ctx.fillText(item, margin + 14, y);
+          }
+          y += 20;
+        });
+        y += 6;
+      }
+      if (block.code) {
+        y = drawCodeBlock(ctx, margin, y, w, block.code, block.lang) + 4;
+      }
+      if (block.md) {
+        y = drawMdExample(ctx, margin, y, w, block.md) + 4;
+      }
+      if (block.result) {
+        y = drawMdResult(ctx, margin, y, w, block.result) + 4;
+      }
+      if (block.center) {
+        ctx.textAlign = 'center';
+        ctx.fillStyle = MUTED;
+        ctx.font = '12px "Noto Sans JP", sans-serif';
+        ctx.fillText(block.center, PAGE_WIDTH/2, y);
+        ctx.textAlign = 'left';
+        y += 24;
+      }
+    });
+  }
+
+  // Page number
+  ctx.fillStyle = MUTED;
+  ctx.font = '11px "Noto Sans JP", sans-serif';
+  ctx.textAlign = isBack ? 'left' : 'right';
+  const pn = isBack ? (pageIndex * 2 + 2) : (pageIndex * 2 + 1);
+  ctx.fillText(String(pn), isBack ? 36 : PAGE_WIDTH - 36, PAGE_HEIGHT - 20);
+  ctx.textAlign = 'left';
+
+  return canvas;
+}
+
+// ============================
+// Three.js 3D Book
+// ============================
+const container = document.getElementById('canvas-container');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x1a1a2e);
+scene.fog = new THREE.Fog(0x1a1a2e, 4, 10);
+
+const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0, 1.6, 5.5);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+container.appendChild(renderer.domElement);
+
+// Lights
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
+dirLight.position.set(3, 5, 4);
+dirLight.castShadow = true;
+dirLight.shadow.mapSize.width = 1024;
+dirLight.shadow.mapSize.height = 1024;
+dirLight.shadow.camera.near = 0.1;
+dirLight.shadow.camera.far = 20;
+dirLight.shadow.bias = -0.001;
+scene.add(dirLight);
+
+const spotLight = new THREE.SpotLight(0xe94560, 0.3);
+spotLight.position.set(-3, 4, 2);
+spotLight.lookAt(0, 0, 0);
+scene.add(spotLight);
+
+// Ground shadow
+const groundGeo = new THREE.PlaneGeometry(15, 15);
+const groundMat = new THREE.MeshStandardMaterial({ 
+  color: 0x1a1a2e,
+  roughness: 1,
+  metalness: 0 
+});
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -1.6;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// Page dimensions
+const PAGE_W = 1.5;
+const PAGE_H = 2.1;
+const PAGE_SEGS = 64;
+
+// Vertex Shader for page flip
+const vertexShader = `
+uniform float uProgress;
+varying vec2 vUv;
+varying float vLight;
+
+const float PI = 3.14159265359;
+
+void main() {
+  vUv = uv;
+  vec3 pos = position;
+
+  // x: -0.5 to 0.5 in geometry space
+  // We map so that right edge (x=0.5) is the spine
+  float x = uv.x; // 0 to 1, 0=left edge, 1=spine
+
+  float flip = uProgress * PI;
+
+  // Rotation amount: max at free edge (x=0), zero at spine (x=1)
+  float angle = flip * pow(1.0 - x, 0.85);
+
+  float c = cos(angle);
+  float s = sin(angle);
+
+  // Distance from spine
+  float dist = (1.0 - x) * PAGE_W;
+
+  // Rotate around spine axis
+  float targetX = -dist * c * 0.5 + (1.0 - x) * (-0.5 * uProgress * PAGE_W) + x * (0.5 * (1.0 - uProgress) * PAGE_W) + (x - 0.5) * PAGE_W * 0.5;
+
+  // Better approach: transform in local space
+  // Original x ranges from -PAGE_W/2 to +PAGE_W/2
+  // Right edge (+PAGE_W/2) stays, left edge moves
+  float rx = pos.x - PAGE_W * 0.5; // distance from right edge: 0 at spine, -PAGE_W at free edge
+
+  // When progress=0: page is on right, rx goes from -PAGE_W to 0
+  // When progress=1: page is on left, rx goes from 0 to -PAGE_W (but mirrored)
+
+  float rot = flip * pow(1.0 - x, 0.8);
+  float nc = cos(rot);
+  float ns = sin(rot);
+
+  // New position
+  float nx = rx * nc;
+  float nz = rx * ns * 0.5;
+
+  // Shift based on progress
+  // progress=0: x should be positive (right side)
+  // progress=1: x should be negative (left side)
+  float xShift = mix(0.0, -PAGE_W, uProgress);
+
+  pos.x = PAGE_W * 0.5 + nx + xShift;
+  pos.z = nz;
+
+  // Curl effect in the middle of the flip
+  float curl = sin(flip) * 0.12 * sin(x * PI) * (1.0 - abs(uProgress - 0.5) * 2.0);
+  pos.y += curl;
+
+  // Slight lift when flipping
+  pos.y += sin(flip * 0.5) * 0.05 * (1.0 - x);
+
+  // Simple lighting based on normal approximation
+  vLight = 0.8 + 0.2 * sin(rot);
+
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+}
+`;
+
+const fragmentShader = `
+uniform sampler2D uTextureFront;
+uniform sampler2D uTextureBack;
+uniform float uProgress;
+varying vec2 vUv;
+varying float vLight;
+
+void main() {
+  vec2 uv = vUv;
+  // For back face, flip x
+  if (!gl_FrontFacing) {
+    uv.x = 1.0 - uv.x;
+  }
+
+  vec4 color;
+  if (gl_FrontFacing) {
+    color = texture2D(uTextureFront, uv);
+  } else {
+    color = texture2D(uTextureBack, uv);
+  }
+
+  // Apply subtle lighting
+  color.rgb *= vLight;
+
+  // Page edge shadow near spine
+  float spineShadow = smoothstep(0.0, 0.15, uv.x);
+  color.rgb *= 0.85 + 0.15 * spineShadow;
+
+  gl_FragColor = color;
+}
+`;
+
+// Replace PAGE_W in shader
+const vertexShaderFinal = vertexShader.replace(/PAGE_W/g, PAGE_W.toFixed(2));
+
+class Book3D {
+  constructor() {
+    this.pages = [];
+    this.currentPage = 0;
+    this.totalPages = 8;
+    this.isAnimating = false;
+    this.init();
+  }
+
+  init() {
+    const geometry = new THREE.PlaneGeometry(PAGE_W, PAGE_H, PAGE_SEGS, PAGE_SEGS);
+
+    for (let i = 0; i < this.totalPages; i++) {
+      const frontCanvas = renderPageToCanvas(i, false);
+      const backCanvas = renderPageToCanvas(i, true);
+
+      const frontTex = new THREE.CanvasTexture(frontCanvas);
+      const backTex = new THREE.CanvasTexture(backCanvas);
+
+      frontTex.minFilter = THREE.LinearFilter;
+      backTex.minFilter = THREE.LinearFilter;
+
+      const material = new THREE.ShaderMaterial({
+        vertexShader: vertexShaderFinal,
+        fragmentShader: fragmentShader,
+        uniforms: {
+          uTextureFront: { value: frontTex },
+          uTextureBack: { value: backTex },
+          uProgress: { value: 0.0 }
+        },
+        side: THREE.DoubleSide,
+        transparent: false
+      });
+
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.position.z = i * 0.008;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      scene.add(mesh);
+
+      this.pages.push({ mesh, material, index: i });
+    }
+
+    this.updateButtons();
+  }
+
+  nextPage() {
+    if (this.isAnimating || this.currentPage >= this.totalPages - 1) return;
+    this.isAnimating = true;
+
+    const page = this.pages[this.currentPage];
+
+    // Bring current page to top during flip
+    this.pages.forEach((p, i) => {
+      p.mesh.position.z = (i === this.currentPage) ? 0.1 : (i < this.currentPage ? -0.01 : i * 0.008);
+    });
+
+    gsap.to(page.material.uniforms.uProgress, {
+      value: 1.0,
+      duration: 1.3,
+      ease: "power2.inOut",
+      onComplete: () => {
+        this.currentPage++;
+        this.isAnimating = false;
+        this.updateZOrder();
+        this.updateButtons();
+      }
+    });
+  }
+
+  prevPage() {
+    if (this.isAnimating || this.currentPage <= 0) return;
+    this.isAnimating = true;
+
+    this.currentPage--;
+    const page = this.pages[this.currentPage];
+
+    this.pages.forEach((p, i) => {
+      p.mesh.position.z = (i === this.currentPage) ? 0.1 : (i < this.currentPage ? -0.01 : i * 0.008);
+    });
+
+    gsap.to(page.material.uniforms.uProgress, {
+      value: 0.0,
+      duration: 1.3,
+      ease: "power2.inOut",
+      onComplete: () => {
+        this.isAnimating = false;
+        this.updateZOrder();
+        this.updateButtons();
+      }
+    });
+  }
+
+  updateZOrder() {
+    this.pages.forEach((p, i) => {
+      if (i < this.currentPage) {
+        p.mesh.position.z = -0.01 - (this.currentPage - i) * 0.002;
+      } else {
+        p.mesh.position.z = (i - this.currentPage) * 0.008;
+      }
+    });
+  }
+
+  updateButtons() {
+    document.getElementById('prevBtn').disabled = this.currentPage === 0;
+    document.getElementById('nextBtn').disabled = this.currentPage >= this.totalPages - 1;
+    document.getElementById('pageIndicator').textContent = (this.currentPage + 1) + ' / ' + this.totalPages;
+  }
+
+  goToPage(n) {
+    if (n === this.currentPage) return;
+    if (n > this.currentPage) {
+      let steps = n - this.currentPage;
+      const flipNext = () => {
+        if (steps > 0) {
+          steps--;
+          this.nextPage();
+          setTimeout(flipNext, 400);
+        }
+      };
+      flipNext();
+    } else {
+      let steps = this.currentPage - n;
+      const flipPrev = () => {
+        if (steps > 0) {
+          steps--;
+          this.prevPage();
+          setTimeout(flipPrev, 400);
+        }
+      };
+      flipPrev();
+    }
+  }
+}
+
+// ============================
+// Initialize
+// ============================
+let book;
+
+function updateProgress(pct) {
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+async function initApp() {
+  // Wait for fonts
+  updateProgress(20);
+  await document.fonts.ready;
+  updateProgress(50);
+
+  // Create book
+  book = new Book3D();
+  updateProgress(100);
+
+  setTimeout(() => {
+    document.getElementById('loading').classList.add('hidden');
+  }, 500);
+
+  animate();
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  // Subtle camera movement based on mouse
+  const targetX = mouse.x * 0.3;
+  const targetY = 1.6 + mouse.y * 0.1;
+  camera.position.x += (targetX - camera.position.x) * 0.05;
+  camera.position.y += (targetY - camera.position.y) * 0.05;
+  camera.lookAt(0, 0, 0);
+
+  renderer.render(scene, camera);
+}
+
+// Mouse tracking
+const mouse = { x: 0, y: 0 };
+document.addEventListener('mousemove', (e) => {
+  mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+});
+
+// Keyboard
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') book.nextPage();
+  if (e.key === 'ArrowLeft') book.prevPage();
+});
+
+// Touch / swipe
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+document.addEventListener('touchend', e => {
+  const diff = touchStartX - e.changedTouches[0].screenX;
+  if (Math.abs(diff) > 50) {
+    diff > 0 ? book.nextPage() : book.prevPage();
+  }
+});
+
+// Resize
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Start
+initApp();
+</script>
+
+</body>
+</html>

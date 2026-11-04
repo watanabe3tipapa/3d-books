@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3Dブック デザイン提案書</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c1020;
+  --surface: #141a30;
+  --surface-light: #1c2440;
+  --ink: #f5f0e8;
+  --ink-dim: rgba(245,240,232,0.7);
+  --muted: #6b6b7b;
+  --gold: #c9a227;
+  --gold-weak: rgba(201,162,39,0.12);
+  --gold-mid: rgba(201,162,39,0.35);
+  --rose: #e94560;
+  --rose-weak: rgba(233,69,96,0.12);
+  --paper: #f5f0e8;
+  --paper-dark: #e8e0d4;
+  --text: #1a1a2e;
+  --text-light: #4a4a5a;
+  --line: rgba(201,162,39,0.2);
+  --shadow: 0 2px 4px rgba(0,0,0,0.3), 0 12px 40px rgba(0,0,0,0.4);
+  --radius: 8px;
+  --step--1: clamp(0.85rem, 0.82rem + 0.15vw, 0.95rem);
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.15rem);
+  --step-1: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);
+  --step-2: clamp(1.75rem, 1.4rem + 1.75vw, 3rem);
+  --step-3: clamp(2.5rem, 1.8rem + 3.5vw, 5rem);
+  --space: clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: var(--step-0);
+  line-height: 1.85;
+  overflow-x: hidden;
+}
+
+/* Hero */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  padding: var(--space);
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(201,162,39,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 80%, rgba(233,69,96,0.06) 0%, transparent 50%),
+    var(--bg);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a227' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.hero-label {
+  font-size: var(--step--1);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 {
+  font-family: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  font-size: var(--step-3);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 span {
+  display: block;
+  font-size: 0.45em;
+  font-weight: 400;
+  color: var(--ink-dim);
+  letter-spacing: 0.15em;
+  margin-top: 0.6em;
+}
+
+.hero-line {
+  width: 80px;
+  height: 3px;
+  background: var(--gold);
+  margin: 0 auto 1.5rem;
+  border-radius: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-desc {
+  max-width: 520px;
+  color: var(--ink-dim);
+  font-size: var(--step--1);
+  line-height: 1.9;
+  position: relative;
+  z-index: 1;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* Sections */
+.section {
+  padding: calc(var(--space) * 2.5) var(--space);
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.section-alt {
+  background: var(--surface);
+}
+
+.section-header {
+  margin-bottom: calc(var(--space) * 1.5);
+}
+
+.section-num {
+  font-family: "Noto Serif JP", serif;
+  font-size: 0.8rem;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.section h2 {
+  font-family: "Noto Serif JP", serif;
+  font-size: var(--step-2);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+}
+
+.section h3 {
+  font-family: "Noto Serif JP", serif;
+  font-size: var(--step-1);
+  font-weight: 600;
+  margin: calc(var(--space) * 1.2) 0 calc(var(--space) * 0.5);
+  color: var(--ink);
+}
+
+.section p {
+  max-width: 68ch;
+  color: var(--ink-dim);
+  margin-bottom: 1rem;
+}
+
+/* Concept cards */
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: calc(var(--space) * 0.8);
+  margin-top: calc(var(--space) * 1.2);
+}
+
+.concept-card {
+  background: var(--surface-light);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 0.9);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.concept-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold-mid);
+}
+
+.concept-card .icon {
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.concept-card h4 {
+  font-family: "Noto Serif JP", serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.concept-card p {
+  font-size: var(--step--1);
+  color: var(--muted);
+  line-height: 1.75;
+  margin: 0;
+}
+
+/* Palette */
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--space) * 0.6);
+  margin-top: calc(var(--space) * 1);
+}
+
+.palette-item {
+  flex: 1 1 140px;
+  max-width: 180px;
+}
+
+.palette-swatch {
+  width: 100%;
+  aspect-ratio: 1.6;
+  border-radius: var(--radius);
+  margin-bottom: 0.6rem;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.palette-swatch::after {
+  content: attr(data-hex);
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  font-family: "Courier New", monospace;
+  font-size: 0.75rem;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+.palette-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.palette-role {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* Typography showcase */
+.type-showcase {
+  background: var(--surface-light);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: calc(var(--space) * 1.2);
+  margin-top: calc(var(--space) * 1);
+}
+
+.type-row {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.type-row:last-child { border-bottom: none; }
+
+.type-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  min-width: 100px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.type-sample {
+  flex: 1;
+}
+
+.type-sample.serif {
+  font-family: "Noto Serif JP", serif;
+}
+
+.type-sample.sans {
+  font-family: "Noto Sans JP", sans-serif;
+}
+
+.type-meta {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-left: auto;
+  text-align: right;
+  min-width: 120px;
+}
+
+/* Page mockups */
+.mockup-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: calc(var(--space) * 1);
+  margin-top: calc(var(--space) * 1.2);
+}
+
+.mockup-card {
+  background: var(--paper);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: transform 0.4s ease;
+}
+
+.mockup-card:hover {
+  transform: translateY(-6px) rotate(0.5deg);
+}
+
+.mockup-header {
+  background: var(--surface);
+  padding: 0.7rem 1rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mockup-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.mockup-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.mockup-dots span:nth-child(1) { background: #e94560; }
+.mockup-dots span:nth-child(2) { background: var(--gold); }
+.mockup-dots span:nth-child(3) { background: #4caf50; }
+
+.mockup-body {
+  padding: 1.8rem;
+  color: var(--text);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  min-height: 280px;
+}
+
+.mockup-body.cover-mockup {
+  background: linear-gradient(145deg, var(--surface) 0%, var(--surface-light) 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 320px;
+}
+
+.mockup-body.cover-mockup .m-title {
+  font-family: "Noto Serif JP", serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.03em;
+}
+
+.mockup-body.cover-mockup .m-line {
+  width: 50px;
+  height: 2px;
+  background: var(--rose);
+  margin: 0.8rem auto;
+}
+
+.mockup-body.cover-mockup .m-sub {
+  font-size: 0.8rem;
+  opacity: 0.75;
+  font-weight: 300;
+}
+
+.mockup-body.toc-mockup h4 {
+  font-family: "Noto Serif JP", serif;
+  font-size: 1.1rem;
+  color: var(--text);
+  border-bottom: 2px solid var(--rose);
+  padding-bottom: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.mockup-body.toc-mockup .toc-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed #ccc;
+  font-size: 0.82rem;
+}
+
+.mockup-body.toc-mockup .toc-page {
+  color: var(--muted);
+}
+
+.mockup-body.content-mockup h4 {
+  font-family: "Noto Serif JP", serif;
+  font-size: 1rem;
+  color: var(--surface);
+  margin: 1rem 0 0.4rem;
+}
+
+.mockup-body.content-mockup p {
+  color: var(--text-light);
+  font-size: 0.82rem;
+  line-height: 1.65;
+  margin-bottom: 0.6rem;
+}
+
+.mockup-body.content-mockup .m-code {
+  background: #2d2d2d;
+  color: #f8f8f2;
+  padding: 0.7rem 1rem;
+  border-radius: 5px;
+  font-family: "Courier New", monospace;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  margin: 0.6rem 0;
+}
+
+.mockup-body.content-mockup .m-code .k { color: #66d9ef; }
+.mockup-body.content-mockup .m-code .s { color: #a6e22e; }
+.mockup-body.content-mockup .m-code .f { color: #fd971f; }
+
+.mockup-body.compare-mockup .compare-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.mockup-body.compare-mockup .compare-col h5 {
+  font-size: 0.7rem;
+  color: var(--rose);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.4rem;
+}
+
+.mockup-body.compare-mockup .compare-box {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 0.6rem;
+  font-size: 0.78rem;
+}
+
+.mockup-body.compare-mockup .compare-result {
+  background: #f0f4f8;
+  border-left: 2px solid var(--rose);
+  padding: 0.5rem 0.8rem;
+  font-size: 0.78rem;
+  border-radius: 0 5px 5px 0;
+}
+
+.mockup-body.back-mockup {
+  background: linear-gradient(145deg, var(--surface-light) 0%, var(--surface) 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 280px;
+}
+
+.mockup-body.back-mockup .m-end {
+  font-family: "Noto Serif JP", serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.mockup-body.back-mockup .m-line {
+  width: 40px;
+  height: 2px;
+  background: var(--gold);
+  margin: 1rem auto;
+}
+
+/* 3D Specs */
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: calc(var(--space) * 0.8);
+  font-size: var(--step--1);
+}
+
+.spec-table th,
+.spec-table td {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.spec-table th {
+  color: var(--gold);
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.spec-table td:first-child {
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.spec-table td:last-child {
+  color: var(--muted);
+}
+
+.spec-table tr:hover td {
+  background: rgba(201,162,39,0.04);
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: calc(var(--space) * 2) var(--space);
+  border-top: 1px solid var(--line);
+}
+
+.footer p {
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+.footer .brand {
+  font-family: "Noto Serif JP", serif;
+  color: var(--gold);
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Corner ornament */
+.corner-ornament {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  width: 32px;
+  height: 32px;
+  border-top: 1.5px solid var(--gold-mid);
+  border-right: 1.5px solid var(--gold-mid);
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.6;
+}
+
+.corner-ornament::before {
+  content: "";
+  position: absolute;
+  bottom: -36px;
+  right: 0;
+  width: 1.5px;
+  height: 36px;
+  background: var(--gold-mid);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .type-row { flex-direction: column; gap: 0.3rem; }
+  .type-meta { text-align: left; margin-left: 0; }
+  .mockup-body.compare-mockup .compare-row { grid-template-columns: 1fr; }
+}
+
+@media print {
+  body { background: #fff; color: #1a1a2e; }
+  .hero { min-height: auto; padding: 3rem 1rem; }
+  .section-alt { background: #f5f5f5; }
+  .mockup-card { break-inside: avoid; }
+}
+
+@page { size: A4; margin: 15mm; }
+</style>
+</head>
+<body>
+
+<div class="corner-ornament"></div>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-label">Design Proposal</div>
+  <h1>3Dブック デザイン提案書<span>プログラム言語とマークダウン記法</span></h1>
+  <div class="hero-line"></div>
+  <p class="hero-desc">
+    Three.jsを用いたインタラクティブ3Dブックのビジュアルデザイン、タイポグラフィ、カラーシステム、ページレイアウトの総合的な提案
+  </p>
+  <div class="scroll-hint">SCROLL</div>
+</header>
+
+<!-- Concept -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2>デザインコンセプト</h2>
+  </div>
+  <p>
+    本企画の3Dブックは、「紙の本の温かみと「デジタルの可能性」を両立させることを目指します。ページをめくるという物理的な行為をWeb上で再現しつつ、コードブロックのシンタックスハイライトやマークダウンの対比表示など、デジタルならではの情報設計を盛り込みます。
+  </p>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="icon">&#9776;</div>
+      <h4>紙の質感</h4>
+      <p>アイボリー紙の温かな色合いと、ページ端の微妙な影。綴じ目の奥行きをCSSとWebGLで表現します。</p>
+    </div>
+    <div class="concept-card">
+      <div class="icon">&#8634;</div>
+      <h4>3Dインタラクション</h4>
+      <p>ページめくりは物理ベースの回転と浮遊を組み合わせ、本の重みと紙のしなやかさを演出します。</p>
+    </div>
+    <div class="concept-card">
+      <div class="icon">&#60;&#47;&#62;</div>
+      <h4>コードの可読性</h4>
+      <p>シンタックスハイライト、等幅フォント、適切な行間。技術書としての機能性を最優先します。</p>
+    </div>
+    <div class="concept-card">
+      <div class="icon">&#8853;</div>
+      <h4>対比レイアウト</h4>
+      <p>マークダウン記法とその表示結果を左右に並べ、学習効果を最大化する視覚的な構造を採用します。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Palette -->
+<section class="section section-alt">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2>カラーパレット</h2>
+  </div>
+  <p>
+    深海のような濃紺を背景に、アンティークゴールドで書籍の格式を、ローズレッドでアクセントを効かせます。紙面はアイボリーで、長時間の読書に配慮した落ち着いたトーンです。
+  </p>
+  <div class="palette">
+    <div class="palette-item">
+      <div class="palette-swatch" style="background:#0c1020;" data-hex="#0c1020"></div>
+      <div class="palette-name">Deep Navy</div>
+      <div class="palette-role">背景、表紙ベース</div>
+    </div>
+    <div class="palette-item">
+      <div class="palette-swatch" style="background:#f5f0e8;" data-hex="#f5f0e8"></div>
+      <div class="palette-name">Ivory Paper</div>
+      <div class="palette-role">紙面、本文背景</div>
+    </div>
+    <div class="palette-item">
+      <div class="palette-swatch" style="background:#c9a227;" data-hex="#c9a227"></div>
+      <div class="palette-name">Antique Gold</div>
+      <div class="palette-role">装飾、章番号、見出し補助</div>
+    </div>
+    <div class="palette-item">
+      <div class="palette-swatch" style="background:#e94560;" data-hex="#e94560"></div>
+      <div class="palette-name">Rose Red</div>
+      <div class="palette-role">アクセント、リンク、コード強調</div>
+    </div>
+    <div class="palette-item">
+      <div class="palette-swatch" style="background:#1a1a2e;" data-hex="#1a1a2e"></div>
+      <div class="palette-name">Ink Navy</div>
+      <div class="palette-role">本文テキスト</div>
+    </div>
+    <div class="palette-item">
+      <div class="palette-swatch" style="background:#2d2d2d;" data-hex="#2d2d2d"></div>
+      <div class="palette-name">Code Black</div>
+      <div class="palette-role">コードブロック背景</div>
+    </div>
+  </div>
+</section>
+
+<!-- Typography -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2>タイポグラフィ</h2>
+  </div>
+  <p>
+    見出しには明朝体（Noto Serif JP）を採用し、書籍の重厚感と信頼性を演出します。本文はゴシック体（Noto Sans JP）で読みやすさを確保。コードには等幅フォントで一貫性を持たせます。
+  </p>
+  <div class="type-showcase">
+    <div class="type-row">
+      <div class="type-label">Display</div>
+      <div class="type-sample serif" style="font-size:1.8rem;font-weight:900;">プログラム言語</div>
+      <div class="type-meta">Noto Serif JP<br>Black / 2.5rem</div>
+    </div>
+    <div class="type-row">
+      <div class="type-label">Heading</div>
+      <div class="type-sample serif" style="font-size:1.3rem;font-weight:700;">主要なプログラム言語</div>
+      <div class="type-meta">Noto Serif JP<br>Bold / 1.5rem</div>
+    </div>
+    <div class="type-row">
+      <div class="type-label">Subheading</div>
+      <div class="type-sample sans" style="font-size:1rem;font-weight:700;color:var(--surface);">Pythonの特徴と構文</div>
+      <div class="type-meta">Noto Sans JP<br>Bold / 1.1rem</div>
+    </div>
+    <div class="type-row">
+      <div class="type-label">Body</div>
+      <div class="type-sample sans" style="font-size:0.95rem;">プログラム言語とは、コンピュータに指示を出すために人間が使う形式的な言語です。</div>
+      <div class="type-meta">Noto Sans JP<br>Regular / 1rem</div>
+    </div>
+    <div class="type-row">
+      <div class="type-label">Code</div>
+      <div class="type-sample" style="font-family:'Courier New',monospace;font-size:0.85rem;color:#66d9ef;background:#2d2d2d;padding:4px 10px;border-radius:4px;">def hello(): print("Hi")</div>
+      <div class="type-meta">Courier New<br>Regular / 0.85rem</div>
+    </div>
+    <div class="type-row">
+      <div class="type-label">Caption</div>
+      <div class="type-sample sans" style="font-size:0.8rem;color:var(--muted);">図1. マークダウン記法と表示結果の対比</div>
+      <div class="type-meta">Noto Sans JP<br>Regular / 0.8rem</div>
+    </div>
+  </div>
+</section>
+
+<!-- Page Layouts -->
+<section class="section section-alt">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2>ページレイアウト案</h2>
+  </div>
+  <p>
+    各ページタイプに応じたレイアウトを設計しました。表紙の格式、目次の構造化、本文の読みやすさ、対比レイアウトの学習効率、裏表紙の余韻。それぞれの役割に最適な情報設計です。
+  </p>
+  <div class="mockup-grid">
+    <!-- Cover -->
+    <div class="mockup-card">
+      <div class="mockup-header"><div class="mockup-dots"><span></span><span></span><span></span></div>表紙（Cover）</div>
+      <div class="mockup-body cover-mockup">
+        <div class="m-title">プログラム言語と<br>マークダウン記法</div>
+        <div class="m-line"></div>
+        <div class="m-sub">Three.js 3Dインタラクティブブック</div>
+      </div>
+    </div>
+    <!-- TOC -->
+    <div class="mockup-card">
+      <div class="mockup-header"><div class="mockup-dots"><span></span><span></span><span></span></div>目次（Table of Contents）</div>
+      <div class="mockup-body toc-mockup">
+        <h4>目次</h4>
+        <div class="toc-item"><span>プログラム言語とは</span><span class="toc-page">p.3</span></div>
+        <div class="toc-item"><span>主要なプログラム言語</span><span class="toc-page">p.5</span></div>
+        <div class="toc-item"><span>言語の分類と特徴</span><span class="toc-page">p.7</span></div>
+        <div class="toc-item"><span>マークダウン記法とは</span><span class="toc-page">p.9</span></div>
+        <div class="toc-item"><span>基本の書き方</span><span class="toc-page">p.11</span></div>
+      </div>
+    </div>
+    <!-- Content -->
+    <div class="mockup-card">
+      <div class="mockup-header"><div class="mockup-dots"><span></span><span></span><span></span></div>本文（Content Page）</div>
+      <div class="mockup-body content-mockup">
+        <h4>Python</h4>
+        <p>読みやすさを重視した言語。AI、データ分析、Web開発など幅広く使われています。</p>
+        <div class="m-code">
+<span class="k">def</span> <span class="f">hello</span>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="f">print</span>(<span class="s">"Hello, World!"</span>)
+        </div>
+        <h4>JavaScript</h4>
+        <p>Webページに動的な機能を追加する言語。フロントエンドからサーバーサイドまで対応。</p>
+      </div>
+    </div>
+    <!-- Compare -->
+    <div class="mockup-card">
+      <div class="mockup-header"><div class="mockup-dots"><span></span><span></span><span></span></div>対比レイアウト（Compare）</div>
+      <div class="mockup-body compare-mockup">
+        <h4 style="font-family:'Noto Serif JP',serif;font-size:1rem;color:var(--text);margin-bottom:0.8rem;border-bottom:2px solid var(--rose);padding-bottom:0.3rem;">見出しの書き方</h4>
+        <div class="compare-row">
+          <div class="compare-col">
+            <h5>Markdown</h5>
+            <div class="compare-box"># 見出し1<br>## 見出し2<br>### 見出し3</div>
+          </div>
+          <div class="compare-col">
+            <h5>Result</h5>
+            <div class="compare-result"><strong style="font-size:1.1rem;">見出し1</strong><br><strong>見出し2</strong><br>見出し3</div>
+          </div>
+        </div>
+        <h4 style="font-family:'Noto Serif JP',serif;font-size:1rem;color:var(--text);margin-bottom:0.8rem;border-bottom:2px solid var(--rose);padding-bottom:0.3rem;">強調とリスト</h4>
+        <div class="compare-row">
+          <div class="compare-col">
+            <h5>Markdown</h5>
+            <div class="compare-box">**太字** と *斜体*<br><br>- 項目1<br>- 項目2</div>
+          </div>
+          <div class="compare-col">
+            <h5>Result</h5>
+            <div class="compare-result"><strong>太字</strong> と <em>斜体</em><br><br>• 項目1<br>• 項目2</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Back -->
+    <div class="mockup-card">
+      <div class="mockup-header"><div class="mockup-dots"><span></span><span></span><span></span></div>裏表紙（Back Cover）</div>
+      <div class="mockup-body back-mockup">
+        <div class="m-end">おわり</div>
+        <div class="m-line"></div>
+        <div class="m-sub">プログラム言語とマークダウン記法の<br>基礎を学びました。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3D Specs -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2>3Dインタラクション設計</h2>
+  </div>
+  <p>
+    Three.jsとGSAPを組み合わせた実装方針です。ページは独立したメッシュとして管理し、回転と浮遊のアニメーションで物理的な「めくり」を演出します。
+  </p>
+  <h3>アニメーション仕様</h3>
+  <table class="spec-table">
+    <tr>
+      <th>項目</th>
+      <th>仕様</th>
+    </tr>
+    <tr>
+      <td>ページ回転</td>
+      <td>綴じ目をY軸に、rotation.y を 0 → -π に1.3秒で補間（ease: power2.inOut）</td>
+    </tr>
+    <tr>
+      <td>浮遊効果</td>
+      <td>ページめくり中、position.y を +0.15 上昇させて紙のしなりを演出</td>
+    </tr>
+    <tr>
+      <td>Zオーダー管理</td>
+      <td>めくり中のページを最前面（z = 0.1）、完了後は奥へ再配置</td>
+    </tr>
+    <tr>
+      <td>カメラワーク</td>
+      <td>マウス位置に応じた微細な視点移動（振幅 ±0.3）。パースを強調</td>
+    </tr>
+    <tr>
+      <td>影</td>
+      <td>DirectionalLight + SpotLight でページと地面にソフトシャウ</td>
+    </tr>
+    <tr>
+      <td>入力対応</td>
+      <td>ボタン、左右矢印キー、タッチスワイプ（50px閾値）の3方式</td>
+    </tr>
+  </table>
+
+  <h3>ページテクスチャ生成</h3>
+  <p>
+    すべてのページ内容は Canvas API で動的に描画します。これにより、コードのシンタックスハイライト、マークダウンの対比レイアウト、日本語の組版をWebGLテクスチャ上で正確に再現できます。フォト読み込み完了後にテクスチャを生成し、ローディング画面で進捗を表示します。
+  </p>
+</section>
+
+<!-- Implementation -->
+<section class="section section-alt">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2>実装ガイドライン</h2>
+  </div>
+  <p>
+    デザイン意図を損なわないための実装上の注意点です。ビジュアルとパフォーマンスのバランスを意識してください。
+  </p>
+  <div class="concept-grid" style="margin-top:1.5rem;">
+    <div class="concept-card">
+      <div class="icon">1</div>
+      <h4>フォントの先行読み込み</h4>
+      <p>document.fonts.ready で Noto Serif JP と Noto Sans JP の読み込みを待ってからCanvasテクスチャを生成します。文字化けを防ぐため必須です。</p>
+    </div>
+    <div class="concept-card">
+      <div class="icon">2</div>
+      <h4>セグメント数の最適化</h4>
+      <p>ページメッシュのセグメントは 64×64 を推奨。カール表現に十分な頂点数を確保しつつ、モバイルでは 32×32 にフォールバックします。</p>
+    </div>
+    <div class="concept-card">
+      <div class="icon">3</div>
+      <h4>テクスチャ解像度</h4>
+      <p>Canvasサイズは 512×700 を基準とします。Retina対応で devicePixelRatio を考慮しつつ、VRAM使用量とのバランスを取ります。</p>
+    </div>
+    <div class="concept-card">
+      <div class="icon">4</div>
+      <h4>アクセシビリティ</h4>
+      <p>prefers-reduced-motion に対応し、減速設定時はアニメーションを無効化。キーボードナビゲーションは必須です。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="brand">3Dブック デザイン提案書</div>
+  <p>プログラム言語とマークダウン記法 / Three.js + GSAP</p>
+</footer>
+
+</body>
+</html>

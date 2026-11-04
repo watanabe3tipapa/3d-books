@@ -1,0 +1,17 @@
+{
+  "name": "3d-books",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "contents/*.md を 3D 本棚と 3D ブックに自動製本する静的サイトジェネレーター",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "BOOKS_BASE_URL=../books node scripts/watch.mjs",
+    "watch": "node scripts/watch.mjs",
+    "preview": "BOOKS_BASE_URL=../books node scripts/build.mjs && node scripts/serve.mjs",
+    "clean": "rm -rf books site/index.html"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
