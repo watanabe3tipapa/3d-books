@@ -58,7 +58,7 @@ Drop a `.md` file into `contents/` and the build reads its headings as chapters,
 - **Front matter** — optional `title`, `subtitle`, `author`, `description`, `tags`, `accent`, and `order`. Missing values fall back to the H1 or body text
 - **Markdown parsing** — headings, paragraphs, lists (including task lists), tables, fenced code, blockquotes, and horizontal rules
 - **Chapters** — H2 becomes a chapter, while H3 and H4 are rendered as section headings. Introductory body text becomes "Introduction"
-- **Pagination** — estimates block height from text length, line count, and block type, then splits chapters into pages
+- **Pagination** — estimates block height from the actual CSS, then splits chapters into pages. Long tables split by row and long code blocks split by line across pages
 - **Generated faces** — cover, about, table of contents, body, ending, and back cover are assembled as book faces, with correct left/right placement in a spread
 
 ### 3D bookshelf and take-out animation
@@ -73,7 +73,7 @@ Drop a `.md` file into `contents/` and the build reads its headings as chapters,
 
 - **Page turning** — leaf-level `rotateY` flips from the cover through the back cover
 - **Controls** — `←` / `→`, `PageUp` / `PageDown`, swipe, previous/next buttons, and table-of-contents links
-- **Responsive** — below 760px the spread becomes a single page
+- **Responsive** — below 760px the spread becomes a single page. The page size stays fixed and the whole book scales to fit, so pagination is identical on every screen
 - **Typography** — chapter numbers, chapter headings, continuation labels, page numbers, tables, code, quotes, and task lists
 - **Accessibility** — keyboard controls, `aria-label`, and reduced motion via `prefers-reduced-motion`
 
@@ -319,7 +319,7 @@ Once connected, Vercel also builds from `contents/`, so pushing a manuscript upd
 
 - Markdown support is a subset needed for book layout. Images, footnotes, definition lists, and HTML blocks are not supported
 - Syntax highlighting is a simple, language-agnostic highlighter
-- Pagination is estimated from text length and block type. Very long code blocks or tables scroll inside the page
+- Pagination estimates height from the actual CSS. Long tables split by row and long code blocks split by line across pages
 - Fonts come from Google Fonts; offline, the pages use system fonts
 - The generation date is the build date. Rebuilding updates `manifest.json` and the date in each book
 - The sample manuscript set contains one book: `contents/mcp-a2a.md`

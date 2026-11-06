@@ -84,13 +84,17 @@ const BOOK_CSS = `
 
 .book {
   position: relative;
+  flex: none;
   width: 960px;
   height: 640px;
+  transform: scale(var(--book-scale, 1));
+  transform-origin: center center;
   transform-style: preserve-3d;
   transition: transform 0.9s cubic-bezier(0.645, 0.045, 0.355, 1);
   will-change: transform;
 }
-.book.closed:not(.single) { transform: translateX(-25%); }
+.book.single { width: 480px; }
+.book.closed:not(.single) { transform: translateX(-25%) scale(var(--book-scale, 1)); }
 
 .book-gutter {
   position: absolute;
@@ -166,6 +170,8 @@ const BOOK_CSS = `
 }
 .page-content::-webkit-scrollbar { width: 5px; }
 .page-content::-webkit-scrollbar-thumb { background: rgba(201, 162, 39, 0.45); border-radius: 3px; }
+/* 最後のブロックの余白で不要なスクロールバーが出ないようにする */
+.page-content > :last-child { margin-bottom: 0; }
 
 .page-number {
   position: absolute;
@@ -315,6 +321,7 @@ const BOOK_CSS = `
 }
 .page-content table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 0.7rem;
   line-height: 1.55;
@@ -325,13 +332,14 @@ const BOOK_CSS = `
   color: #f5f0e8;
   font-weight: 600;
   text-align: left;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 .page-content td {
   padding: 6px 8px;
   border-top: 1px solid #e6dccd;
   color: #2b3040;
   vertical-align: top;
+  overflow-wrap: anywhere;
 }
 .page-content tbody tr:nth-child(even) { background: rgba(201, 162, 39, 0.055); }
 
@@ -354,8 +362,7 @@ const BOOK_CSS = `
 .code-block pre {
   margin: 0;
   padding: 8px 13px 12px;
-  overflow-x: auto;
-  scrollbar-width: thin;
+  overflow-x: hidden;
 }
 .code-block code {
   display: block;
@@ -365,7 +372,8 @@ const BOOK_CSS = `
   font-family: var(--mono);
   font-size: 0.66rem;
   line-height: 1.55;
-  white-space: pre;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   tab-size: 2;
 }
 .tok-com { color: #7f8a7a; font-style: italic; }
@@ -791,9 +799,6 @@ const BOOK_CSS = `
   .reader-title { display: none; }
   .scene { padding: 60px 10px 90px; }
   .nav-controls { gap: 10px; padding: 7px 14px; }
-  .page-content { padding: 26px 24px 38px; }
-  .chapter-head h2 { font-size: 1.18rem; }
-  .page-content p { font-size: 0.82rem; }
   .reader-hint { display: none; }
   .intro-shelf { inset: 12vh 0 14vh; }
   .intro-caption { font-size: 0.58rem; letter-spacing: 0.16em; }
@@ -849,11 +854,13 @@ function renderBlocks(blocks) {
           return renderList(block);
         case "table":
           return renderTable(block);
-        case "code":
+        case "code": {
+          const label = escapeHtml(block.lang || "text") + (block.continued ? " · 続き" : "");
           return `<div class="code-block" data-lang="${escapeHtml(block.lang)}">
-            <div class="code-lang">${escapeHtml(block.lang || "text")}</div>
+            <div class="code-lang">${label}</div>
             <pre><code>${highlightCode(block.code)}</code></pre>
           </div>`;
+        }
         case "quote":
           return `<blockquote>${inline(block.text).replace(/\n/g, "<br>")}</blockquote>`;
         case "hr":
@@ -1070,17 +1077,18 @@ const READER_JS = `
   function layout() {
     const single = window.matchMedia("(max-width: 760px)").matches;
     book.classList.toggle("single", single);
-    let width;
-    let height;
-    if (single) {
-      width = Math.min(window.innerWidth * 0.9, 520);
-      height = Math.min(window.innerHeight * 0.76, 760, width / 0.72);
-    } else {
-      width = Math.min(960, window.innerWidth * 0.9, window.innerHeight * 0.78 * 1.5);
-      height = width / 1.5;
-    }
-    book.style.width = width + "px";
-    book.style.height = height + "px";
+    // 紙面は固定サイズのまま、画面に合わせて全体を拡大縮小する。
+    // これにより、どの画面幅でも 1 ページに入る文字量が変わらない。
+    const designWidth = single ? 480 : 960;
+    const designHeight = 640;
+    const compact = window.innerWidth <= 900;
+    const availableWidth = window.innerWidth - (compact ? 20 : 44);
+    const availableHeight = window.innerHeight - 150;
+    const scale = Math.max(
+      0.2,
+      Math.min(1, availableWidth / designWidth, availableHeight / designHeight)
+    );
+    book.style.setProperty("--book-scale", String(scale));
     update();
   }
 

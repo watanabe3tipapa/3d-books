@@ -580,13 +580,17 @@ button {
 
 .book {
   position: relative;
+  flex: none;
   width: 960px;
   height: 640px;
+  transform: scale(var(--book-scale, 1));
+  transform-origin: center center;
   transform-style: preserve-3d;
   transition: transform 0.9s cubic-bezier(0.645, 0.045, 0.355, 1);
   will-change: transform;
 }
-.book.closed:not(.single) { transform: translateX(-25%); }
+.book.single { width: 480px; }
+.book.closed:not(.single) { transform: translateX(-25%) scale(var(--book-scale, 1)); }
 
 .book-gutter {
   position: absolute;
@@ -662,6 +666,8 @@ button {
 }
 .page-content::-webkit-scrollbar { width: 5px; }
 .page-content::-webkit-scrollbar-thumb { background: rgba(201, 162, 39, 0.45); border-radius: 3px; }
+/* 最後のブロックの余白で不要なスクロールバーが出ないようにする */
+.page-content > :last-child { margin-bottom: 0; }
 
 .page-number {
   position: absolute;
@@ -811,6 +817,7 @@ button {
 }
 .page-content table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 0.7rem;
   line-height: 1.55;
@@ -821,13 +828,14 @@ button {
   color: #f5f0e8;
   font-weight: 600;
   text-align: left;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 .page-content td {
   padding: 6px 8px;
   border-top: 1px solid #e6dccd;
   color: #2b3040;
   vertical-align: top;
+  overflow-wrap: anywhere;
 }
 .page-content tbody tr:nth-child(even) { background: rgba(201, 162, 39, 0.055); }
 
@@ -850,8 +858,7 @@ button {
 .code-block pre {
   margin: 0;
   padding: 8px 13px 12px;
-  overflow-x: auto;
-  scrollbar-width: thin;
+  overflow-x: hidden;
 }
 .code-block code {
   display: block;
@@ -861,7 +868,8 @@ button {
   font-family: var(--mono);
   font-size: 0.66rem;
   line-height: 1.55;
-  white-space: pre;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   tab-size: 2;
 }
 .tok-com { color: #7f8a7a; font-style: italic; }
@@ -1287,9 +1295,6 @@ button {
   .reader-title { display: none; }
   .scene { padding: 60px 10px 90px; }
   .nav-controls { gap: 10px; padding: 7px 14px; }
-  .page-content { padding: 26px 24px 38px; }
-  .chapter-head h2 { font-size: 1.18rem; }
-  .page-content p { font-size: 0.82rem; }
   .reader-hint { display: none; }
   .intro-shelf { inset: 12vh 0 14vh; }
   .intro-caption { font-size: 0.58rem; letter-spacing: 0.16em; }
@@ -1364,7 +1369,7 @@ button {
         <div class="cover-line" aria-hidden="true"></div>
         <p class="cover-sub">マルチエージェント時代の接続プロトコル</p>
         <div class="cover-author">Notes - Tech</div>
-        <div class="cover-meta"><span>44 PAGES</span><span>·</span><span>2026.11.04</span></div>
+        <div class="cover-meta"><span>60 PAGES</span><span>·</span><span>2026.11.06</span></div>
       </div>
     </div>
         
@@ -1376,8 +1381,8 @@ button {
         <dl class="about-meta">
           <dt>原稿</dt><dd>contents/mcp-a2a.md</dd>
           <dt>製本</dt><dd>books/mcp-a2a.html</dd>
-          <dt>ページ</dt><dd>44 pages</dd>
-          <dt>生成</dt><dd>2026.11.04</dd>
+          <dt>ページ</dt><dd>60 pages</dd>
+          <dt>生成</dt><dd>2026.11.06</dd>
           <dt>公開</dt><dd>Vercel / GitHub Pages</dd>
         </dl>
         <p class="about-note">この本は <strong>contents/*.md</strong> から自動製本されました。Markdown を置くと、本棚と 3D ブックが更新されます。</p>
@@ -1399,26 +1404,26 @@ button {
         <span class="toc-num">02</span>
         <span class="toc-label">MCP（Model Context Protocol）詳細</span>
         <span class="toc-page">p.05</span>
-      </li><li data-face="13" tabindex="0" role="button">
+      </li><li data-face="17" tabindex="0" role="button">
         <span class="toc-num">03</span>
         <span class="toc-label">A2A（Agent-to-Agent Protocol）詳細</span>
-        <span class="toc-page">p.14</span>
-      </li><li data-face="19" tabindex="0" role="button">
+        <span class="toc-page">p.18</span>
+      </li><li data-face="25" tabindex="0" role="button">
         <span class="toc-num">04</span>
         <span class="toc-label">MCP vs A2A 比較表</span>
-        <span class="toc-page">p.20</span>
-      </li><li data-face="21" tabindex="0" role="button">
+        <span class="toc-page">p.26</span>
+      </li><li data-face="29" tabindex="0" role="button">
         <span class="toc-num">05</span>
         <span class="toc-label">実装ハンズオン</span>
-        <span class="toc-page">p.22</span>
-      </li><li data-face="40" tabindex="0" role="button">
+        <span class="toc-page">p.30</span>
+      </li><li data-face="52" tabindex="0" role="button">
         <span class="toc-num">06</span>
         <span class="toc-label">実践ユースケース</span>
-        <span class="toc-page">p.41</span>
-      </li><li data-face="44" tabindex="0" role="button">
+        <span class="toc-page">p.53</span>
+      </li><li data-face="57" tabindex="0" role="button">
         <span class="toc-num">07</span>
         <span class="toc-label">参考リンク</span>
-        <span class="toc-page">p.45</span>
+        <span class="toc-page">p.58</span>
       </li></ul>
         <p class="toc-foot">← → キー、スワイプ、下のボタンでもページをめくれます。</p>
       </div>
@@ -1437,7 +1442,6 @@ button {
         </header>
         <p><strong>MCP（Model Context Protocol）</strong> は AI が外部ツールやデータにアクセスするための規格（「AIの手」）、<strong>A2A（Agent-to-Agent Protocol）</strong> は AI エージェント同士がタスクを分担・協調するための規格（「AIの口」）。両者は対立するものではなく、異なるレイヤーを補完する。</p>
 <p>マルチエージェント時代の全体像としては、営業支援AIエージェントが CRM のデータを MCP 経由で取得し、その分析結果を A2A 経由でレポート作成AIエージェントに渡す、といった連携が可能。各 AI エージェントは MCP で必要なツールやデータにアクセスしつつ、A2A で他のエージェントと協調して複雑なタスクを遂行する。</p>
-<hr>
       </div>
       <span class="page-number">04</span>
     </div>
@@ -1460,8 +1464,6 @@ button {
             <div class="code-lang">text</div>
             <pre><code>Host (Claude Desktop, Cursor, カスタムAgent) → Client → Server (Tool/Data提供)</code></pre>
           </div>
-<ul><li data-depth="0"><strong>Host</strong>: アプリケーション全体を所有（Claude Desktop, カスタムエージェントなど）</li><li data-depth="0"><strong>Client</strong>: Host 内部で各 MCP Server との接続を1対1で管理</li><li data-depth="0"><strong>Server</strong>: ツール・リソース・プロンプトを公開するプロセス</li></ul>
-<h3>3つのプリミティブ</h3>
       </div>
       <span class="page-number">05</span>
     </div>
@@ -1476,10 +1478,9 @@ button {
           <h2>MCP（Model Context Protocol）詳細</h2>
           <span class="continued">— 続き —</span>
         </header>
-        <div class="table-wrap"><table><thead><tr><th>プリミティブ</th><th>役割</th><th>代表的なユースケース</th></tr></thead><tbody><tr><td><strong>Tools</strong></td><td>AIが呼び出せる関数（書き込み可）</td><td>DB検索、API呼び出し、ファイル操作</td></tr><tr><td><strong>Resources</strong></td><td>URIで識別される読み取り専用データ</td><td>ドキュメント参照、設定ファイル読取</td></tr><tr><td><strong>Prompts</strong></td><td>パラメータ化されたテンプレート指示</td><td>定型処理の指示テンプレート</td></tr></tbody></table></div>
-<h3>トランスポート</h3>
-<div class="table-wrap"><table><thead><tr><th>方式</th><th>用途</th><th>接続形態</th><th>状態</th></tr></thead><tbody><tr><td><strong>stdio</strong></td><td>ローカル開発</td><td>親プロセスが子プロセスとして起動、stdin/stdoutでJSON-RPC</td><td>現行（変更なし）</td></tr><tr><td><strong>Streamable HTTP</strong></td><td>リモート本番</td><td>HTTP POSTで単一エンドポイントに送信、<code>text/event-stream</code>でストリーム</td><td><strong>推奨（</strong> <code>Mcp-Method</code> / <code>Mcp-Name</code> <strong>ヘッダ必須）</strong></td></tr><tr><td>HTTP+SSE（旧）</td><td>互換用</td><td>非推奨。最低12ヶ月の非推奨期間後削除予定</td><td>❌ 非推奨</td></tr></tbody></table></div>
-<h3>公式SDK</h3>
+        <ul><li data-depth="0"><strong>Host</strong>: アプリケーション全体を所有（Claude Desktop, カスタムエージェントなど）</li><li data-depth="0"><strong>Client</strong>: Host 内部で各 MCP Server との接続を1対1で管理</li><li data-depth="0"><strong>Server</strong>: ツール・リソース・プロンプトを公開するプロセス</li></ul>
+<h3>3つのプリミティブ</h3>
+<div class="table-wrap"><table><thead><tr><th>プリミティブ</th><th>役割</th><th>代表的なユースケース</th></tr></thead><tbody><tr><td><strong>Tools</strong></td><td>AIが呼び出せる関数（書き込み可）</td><td>DB検索、API呼び出し、ファイル操作</td></tr><tr><td><strong>Resources</strong></td><td>URIで識別される読み取り専用データ</td><td>ドキュメント参照、設定ファイル読取</td></tr></tbody></table></div>
       </div>
       <span class="page-number">06</span>
     </div>
@@ -1496,8 +1497,9 @@ button {
           <h2>MCP（Model Context Protocol）詳細</h2>
           <span class="continued">— 続き —</span>
         </header>
-        <div class="table-wrap"><table><thead><tr><th>言語</th><th>パッケージ</th><th>備考</th></tr></thead><tbody><tr><td>Python</td><td><code>mcp</code>（旧 <code>fastmcp</code> は <code>MCPServer</code> に統合）</td><td>v2 正式版。<code>MCPServer</code> デコレータベース、新旧両プロトコルを自動ネゴシエーション</td></tr><tr><td>TypeScript</td><td><code>@modelcontextprotocol/server</code> / <code>@modelcontextprotocol/client</code></td><td>v2 でサーバ・クライアントパッケージ分割。デフォルトは2025プロトコル、オプトインで2026-07-28</td></tr><tr><td>Go</td><td><code>@modelcontextprotocol/go</code></td><td>Tier1 SDK、<code>StreamableHTTPOptions.Stateless = true</code> で2026-07-28</td></tr><tr><td>C#</td><td><code>@modelcontextprotocol/csharp-sdk</code></td><td>Tier1 SDK、HTTPトランスポートはデフォルトで2026-07-28</td></tr><tr><td>Rust / Java / Kotlin / Ruby / Swift</td><td>コミュニティSDK</td><td>各言語対応</td></tr></tbody></table></div>
-<h3>2025-11-25 までのライフサイクル（旧）</h3>
+        <div class="table-wrap"><table><thead><tr><th>プリミティブ</th><th>役割</th><th>代表的なユースケース</th></tr></thead><tbody><tr><td><strong>Prompts</strong></td><td>パラメータ化されたテンプレート指示</td><td>定型処理の指示テンプレート</td></tr></tbody></table></div>
+<h3>トランスポート</h3>
+<div class="table-wrap"><table><thead><tr><th>方式</th><th>用途</th><th>接続形態</th><th>状態</th></tr></thead><tbody><tr><td><strong>stdio</strong></td><td>ローカル開発</td><td>親プロセスが子プロセスとして起動、stdin/stdoutでJSON-RPC</td><td>現行（変更なし）</td></tr><tr><td><strong>Streamable HTTP</strong></td><td>リモート本番</td><td>HTTP POSTで単一エンドポイントに送信、<code>text/event-stream</code>でストリーム</td><td><strong>推奨（</strong> <code>Mcp-Method</code> / <code>Mcp-Name</code> <strong>ヘッダ必須）</strong></td></tr></tbody></table></div>
       </div>
       <span class="page-number">07</span>
     </div>
@@ -1512,10 +1514,9 @@ button {
           <h2>MCP（Model Context Protocol）詳細</h2>
           <span class="continued">— 続き —</span>
         </header>
-        <ol><li data-depth="0"><strong>initialize</strong> — <code>protocolVersion</code> と <code>capabilities</code> を交換</li><li data-depth="0"><strong>initialized</strong> — <code>notifications/initialized</code> 通知でセッション開始</li><li data-depth="0"><strong>discovery</strong> — <code>tools/list</code>, <code>resources/list</code>, <code>prompts/list</code> で公開一覧取得</li><li data-depth="0"><strong>invocation</strong> — <code>tools/call</code> でツール実行、結果を content array で受取</li><li data-depth="0"><strong>shutdown</strong> — stdio は stdin クローズ、HTTP は DELETE でセッション終了</li></ol>
-<h3>2026-07-28 での変更点（本日リリース）</h3>
-<p>プロトコル開始以来最大の改訂。6つの SEP（Specification Enhancement Proposal）で構成される。</p>
-<h4>1. ステートレスコア（SEP-2575 / SEP-2567）— <strong>破壊的変更</strong></h4>
+        <div class="table-wrap"><table><thead><tr><th>方式</th><th>用途</th><th>接続形態</th><th>状態</th></tr></thead><tbody><tr><td>HTTP+SSE（旧）</td><td>互換用</td><td>非推奨。最低12ヶ月の非推奨期間後削除予定</td><td>❌ 非推奨</td></tr></tbody></table></div>
+<h3>公式SDK</h3>
+<div class="table-wrap"><table><thead><tr><th>言語</th><th>パッケージ</th><th>備考</th></tr></thead><tbody><tr><td>Python</td><td><code>mcp</code>（旧 <code>fastmcp</code> は <code>MCPServer</code> に統合）</td><td>v2 正式版。<code>MCPServer</code> デコレータベース、新旧両プロトコルを自動ネゴシエーション</td></tr><tr><td>TypeScript</td><td><code>@modelcontextprotocol/server</code> / <code>@modelcontextprotocol/client</code></td><td>v2 でサーバ・クライアントパッケージ分割。デフォルトは2025プロトコル、オプトインで2026-07-28</td></tr></tbody></table></div>
       </div>
       <span class="page-number">08</span>
     </div>
@@ -1532,9 +1533,46 @@ button {
           <h2>MCP（Model Context Protocol）詳細</h2>
           <span class="continued">— 続き —</span>
         </header>
-        <ul><li data-depth="0"><strong><code>initialize</code> / <code>initialized</code> ハンドシェイク廃止</strong>（SEP-2575）</li><li data-depth="1">代わりに毎リクエストの <code>_meta</code> に <code>protocolVersion</code> / <code>clientInfo</code> / <code>clientCapabilities</code> を含める</li><li data-depth="1">サーバーは新 RPC <code>server/discover</code> を実装必須。クライアントはこれを叩いて能力を事前取得</li><li data-depth="0"><strong><code>Mcp-Session-Id</code> ヘッダ廃止</strong>（SEP-2567）</li><li data-depth="1">接続依存のルーティング不要 → <strong>ラウンドロビンロードバランサで水平スケール可能に</strong></li><li data-depth="1">ステートフルな処理が必要な場合はアプリケーション側で明示的なハンドルを発行・管理</li></ul>
+        <div class="table-wrap"><table><thead><tr><th>言語</th><th>パッケージ</th><th>備考</th></tr></thead><tbody><tr><td>Go</td><td><code>@modelcontextprotocol/go</code></td><td>Tier1 SDK、<code>StreamableHTTPOptions.Stateless = true</code> で2026-07-28</td></tr><tr><td>C#</td><td><code>@modelcontextprotocol/csharp-sdk</code></td><td>Tier1 SDK、HTTPトランスポートはデフォルトで2026-07-28</td></tr><tr><td>Rust / Java / Kotlin / Ruby / Swift</td><td>コミュニティSDK</td><td>各言語対応</td></tr></tbody></table></div>
+<h3>2025-11-25 までのライフサイクル（旧）</h3>
+<ol><li data-depth="0"><strong>initialize</strong> — <code>protocolVersion</code> と <code>capabilities</code> を交換</li></ol>
       </div>
       <span class="page-number">09</span>
+    </div>
+        
+    <div class="page-face page-back">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">02</span>
+            <span class="chapter-kicker">CHAPTER 02 / 07</span>
+          </div>
+          <h2>MCP（Model Context Protocol）詳細</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <ol><li data-depth="0"><strong>initialized</strong> — <code>notifications/initialized</code> 通知でセッション開始</li><li data-depth="0"><strong>discovery</strong> — <code>tools/list</code>, <code>resources/list</code>, <code>prompts/list</code> で公開一覧取得</li><li data-depth="0"><strong>invocation</strong> — <code>tools/call</code> でツール実行、結果を content array で受取</li><li data-depth="0"><strong>shutdown</strong> — stdio は stdin クローズ、HTTP は DELETE でセッション終了</li></ol>
+<h3>2026-07-28 での変更点（本日リリース）</h3>
+<p>プロトコル開始以来最大の改訂。6つの SEP（Specification Enhancement Proposal）で構成される。</p>
+      </div>
+      <span class="page-number">10</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="5">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">02</span>
+            <span class="chapter-kicker">CHAPTER 02 / 07</span>
+          </div>
+          <h2>MCP（Model Context Protocol）詳細</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <h4>1. ステートレスコア（SEP-2575 / SEP-2567）— <strong>破壊的変更</strong></h4>
+<ul><li data-depth="0"><strong><code>initialize</code> / <code>initialized</code> ハンドシェイク廃止</strong>（SEP-2575）</li><li data-depth="1">代わりに毎リクエストの <code>_meta</code> に <code>protocolVersion</code> / <code>clientInfo</code> / <code>clientCapabilities</code> を含める</li><li data-depth="1">サーバーは新 RPC <code>server/discover</code> を実装必須。クライアントはこれを叩いて能力を事前取得</li><li data-depth="0"><strong><code>Mcp-Session-Id</code> ヘッダ廃止</strong>（SEP-2567）</li><li data-depth="1">接続依存のルーティング不要 → <strong>ラウンドロビンロードバランサで水平スケール可能に</strong></li><li data-depth="1">ステートフルな処理が必要な場合はアプリケーション側で明示的なハンドルを発行・管理</li></ul>
+      </div>
+      <span class="page-number">11</span>
     </div>
         
     <div class="page-face page-back">
@@ -1564,47 +1602,6 @@ button {
   }
 }</code></pre>
           </div>
-<h4>2. ルーティング可能なヘッダ（SEP-2243）</h4>
-<ul><li data-depth="0">Streamable HTTP で <code>Mcp-Method</code> と <code>Mcp-Name</code> ヘッダが<strong>必須</strong>に</li><li data-depth="0">ロードバランサ・ゲートウェイがボディをパースせずにルーティング・レート制限可能に</li></ul>
-<h4>3. レスポンスキャッシュ（SEP-2549）</h4>
-      </div>
-      <span class="page-number">10</span>
-    </div>
-      </div>
-      <div class="page" data-leaf="5">
-        
-    <div class="page-face page-front">
-      <div class="page-content">
-        <header class="chapter-head">
-          <div class="chapter-meta">
-            <span class="chapter-num">02</span>
-            <span class="chapter-kicker">CHAPTER 02 / 07</span>
-          </div>
-          <h2>MCP（Model Context Protocol）詳細</h2>
-          <span class="continued">— 続き —</span>
-        </header>
-        <ul><li data-depth="0"><code>tools/list</code> / <code>resources/list</code> / <code>prompts/list</code> / <code>resources/read</code> / <code>resources/templates/list</code> の結果に <code>ttlMs</code>（有効期限ミリ秒）と <code>cacheScope</code>（<code>public</code> / <code>private</code>）を追加</li><li data-depth="0">HTTP <code>Cache-Control</code> に着想を得た設計。<code>listChanged</code> 通知と併用</li></ul>
-<h4>4. MRTR（Multi Round-Trip Requests）（SEP-2322）</h4>
-<ul><li data-depth="0">サーバー開始のコール（sampling, elicitation）を置き換え</li><li data-depth="0">サーバーは <code>InputRequiredResult</code> に <code>inputRequests</code> + <code>requestState</code> を含めて返す</li><li data-depth="0">クライアントが入力を収集し、元の呼び出しに <code>inputResponses</code> を付けて再送</li></ul>
-<h4>5. Tasks 拡張（SEP-2663）</h4>
-      </div>
-      <span class="page-number">11</span>
-    </div>
-        
-    <div class="page-face page-back">
-      <div class="page-content">
-        <header class="chapter-head">
-          <div class="chapter-meta">
-            <span class="chapter-num">02</span>
-            <span class="chapter-kicker">CHAPTER 02 / 07</span>
-          </div>
-          <h2>MCP（Model Context Protocol）詳細</h2>
-          <span class="continued">— 続き —</span>
-        </header>
-        <ul><li data-depth="0"><code>2025-11-25</code> で実験的にコア機能だった Tasks を<strong>拡張</strong>として正式に再設計</li><li data-depth="0"><code>tasks/result</code>（ブロッキング）→ <code>tasks/get</code>（ポーリング）に変更</li><li data-depth="0"><code>tasks/list</code> は削除、<code>tasks/update</code> を追加</li></ul>
-<h4>6. MCP Apps（SEP-1865）</h4>
-<ul><li data-depth="0">サーバーが<strong>インタラクティブなHTML UI</strong>を配信できる新しい拡張</li><li data-depth="0">ホストはサンドボックス化されたiframeでレンダリング</li><li data-depth="0">ツールは事前にUIテンプレートを宣言し、ホストはプリフェッチ・キャッシュ・セキュリティレビュー可能</li></ul>
-<h4>7. 非推奨化ポリシー（SEP-2596 / SEP-2577）</h4>
       </div>
       <span class="page-number">12</span>
     </div>
@@ -1621,12 +1618,84 @@ button {
           <h2>MCP（Model Context Protocol）詳細</h2>
           <span class="continued">— 続き —</span>
         </header>
-        <ul><li data-depth="0">機能は最低 <strong>12ヶ月</strong>の非推奨期間を経て削除</li><li data-depth="0"><strong>非推奨（最低12ヶ月維持）</strong>: Roots / Sampling / Logging / HTTP+SSE トランスポート</li><li data-depth="0">後方互換性: SDK v2 は新旧両プロトコルを自動ネゴシエーション（Python v2 サーバは1エンドポイントで両対応）</li></ul>
-<h4>2026-07-28 への移行チェックリスト</h4>
-<div class="table-wrap"><table><thead><tr><th>対応</th><th>内容</th></tr></thead><tbody><tr><td>SDK更新</td><td>v2 系にアップデート（Python: <code>mcp</code> v2 / TypeScript: <code>@modelcontextprotocol/server</code>）</td></tr><tr><td><code>initialize</code>削除</td><td><code>_meta</code> からプロトコルバージョン・クライアント情報を読むよう変更</td></tr><tr><td><code>server/discover</code>実装</td><td>新 RPC を実装（必須）</td></tr><tr><td><code>Mcp-Session-Id</code>依存排除</td><td>セッションIDキーの状態管理をアプリケーションレベルの明示的ハンドルに移行</td></tr><tr><td><code>ttlMs</code>/<code>cacheScope</code>付与</td><td><code>tools/list</code>, <code>resources/list</code> 等の結果に付与</td></tr><tr><td>ヘッダ検証</td><td><code>Mcp-Method</code>, <code>Mcp-Name</code> ヘッダの検証ロジック追加</td></tr><tr><td>ロードバランサ設定</td><td>スティッキーセッション不要に。<code>clientAffinityEnabled: false</code></td></tr></tbody></table></div>
-<hr>
+        <h4>2. ルーティング可能なヘッダ（SEP-2243）</h4>
+<ul><li data-depth="0">Streamable HTTP で <code>Mcp-Method</code> と <code>Mcp-Name</code> ヘッダが<strong>必須</strong>に</li><li data-depth="0">ロードバランサ・ゲートウェイがボディをパースせずにルーティング・レート制限可能に</li></ul>
+<h4>3. レスポンスキャッシュ（SEP-2549）</h4>
+<ul><li data-depth="0"><code>tools/list</code> / <code>resources/list</code> / <code>prompts/list</code> / <code>resources/read</code> / <code>resources/templates/list</code> の結果に <code>ttlMs</code>（有効期限ミリ秒）と <code>cacheScope</code>（<code>public</code> / <code>private</code>）を追加</li><li data-depth="0">HTTP <code>Cache-Control</code> に着想を得た設計。<code>listChanged</code> 通知と併用</li></ul>
       </div>
       <span class="page-number">13</span>
+    </div>
+        
+    <div class="page-face page-back">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">02</span>
+            <span class="chapter-kicker">CHAPTER 02 / 07</span>
+          </div>
+          <h2>MCP（Model Context Protocol）詳細</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <h4>4. MRTR（Multi Round-Trip Requests）（SEP-2322）</h4>
+<ul><li data-depth="0">サーバー開始のコール（sampling, elicitation）を置き換え</li><li data-depth="0">サーバーは <code>InputRequiredResult</code> に <code>inputRequests</code> + <code>requestState</code> を含めて返す</li><li data-depth="0">クライアントが入力を収集し、元の呼び出しに <code>inputResponses</code> を付けて再送</li></ul>
+<h4>5. Tasks 拡張（SEP-2663）</h4>
+<ul><li data-depth="0"><code>2025-11-25</code> で実験的にコア機能だった Tasks を<strong>拡張</strong>として正式に再設計</li><li data-depth="0"><code>tasks/result</code>（ブロッキング）→ <code>tasks/get</code>（ポーリング）に変更</li></ul>
+      </div>
+      <span class="page-number">14</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="7">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">02</span>
+            <span class="chapter-kicker">CHAPTER 02 / 07</span>
+          </div>
+          <h2>MCP（Model Context Protocol）詳細</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <ul><li data-depth="0"><code>tasks/list</code> は削除、<code>tasks/update</code> を追加</li></ul>
+<h4>6. MCP Apps（SEP-1865）</h4>
+<ul><li data-depth="0">サーバーが<strong>インタラクティブなHTML UI</strong>を配信できる新しい拡張</li><li data-depth="0">ホストはサンドボックス化されたiframeでレンダリング</li><li data-depth="0">ツールは事前にUIテンプレートを宣言し、ホストはプリフェッチ・キャッシュ・セキュリティレビュー可能</li></ul>
+      </div>
+      <span class="page-number">15</span>
+    </div>
+        
+    <div class="page-face page-back">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">02</span>
+            <span class="chapter-kicker">CHAPTER 02 / 07</span>
+          </div>
+          <h2>MCP（Model Context Protocol）詳細</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <h4>7. 非推奨化ポリシー（SEP-2596 / SEP-2577）</h4>
+<ul><li data-depth="0">機能は最低 <strong>12ヶ月</strong>の非推奨期間を経て削除</li><li data-depth="0"><strong>非推奨（最低12ヶ月維持）</strong>: Roots / Sampling / Logging / HTTP+SSE トランスポート</li><li data-depth="0">後方互換性: SDK v2 は新旧両プロトコルを自動ネゴシエーション（Python v2 サーバは1エンドポイントで両対応）</li></ul>
+<h4>2026-07-28 への移行チェックリスト</h4>
+<div class="table-wrap"><table><thead><tr><th>対応</th><th>内容</th></tr></thead><tbody><tr><td>SDK更新</td><td>v2 系にアップデート（Python: <code>mcp</code> v2 / TypeScript: <code>@modelcontextprotocol/server</code>）</td></tr></tbody></table></div>
+      </div>
+      <span class="page-number">16</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="8">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">02</span>
+            <span class="chapter-kicker">CHAPTER 02 / 07</span>
+          </div>
+          <h2>MCP（Model Context Protocol）詳細</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <div class="table-wrap"><table><thead><tr><th>対応</th><th>内容</th></tr></thead><tbody><tr><td><code>initialize</code>削除</td><td><code>_meta</code> からプロトコルバージョン・クライアント情報を読むよう変更</td></tr><tr><td><code>server/discover</code>実装</td><td>新 RPC を実装（必須）</td></tr><tr><td><code>Mcp-Session-Id</code>依存排除</td><td>セッションIDキーの状態管理をアプリケーションレベルの明示的ハンドルに移行</td></tr><tr><td><code>ttlMs</code>/<code>cacheScope</code>付与</td><td><code>tools/list</code>, <code>resources/list</code> 等の結果に付与</td></tr><tr><td>ヘッダ検証</td><td><code>Mcp-Method</code>, <code>Mcp-Name</code> ヘッダの検証ロジック追加</td></tr><tr><td>ロードバランサ設定</td><td>スティッキーセッション不要に。<code>clientAffinityEnabled: false</code></td></tr></tbody></table></div>
+      </div>
+      <span class="page-number">17</span>
     </div>
         
     <div class="page-face page-back">
@@ -1645,114 +1714,8 @@ button {
             <div class="code-lang">text</div>
             <pre><code>User → Client Agent → [A2A JSON-RPC over HTTP] → Remote Agent (Server)
                                                     │
-                                           Agent Card で発見
-                                           (/.well-known/agent-card.json)</code></pre>
+                                           Agent Card で発見</code></pre>
           </div>
-      </div>
-      <span class="page-number">14</span>
-    </div>
-      </div>
-      <div class="page" data-leaf="7">
-        
-    <div class="page-face page-front">
-      <div class="page-content">
-        <header class="chapter-head">
-          <div class="chapter-meta">
-            <span class="chapter-num">03</span>
-            <span class="chapter-kicker">CHAPTER 03 / 07</span>
-          </div>
-          <h2>A2A（Agent-to-Agent Protocol）詳細</h2>
-          <span class="continued">— 続き —</span>
-        </header>
-        <ul><li data-depth="0"><strong>Client Agent</strong>: タスクを委譲する側（orchestrator）</li><li data-depth="0"><strong>Remote Agent</strong>: タスクを受け取って実行する側（server）</li><li data-depth="0"><strong>Agent Card</strong>: エージェントの能力・連絡先・認証方式を記述したJSON（<code>/.well-known/agent-card.json</code>）</li></ul>
-<h3>主要コンポーネント</h3>
-<div class="table-wrap"><table><thead><tr><th>コンポーネント</th><th>役割</th></tr></thead><tbody><tr><td><strong>AgentCard</strong></td><td>エージェントの名刺。名前、説明、バージョン、スキル一覧、認証方式、対応メディアタイプを宣言</td></tr><tr><td><strong>AgentSkill</strong></td><td>個別の能力単位。id, name, description, tags, examples を持つ</td></tr><tr><td><strong>AgentExecutor</strong></td><td>タスク実行を司る抽象クラス。<code>execute()</code> と <code>cancel()</code> を実装</td></tr><tr><td><strong>TaskStore</strong></td><td>タスクの状態を保持。メモリ（開発用） or DB（本番用）</td></tr><tr><td><strong>Task</strong></td><td>タスクオブジェクト。状態遷移と成果物（Artifact）を管理</td></tr></tbody></table></div>
-<h3>タスクライフサイクル</h3>
-      </div>
-      <span class="page-number">15</span>
-    </div>
-        
-    <div class="page-face page-back">
-      <div class="page-content">
-        <header class="chapter-head">
-          <div class="chapter-meta">
-            <span class="chapter-num">03</span>
-            <span class="chapter-kicker">CHAPTER 03 / 07</span>
-          </div>
-          <h2>A2A（Agent-to-Agent Protocol）詳細</h2>
-          <span class="continued">— 続き —</span>
-        </header>
-        <div class="code-block" data-lang="">
-            <div class="code-lang">text</div>
-            <pre><code>submitted → working → completed
-                  ↘ input-required → 再開 → completed
-                  ↘ failed
-                  ↘ canceled</code></pre>
-          </div>
-<ul><li data-depth="0">A2A は<strong>ステートフル</strong>なタスクモデル（MCP と最も異なる点）</li><li data-depth="0">タスクは永続的なオブジェクトで、polling / SSE / Webhook で状態変化を通知可能</li><li data-depth="0"><code>input-required</code> 状態によりマルチターン対話が可能</li></ul>
-<h3>トランスポート</h3>
-<div class="table-wrap"><table><thead><tr><th>方式</th><th>用途</th></tr></thead><tbody><tr><td>JSON-RPC over HTTP</td><td>基本。リクエスト/レスポンス型</td></tr><tr><td>SSE（Server-Sent Events）</td><td>ストリーミング応答。リアルタイムな進捗通知</td></tr><tr><td>Push Notification</td><td>Webhook による非同期完了通知（<code>pushNotifications</code>）</td></tr></tbody></table></div>
-      </div>
-      <span class="page-number">16</span>
-    </div>
-      </div>
-      <div class="page" data-leaf="8">
-        
-    <div class="page-face page-front">
-      <div class="page-content">
-        <header class="chapter-head">
-          <div class="chapter-meta">
-            <span class="chapter-num">03</span>
-            <span class="chapter-kicker">CHAPTER 03 / 07</span>
-          </div>
-          <h2>A2A（Agent-to-Agent Protocol）詳細</h2>
-          <span class="continued">— 続き —</span>
-        </header>
-        <h3>公式SDK</h3>
-<div class="table-wrap"><table><thead><tr><th>言語</th><th>パッケージ</th><th>備考</th></tr></thead><tbody><tr><td>Python</td><td><code>a2a-sdk</code></td><td>v1.1.0（2026年5月）。Starlette / FastAPI に統合可能</td></tr><tr><td>TypeScript</td><td><code>@a2a/sdk</code></td><td>npm 公開</td></tr></tbody></table></div>
-<h3>Agent Card の例</h3>
-      </div>
-      <span class="page-number">17</span>
-    </div>
-        
-    <div class="page-face page-back">
-      <div class="page-content">
-        <header class="chapter-head">
-          <div class="chapter-meta">
-            <span class="chapter-num">03</span>
-            <span class="chapter-kicker">CHAPTER 03 / 07</span>
-          </div>
-          <h2>A2A（Agent-to-Agent Protocol）詳細</h2>
-          <span class="continued">— 続き —</span>
-        </header>
-        <div class="code-block" data-lang="json">
-            <div class="code-lang">json</div>
-            <pre><code>{
-  <span class="tok-str">&quot;name&quot;</span>: <span class="tok-str">&quot;Code Review Agent&quot;</span>,
-  <span class="tok-str">&quot;description&quot;</span>: <span class="tok-str">&quot;コードのセキュリティ・パフォーマンス・スタイルをレビュー&quot;</span>,
-  <span class="tok-str">&quot;url&quot;</span>: <span class="tok-str">&quot;https://code-review.example.com/a2a&quot;</span>,
-  <span class="tok-str">&quot;version&quot;</span>: <span class="tok-str">&quot;1.0.0&quot;</span>,
-  <span class="tok-str">&quot;capabilities&quot;</span>: { <span class="tok-str">&quot;streaming&quot;</span>: <span class="tok-kw">true</span>, <span class="tok-str">&quot;pushNotifications&quot;</span>: <span class="tok-kw">true</span> },
-  <span class="tok-str">&quot;authentication&quot;</span>: { <span class="tok-str">&quot;schemes&quot;</span>: [<span class="tok-str">&quot;Bearer&quot;</span>] },
-  <span class="tok-str">&quot;defaultInputModes&quot;</span>: [<span class="tok-str">&quot;text/plain&quot;</span>],
-  <span class="tok-str">&quot;defaultOutputModes&quot;</span>: [<span class="tok-str">&quot;text/plain&quot;</span>],
-  <span class="tok-str">&quot;skills&quot;</span>: [
-    {
-      <span class="tok-str">&quot;id&quot;</span>: <span class="tok-str">&quot;security-scan&quot;</span>,
-      <span class="tok-str">&quot;name&quot;</span>: <span class="tok-str">&quot;セキュリティスキャン&quot;</span>,
-      <span class="tok-str">&quot;description&quot;</span>: <span class="tok-str">&quot;OWASP Top 10 の脆弱性を検出&quot;</span>,
-      <span class="tok-str">&quot;tags&quot;</span>: [<span class="tok-str">&quot;security&quot;</span>, <span class="tok-str">&quot;code-review&quot;</span>]
-    },
-    {
-      <span class="tok-str">&quot;id&quot;</span>: <span class="tok-str">&quot;performance-analysis&quot;</span>,
-      <span class="tok-str">&quot;name&quot;</span>: <span class="tok-str">&quot;パフォーマンス分析&quot;</span>,
-      <span class="tok-str">&quot;description&quot;</span>: <span class="tok-str">&quot;N+1クエリ、メモリリーク、非効率なアルゴリズムを検出&quot;</span>,
-      <span class="tok-str">&quot;tags&quot;</span>: [<span class="tok-str">&quot;performance&quot;</span>, <span class="tok-str">&quot;optimization&quot;</span>]
-    }
-  ]
-}</code></pre>
-          </div>
-<h3>A2A v1.0 の主要機能</h3>
       </div>
       <span class="page-number">18</span>
     </div>
@@ -1769,10 +1732,152 @@ button {
           <h2>A2A（Agent-to-Agent Protocol）詳細</h2>
           <span class="continued">— 続き —</span>
         </header>
-        <ul><li data-depth="0"><strong>署名付きAgent Card</strong>: 暗号学的に Agent Card の改ざんを防止（公開鍵検証）</li><li data-depth="0"><strong>マルチテナンシー</strong>: 認証済みユーザー向けに拡張スキルを公開可能（2枚のAgent Card）</li><li data-depth="0"><strong>バージョンネゴシエーション</strong>: HTTP ヘッダ <code>A2A-Version: 1.0</code> でプロトコルバージョンを指定</li></ul>
-<hr>
+        <div class="code-block" data-lang="">
+            <div class="code-lang">text · 続き</div>
+            <pre><code>                                           (/.well-known/agent-card.json)</code></pre>
+          </div>
+<ul><li data-depth="0"><strong>Client Agent</strong>: タスクを委譲する側（orchestrator）</li><li data-depth="0"><strong>Remote Agent</strong>: タスクを受け取って実行する側（server）</li><li data-depth="0"><strong>Agent Card</strong>: エージェントの能力・連絡先・認証方式を記述したJSON（<code>/.well-known/agent-card.json</code>）</li></ul>
       </div>
       <span class="page-number">19</span>
+    </div>
+        
+    <div class="page-face page-back">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">03</span>
+            <span class="chapter-kicker">CHAPTER 03 / 07</span>
+          </div>
+          <h2>A2A（Agent-to-Agent Protocol）詳細</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <h3>主要コンポーネント</h3>
+<div class="table-wrap"><table><thead><tr><th>コンポーネント</th><th>役割</th></tr></thead><tbody><tr><td><strong>AgentCard</strong></td><td>エージェントの名刺。名前、説明、バージョン、スキル一覧、認証方式、対応メディアタイプを宣言</td></tr><tr><td><strong>AgentSkill</strong></td><td>個別の能力単位。id, name, description, tags, examples を持つ</td></tr><tr><td><strong>AgentExecutor</strong></td><td>タスク実行を司る抽象クラス。<code>execute()</code> と <code>cancel()</code> を実装</td></tr><tr><td><strong>TaskStore</strong></td><td>タスクの状態を保持。メモリ（開発用） or DB（本番用）</td></tr><tr><td><strong>Task</strong></td><td>タスクオブジェクト。状態遷移と成果物（Artifact）を管理</td></tr></tbody></table></div>
+      </div>
+      <span class="page-number">20</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="10">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">03</span>
+            <span class="chapter-kicker">CHAPTER 03 / 07</span>
+          </div>
+          <h2>A2A（Agent-to-Agent Protocol）詳細</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <h3>タスクライフサイクル</h3>
+<div class="code-block" data-lang="">
+            <div class="code-lang">text</div>
+            <pre><code>submitted → working → completed
+                  ↘ input-required → 再開 → completed
+                  ↘ failed
+                  ↘ canceled</code></pre>
+          </div>
+<ul><li data-depth="0">A2A は<strong>ステートフル</strong>なタスクモデル（MCP と最も異なる点）</li><li data-depth="0">タスクは永続的なオブジェクトで、polling / SSE / Webhook で状態変化を通知可能</li><li data-depth="0"><code>input-required</code> 状態によりマルチターン対話が可能</li></ul>
+      </div>
+      <span class="page-number">21</span>
+    </div>
+        
+    <div class="page-face page-back">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">03</span>
+            <span class="chapter-kicker">CHAPTER 03 / 07</span>
+          </div>
+          <h2>A2A（Agent-to-Agent Protocol）詳細</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <h3>トランスポート</h3>
+<div class="table-wrap"><table><thead><tr><th>方式</th><th>用途</th></tr></thead><tbody><tr><td>JSON-RPC over HTTP</td><td>基本。リクエスト/レスポンス型</td></tr><tr><td>SSE（Server-Sent Events）</td><td>ストリーミング応答。リアルタイムな進捗通知</td></tr><tr><td>Push Notification</td><td>Webhook による非同期完了通知（<code>pushNotifications</code>）</td></tr></tbody></table></div>
+<h3>公式SDK</h3>
+<div class="table-wrap"><table><thead><tr><th>言語</th><th>パッケージ</th><th>備考</th></tr></thead><tbody><tr><td>Python</td><td><code>a2a-sdk</code></td><td>v1.1.0（2026年5月）。Starlette / FastAPI に統合可能</td></tr></tbody></table></div>
+      </div>
+      <span class="page-number">22</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="11">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">03</span>
+            <span class="chapter-kicker">CHAPTER 03 / 07</span>
+          </div>
+          <h2>A2A（Agent-to-Agent Protocol）詳細</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <div class="table-wrap"><table><thead><tr><th>言語</th><th>パッケージ</th><th>備考</th></tr></thead><tbody><tr><td>TypeScript</td><td><code>@a2a/sdk</code></td><td>npm 公開</td></tr></tbody></table></div>
+<h3>Agent Card の例</h3>
+<div class="code-block" data-lang="json">
+            <div class="code-lang">json</div>
+            <pre><code>{
+  <span class="tok-str">&quot;name&quot;</span>: <span class="tok-str">&quot;Code Review Agent&quot;</span>,
+  <span class="tok-str">&quot;description&quot;</span>: <span class="tok-str">&quot;コードのセキュリティ・パフォーマンス・スタイルをレビュー&quot;</span>,
+  <span class="tok-str">&quot;url&quot;</span>: <span class="tok-str">&quot;https://code-review.example.com/a2a&quot;</span>,
+  <span class="tok-str">&quot;version&quot;</span>: <span class="tok-str">&quot;1.0.0&quot;</span>,
+  <span class="tok-str">&quot;capabilities&quot;</span>: { <span class="tok-str">&quot;streaming&quot;</span>: <span class="tok-kw">true</span>, <span class="tok-str">&quot;pushNotifications&quot;</span>: <span class="tok-kw">true</span> },
+  <span class="tok-str">&quot;authentication&quot;</span>: { <span class="tok-str">&quot;schemes&quot;</span>: [<span class="tok-str">&quot;Bearer&quot;</span>] },
+  <span class="tok-str">&quot;defaultInputModes&quot;</span>: [<span class="tok-str">&quot;text/plain&quot;</span>],
+  <span class="tok-str">&quot;defaultOutputModes&quot;</span>: [<span class="tok-str">&quot;text/plain&quot;</span>],
+  <span class="tok-str">&quot;skills&quot;</span>: [</code></pre>
+          </div>
+      </div>
+      <span class="page-number">23</span>
+    </div>
+        
+    <div class="page-face page-back">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">03</span>
+            <span class="chapter-kicker">CHAPTER 03 / 07</span>
+          </div>
+          <h2>A2A（Agent-to-Agent Protocol）詳細</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <div class="code-block" data-lang="json">
+            <div class="code-lang">json · 続き</div>
+            <pre><code>    {
+      <span class="tok-str">&quot;id&quot;</span>: <span class="tok-str">&quot;security-scan&quot;</span>,
+      <span class="tok-str">&quot;name&quot;</span>: <span class="tok-str">&quot;セキュリティスキャン&quot;</span>,
+      <span class="tok-str">&quot;description&quot;</span>: <span class="tok-str">&quot;OWASP Top 10 の脆弱性を検出&quot;</span>,
+      <span class="tok-str">&quot;tags&quot;</span>: [<span class="tok-str">&quot;security&quot;</span>, <span class="tok-str">&quot;code-review&quot;</span>]
+    },
+    {
+      <span class="tok-str">&quot;id&quot;</span>: <span class="tok-str">&quot;performance-analysis&quot;</span>,
+      <span class="tok-str">&quot;name&quot;</span>: <span class="tok-str">&quot;パフォーマンス分析&quot;</span>,
+      <span class="tok-str">&quot;description&quot;</span>: <span class="tok-str">&quot;N+1クエリ、メモリリーク、非効率なアルゴリズムを検出&quot;</span>,
+      <span class="tok-str">&quot;tags&quot;</span>: [<span class="tok-str">&quot;performance&quot;</span>, <span class="tok-str">&quot;optimization&quot;</span>]
+    }
+  ]
+}</code></pre>
+          </div>
+      </div>
+      <span class="page-number">24</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="12">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">03</span>
+            <span class="chapter-kicker">CHAPTER 03 / 07</span>
+          </div>
+          <h2>A2A（Agent-to-Agent Protocol）詳細</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <h3>A2A v1.0 の主要機能</h3>
+<ul><li data-depth="0"><strong>署名付きAgent Card</strong>: 暗号学的に Agent Card の改ざんを防止（公開鍵検証）</li><li data-depth="0"><strong>マルチテナンシー</strong>: 認証済みユーザー向けに拡張スキルを公開可能（2枚のAgent Card）</li><li data-depth="0"><strong>バージョンネゴシエーション</strong>: HTTP ヘッダ <code>A2A-Version: 1.0</code> でプロトコルバージョンを指定</li></ul>
+      </div>
+      <span class="page-number">25</span>
     </div>
         
     <div class="page-face page-back">
@@ -1785,13 +1890,12 @@ button {
           <h2>MCP vs A2A 比較表</h2>
           
         </header>
-        <div class="table-wrap"><table><thead><tr><th>観点</th><th>MCP</th><th>A2A</th></tr></thead><tbody><tr><td><strong>目的</strong></td><td>AI ↔ ツール・データ接続</td><td>エージェント ↔ エージェント連携</td></tr><tr><td><strong>通信方向</strong></td><td>垂直（Agent → Tool）</td><td>水平（Agent ↔ Agent）</td></tr><tr><td><strong>アーキテクチャ層</strong></td><td>ツール統合層</td><td>エージェント協調層</td></tr><tr><td><strong>通信モデル</strong></td><td>クライアント-サーバ</td><td>ピアツーピア（二者ともAgent）</td></tr><tr><td><strong>発見方法</strong></td><td><code>server/discover</code> + <code>tools/list</code>（動的）</td><td>Agent Card（<code>/.well-known/agent-card.json</code>、静的）</td></tr><tr><td><strong>状態管理</strong></td><td><strong>完全ステートレス（プロトコルレベル）</strong> / アプリ状態は明示的ハンドルで管理</td><td>ステートフル（タスクライフサイクル有り）</td></tr><tr><td><strong>レイテンシモデル</strong></td><td>同期的・短命（ms〜秒）</td><td>非同期的・長時間（秒〜時間・日）</td></tr><tr><td><strong>マルチモーダル</strong></td><td>テキスト + バイナリ</td><td>テキスト + 構造化データ + 動画・音声・IFrame</td></tr><tr><td><strong>認証</strong></td><td>Bearer Token（推奨: OAuth 2.1）</td><td>OAuth 2.0 / API Key / 署名付きAgent Card</td></tr><tr><td><strong>トラストモデル</strong></td><td>ホストベース（暗黙的信頼）</td><td>明示的認証（組織境界を越えて動作）</td></tr><tr><td><strong>SDK充実度</strong></td><td>非常に高い（7言語以上）</td><td>発展途上（Python, TypeScript）</td></tr><tr><td><strong>主なユースケース</strong></td><td>単一Agentのツール呼出</td><td>複数Agent間のタスク委譲・協調</td></tr></tbody></table></div>
-<h3>使い分けの指針</h3>
+        <div class="table-wrap"><table><thead><tr><th>観点</th><th>MCP</th><th>A2A</th></tr></thead><tbody><tr><td><strong>目的</strong></td><td>AI ↔ ツール・データ接続</td><td>エージェント ↔ エージェント連携</td></tr><tr><td><strong>通信方向</strong></td><td>垂直（Agent → Tool）</td><td>水平（Agent ↔ Agent）</td></tr><tr><td><strong>アーキテクチャ層</strong></td><td>ツール統合層</td><td>エージェント協調層</td></tr><tr><td><strong>通信モデル</strong></td><td>クライアント-サーバ</td><td>ピアツーピア（二者ともAgent）</td></tr><tr><td><strong>発見方法</strong></td><td><code>server/discover</code> + <code>tools/list</code>（動的）</td><td>Agent Card（<code>/.well-known/agent-card.json</code>、静的）</td></tr><tr><td><strong>状態管理</strong></td><td><strong>完全ステートレス（プロトコルレベル）</strong> / アプリ状態は明示的ハンドルで管理</td><td>ステートフル（タスクライフサイクル有り）</td></tr><tr><td><strong>レイテンシモデル</strong></td><td>同期的・短命（ms〜秒）</td><td>非同期的・長時間（秒〜時間・日）</td></tr></tbody></table></div>
       </div>
-      <span class="page-number">20</span>
+      <span class="page-number">26</span>
     </div>
       </div>
-      <div class="page" data-leaf="10">
+      <div class="page" data-leaf="13">
         
     <div class="page-face page-front">
       <div class="page-content">
@@ -1803,11 +1907,43 @@ button {
           <h2>MCP vs A2A 比較表</h2>
           <span class="continued">— 続き —</span>
         </header>
-        <div class="table-wrap"><table><thead><tr><th>シナリオ</th><th>MCP</th><th>A2A</th><th>両方</th></tr></thead><tbody><tr><td>Claude Desktop + ローカルツール</td><td>✓</td><td></td><td></td></tr><tr><td>単一AgentのAPIアクセス</td><td>✓</td><td></td><td></td></tr><tr><td>同一組織内のAgent委譲</td><td></td><td>✓</td><td></td></tr><tr><td>組織を越えたAgent連携</td><td></td><td>✓</td><td></td></tr><tr><td>長時間タスク（数分〜数時間）</td><td></td><td>✓</td><td></td></tr><tr><td>Orchestrator + ローカルツール + リモートAgent</td><td></td><td></td><td>✓</td></tr><tr><td>エンタープライズマルチエージェント基盤</td><td></td><td></td><td>✓</td></tr></tbody></table></div>
-<blockquote><strong>補足</strong>: MCP を Agent 間連携に使うことはできない（タスクライフサイクル・双方向通信・事前発見を欠く）。A2A をツール呼び出しに使うことも過剰設計（Agent Card・状態管理は単純な関数呼出には不要）。適材適所が原則。</blockquote>
-<hr>
+        <div class="table-wrap"><table><thead><tr><th>観点</th><th>MCP</th><th>A2A</th></tr></thead><tbody><tr><td><strong>マルチモーダル</strong></td><td>テキスト + バイナリ</td><td>テキスト + 構造化データ + 動画・音声・IFrame</td></tr><tr><td><strong>認証</strong></td><td>Bearer Token（推奨: OAuth 2.1）</td><td>OAuth 2.0 / API Key / 署名付きAgent Card</td></tr><tr><td><strong>トラストモデル</strong></td><td>ホストベース（暗黙的信頼）</td><td>明示的認証（組織境界を越えて動作）</td></tr><tr><td><strong>SDK充実度</strong></td><td>非常に高い（7言語以上）</td><td>発展途上（Python, TypeScript）</td></tr><tr><td><strong>主なユースケース</strong></td><td>単一Agentのツール呼出</td><td>複数Agent間のタスク委譲・協調</td></tr></tbody></table></div>
       </div>
-      <span class="page-number">21</span>
+      <span class="page-number">27</span>
+    </div>
+        
+    <div class="page-face page-back">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">04</span>
+            <span class="chapter-kicker">CHAPTER 04 / 07</span>
+          </div>
+          <h2>MCP vs A2A 比較表</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <h3>使い分けの指針</h3>
+<div class="table-wrap"><table><thead><tr><th>シナリオ</th><th>MCP</th><th>A2A</th><th>両方</th></tr></thead><tbody><tr><td>Claude Desktop + ローカルツール</td><td>✓</td><td></td><td></td></tr><tr><td>単一AgentのAPIアクセス</td><td>✓</td><td></td><td></td></tr><tr><td>同一組織内のAgent委譲</td><td></td><td>✓</td><td></td></tr><tr><td>組織を越えたAgent連携</td><td></td><td>✓</td><td></td></tr><tr><td>長時間タスク（数分〜数時間）</td><td></td><td>✓</td><td></td></tr><tr><td>Orchestrator + ローカルツール + リモートAgent</td><td></td><td></td><td>✓</td></tr></tbody></table></div>
+      </div>
+      <span class="page-number">28</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="14">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">04</span>
+            <span class="chapter-kicker">CHAPTER 04 / 07</span>
+          </div>
+          <h2>MCP vs A2A 比較表</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <div class="table-wrap"><table><thead><tr><th>シナリオ</th><th>MCP</th><th>A2A</th><th>両方</th></tr></thead><tbody><tr><td>エンタープライズマルチエージェント基盤</td><td></td><td></td><td>✓</td></tr></tbody></table></div>
+<blockquote><strong>補足</strong>: MCP を Agent 間連携に使うことはできない（タスクライフサイクル・双方向通信・事前発見を欠く）。A2A をツール呼び出しに使うことも過剰設計（Agent Card・状態管理は単純な関数呼出には不要）。適材適所が原則。</blockquote>
+      </div>
+      <span class="page-number">29</span>
     </div>
         
     <div class="page-face page-back">
@@ -1828,11 +1964,17 @@ button {
           </div>
 <h4>Step 1: Transport — Streamable HTTP 対応</h4>
 <p>Python <code>mcp</code> v2 の場合、<code>MCPServer</code> を使う。v2 サーバーは1エンドポイントで 2025-11-25 と 2026-07-28 の両プロトコルを自動ネゴシエーションする。</p>
+<div class="code-block" data-lang="python">
+            <div class="code-lang">python</div>
+            <pre><code><span class="tok-com"># server.py</span>
+<span class="tok-kw">from</span> mcp.<span class="tok-kw">server</span> <span class="tok-kw">import</span> MCPServer
+</code></pre>
+          </div>
       </div>
-      <span class="page-number">22</span>
+      <span class="page-number">30</span>
     </div>
       </div>
-      <div class="page" data-leaf="11">
+      <div class="page" data-leaf="15">
         
     <div class="page-face page-front">
       <div class="page-content">
@@ -1845,11 +1987,8 @@ button {
           <span class="continued">— 続き —</span>
         </header>
         <div class="code-block" data-lang="python">
-            <div class="code-lang">python</div>
-            <pre><code><span class="tok-com"># server.py</span>
-<span class="tok-kw">from</span> mcp.<span class="tok-kw">server</span> <span class="tok-kw">import</span> MCPServer
-
-app = <span class="tok-fn">MCPServer</span>(<span class="tok-str">&quot;notes-server&quot;</span>)
+            <div class="code-lang">python · 続き</div>
+            <pre><code>app = <span class="tok-fn">MCPServer</span>(<span class="tok-str">&quot;notes-server&quot;</span>)
 
 @app.<span class="tok-fn">tool</span>()
 <span class="tok-kw">def</span> <span class="tok-fn">search_notes</span>(query: str) -&gt; str:
@@ -1863,7 +2002,7 @@ app = <span class="tok-fn">MCPServer</span>(<span class="tok-str">&quot;notes-se
 <h4>Step 2: Gate — Bearer Token 認証</h4>
 <p>MCP サーバーに認証を追加する。トークンはコードに書かず、環境変数から読み込む。</p>
       </div>
-      <span class="page-number">23</span>
+      <span class="page-number">31</span>
     </div>
         
     <div class="page-face page-back">
@@ -1893,19 +2032,13 @@ app = <span class="tok-fn">MCPServer</span>(<span class="tok-str">&quot;notes-se
             <pre><code><span class="tok-com"># Dockerfile</span>
 FROM python:<span class="tok-num">3.12</span>-slim
 
-WORKDIR /app
-COPY pyproject.toml .
-RUN pip install --no-cache-dir mcp aiosqlite uvicorn
-COPY <span class="tok-kw">server</span>.py .
-
-EXPOSE <span class="tok-num">8000</span>
-CMD [<span class="tok-str">&quot;python&quot;</span>, <span class="tok-str">&quot;server.py&quot;</span>]</code></pre>
+WORKDIR /app</code></pre>
           </div>
       </div>
-      <span class="page-number">24</span>
+      <span class="page-number">32</span>
     </div>
       </div>
-      <div class="page" data-leaf="12">
+      <div class="page" data-leaf="16">
         
     <div class="page-face page-front">
       <div class="page-content">
@@ -1917,7 +2050,16 @@ CMD [<span class="tok-str">&quot;python&quot;</span>, <span class="tok-str">&quo
           <h2>実装ハンズオン</h2>
           <span class="continued">— 続き —</span>
         </header>
-        <div class="code-block" data-lang="yaml">
+        <div class="code-block" data-lang="dockerfile">
+            <div class="code-lang">dockerfile · 続き</div>
+            <pre><code>COPY pyproject.toml .
+RUN pip install --no-cache-dir mcp aiosqlite uvicorn
+COPY <span class="tok-kw">server</span>.py .
+
+EXPOSE <span class="tok-num">8000</span>
+CMD [<span class="tok-str">&quot;python&quot;</span>, <span class="tok-str">&quot;server.py&quot;</span>]</code></pre>
+          </div>
+<div class="code-block" data-lang="yaml">
             <div class="code-lang">yaml</div>
             <pre><code><span class="tok-com"># docker-compose.yml</span>
 <span class="tok-kw">services</span>:
@@ -1931,10 +2073,8 @@ CMD [<span class="tok-str">&quot;python&quot;</span>, <span class="tok-str">&quo
       - ./data:/app/data
     <span class="tok-kw">restart</span>: unless-stopped</code></pre>
           </div>
-<ul><li data-depth="0"><code>127.0.0.1:8000:8000</code> で外部からの直接アクセスを防ぎ、Nginx のみが到達可能にする</li><li data-depth="0">シークレットは環境変数で注入（<code>.env</code> ファイル or Docker Secrets）</li></ul>
-<h4>Step 4: Edge — Nginx + TLS（Let&#39;s Encrypt）</h4>
       </div>
-      <span class="page-number">25</span>
+      <span class="page-number">33</span>
     </div>
         
     <div class="page-face page-back">
@@ -1947,7 +2087,9 @@ CMD [<span class="tok-str">&quot;python&quot;</span>, <span class="tok-str">&quo
           <h2>実装ハンズオン</h2>
           <span class="continued">— 続き —</span>
         </header>
-        <div class="code-block" data-lang="nginx">
+        <ul><li data-depth="0"><code>127.0.0.1:8000:8000</code> で外部からの直接アクセスを防ぎ、Nginx のみが到達可能にする</li><li data-depth="0">シークレットは環境変数で注入（<code>.env</code> ファイル or Docker Secrets）</li></ul>
+<h4>Step 4: Edge — Nginx + TLS（Let&#39;s Encrypt）</h4>
+<div class="code-block" data-lang="nginx">
             <div class="code-lang">nginx</div>
             <pre><code><span class="tok-com"># /etc/nginx/sites-available/mcp</span>
 <span class="tok-kw">server</span> {
@@ -1957,8 +2099,27 @@ CMD [<span class="tok-str">&quot;python&quot;</span>, <span class="tok-str">&quo
     ssl_certificate /etc/letsencrypt/live/mcp.example.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/mcp.example.com/privkey.pem;
 
-    <span class="tok-kw">location</span> /mcp {
-        <span class="tok-kw">proxy_pass</span> http:<span class="tok-com">//127.0.0.1:8000;</span>
+    <span class="tok-kw">location</span> /mcp {</code></pre>
+          </div>
+      </div>
+      <span class="page-number">34</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="17">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">05</span>
+            <span class="chapter-kicker">CHAPTER 05 / 07</span>
+          </div>
+          <h2>実装ハンズオン</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <div class="code-block" data-lang="nginx">
+            <div class="code-lang">nginx · 続き</div>
+            <pre><code>        <span class="tok-kw">proxy_pass</span> http:<span class="tok-com">//127.0.0.1:8000;</span>
         proxy_http_version <span class="tok-num">1.1</span>;
         proxy_set_header Connection <span class="tok-str">&quot;&quot;</span>;
 
@@ -1982,12 +2143,10 @@ CMD [<span class="tok-str">&quot;python&quot;</span>, <span class="tok-str">&quo
 }</code></pre>
           </div>
       </div>
-      <span class="page-number">26</span>
+      <span class="page-number">35</span>
     </div>
-      </div>
-      <div class="page" data-leaf="13">
         
-    <div class="page-face page-front">
+    <div class="page-face page-back">
       <div class="page-content">
         <header class="chapter-head">
           <div class="chapter-meta">
@@ -2004,11 +2163,25 @@ CMD [<span class="tok-str">&quot;python&quot;</span>, <span class="tok-str">&quo
           </div>
 <p><strong><code>proxy_buffering off</code> と <code>proxy_read_timeout 300s</code> が絶対条件</strong>。デフォルト設定ではストリームが途中で止まる。</p>
 <h4>Step 5: systemd デーモン化</h4>
+<div class="code-block" data-lang="ini">
+            <div class="code-lang">ini</div>
+            <pre><code><span class="tok-com"># /etc/systemd/system/mcp-server.service</span>
+[Unit]
+Description=MCP Notes Server
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes</code></pre>
+          </div>
       </div>
-      <span class="page-number">27</span>
+      <span class="page-number">36</span>
     </div>
+      </div>
+      <div class="page" data-leaf="18">
         
-    <div class="page-face page-back">
+    <div class="page-face page-front">
       <div class="page-content">
         <header class="chapter-head">
           <div class="chapter-meta">
@@ -2019,17 +2192,8 @@ CMD [<span class="tok-str">&quot;python&quot;</span>, <span class="tok-str">&quo
           <span class="continued">— 続き —</span>
         </header>
         <div class="code-block" data-lang="ini">
-            <div class="code-lang">ini</div>
-            <pre><code><span class="tok-com"># /etc/systemd/system/mcp-server.service</span>
-[Unit]
-Description=MCP Notes Server
-After=network-online.target docker.service
-Requires=docker.service
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStart=/usr/bin/docker compose -f /opt/mcp-<span class="tok-kw">server</span>/docker-compose.yml up -d
+            <div class="code-lang">ini · 続き</div>
+            <pre><code>ExecStart=/usr/bin/docker compose -f /opt/mcp-<span class="tok-kw">server</span>/docker-compose.yml up -d
 ExecStop=/usr/bin/docker compose -f /opt/mcp-<span class="tok-kw">server</span>/docker-compose.yml down
 Restart=on-failure
 RestartSec=<span class="tok-num">10</span>
@@ -2038,13 +2202,20 @@ RestartSec=<span class="tok-num">10</span>
 WantedBy=multi-user.target</code></pre>
           </div>
 <h4>MCP クライアント設定</h4>
+<div class="code-block" data-lang="json">
+            <div class="code-lang">json</div>
+            <pre><code><span class="tok-com">// ~/Library/Application Support/Claude/claude_desktop_config.json (macOS)</span>
+{
+  <span class="tok-str">&quot;mcpServers&quot;</span>: {
+    <span class="tok-str">&quot;notes-server&quot;</span>: {
+      <span class="tok-str">&quot;url&quot;</span>: <span class="tok-str">&quot;https://mcp.example.com/mcp&quot;</span>,
+      <span class="tok-str">&quot;headers&quot;</span>: {</code></pre>
+          </div>
       </div>
-      <span class="page-number">28</span>
+      <span class="page-number">37</span>
     </div>
-      </div>
-      <div class="page" data-leaf="14">
         
-    <div class="page-face page-front">
+    <div class="page-face page-back">
       <div class="page-content">
         <header class="chapter-head">
           <div class="chapter-meta">
@@ -2055,41 +2226,20 @@ WantedBy=multi-user.target</code></pre>
           <span class="continued">— 続き —</span>
         </header>
         <div class="code-block" data-lang="json">
-            <div class="code-lang">json</div>
-            <pre><code><span class="tok-com">// ~/Library/Application Support/Claude/claude_desktop_config.json (macOS)</span>
-{
-  <span class="tok-str">&quot;mcpServers&quot;</span>: {
-    <span class="tok-str">&quot;notes-server&quot;</span>: {
-      <span class="tok-str">&quot;url&quot;</span>: <span class="tok-str">&quot;https://mcp.example.com/mcp&quot;</span>,
-      <span class="tok-str">&quot;headers&quot;</span>: {
-        <span class="tok-str">&quot;Authorization&quot;</span>: <span class="tok-str">&quot;Bearer &lt;MCP_TOKEN&gt;&quot;</span>
+            <div class="code-lang">json · 続き</div>
+            <pre><code>        <span class="tok-str">&quot;Authorization&quot;</span>: <span class="tok-str">&quot;Bearer &lt;MCP_TOKEN&gt;&quot;</span>
       }
     }
   }
 }</code></pre>
           </div>
 <h4>本番運用チェックリスト</h4>
+<div class="table-wrap"><table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td>SDK更新</td><td><code>mcp</code> v2（Python） / <code>@modelcontextprotocol/server</code>（TypeScript）にアップデート</td></tr><tr><td><code>initialize</code>廃止対応</td><td><code>_meta</code> からプロトコルバージョン・クライアント情報を読む</td></tr><tr><td><code>Mcp-Session-Id</code>排除</td><td>セッション依存の状態管理をアプリレベルの明示的ハンドルに移行</td></tr></tbody></table></div>
       </div>
-      <span class="page-number">29</span>
-    </div>
-        
-    <div class="page-face page-back">
-      <div class="page-content">
-        <header class="chapter-head">
-          <div class="chapter-meta">
-            <span class="chapter-num">05</span>
-            <span class="chapter-kicker">CHAPTER 05 / 07</span>
-          </div>
-          <h2>実装ハンズオン</h2>
-          <span class="continued">— 続き —</span>
-        </header>
-        <div class="table-wrap"><table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td>SDK更新</td><td><code>mcp</code> v2（Python） / <code>@modelcontextprotocol/server</code>（TypeScript）にアップデート</td></tr><tr><td><code>initialize</code>廃止対応</td><td><code>_meta</code> からプロトコルバージョン・クライアント情報を読む</td></tr><tr><td><code>Mcp-Session-Id</code>排除</td><td>セッション依存の状態管理をアプリレベルの明示的ハンドルに移行</td></tr><tr><td><code>ttlMs</code>/<code>cacheScope</code></td><td><code>tools/list</code> 等に有効期限とキャッシュスコープを付与</td></tr><tr><td>ロードバランサ</td><td>スティッキーセッション不要。<code>clientAffinityEnabled: false</code></td></tr><tr><td>シークレット管理</td><td>環境変数 or Docker Secrets、イメージ内に書かない</td></tr><tr><td>認証強化</td><td>静的Token → JWT → OAuth 2.1 へ段階的アップグレード</td></tr><tr><td>データ永続化</td><td>コンテナは disposable。Volume マウント or 管理DBを使う</td></tr><tr><td>レート制限</td><td>Nginx か API Gateway でリクエスト制限</td></tr><tr><td>監視・ヘルスチェック</td><td><code>curl -f http://localhost:8000/mcp</code> の定期実行</td></tr></tbody></table></div>
-<h4>VPS 最小要件</h4>
-      </div>
-      <span class="page-number">30</span>
+      <span class="page-number">38</span>
     </div>
       </div>
-      <div class="page" data-leaf="15">
+      <div class="page" data-leaf="19">
         
     <div class="page-face page-front">
       <div class="page-content">
@@ -2101,19 +2251,9 @@ WantedBy=multi-user.target</code></pre>
           <h2>実装ハンズオン</h2>
           <span class="continued">— 続き —</span>
         </header>
-        <ul><li data-depth="0">1 vCPU / 2 GB RAM / 20 GB SSD</li><li data-depth="0">Ubuntu 22.04 LTS or Debian 12</li><li data-depth="0">Docker Engine 20.10+ / Docker Compose v2</li><li data-depth="0">独自ドメイン（Let&#39;s Encrypt の証明書取得に必要）</li></ul>
-<hr>
-<h3>A2A サーバーをセルフホストする</h3>
-<h4>Step 1: 環境構築</h4>
-<div class="code-block" data-lang="bash">
-            <div class="code-lang">bash</div>
-            <pre><code>mkdir a2a-agent &amp;&amp; cd a2a-agent
-python -m venv .venv &amp;&amp; source .venv/bin/activate
-pip install <span class="tok-str">&quot;a2a-sdk[http-server]&quot;</span> uvicorn</code></pre>
-          </div>
-<h4>Step 2: Agent Card を定義</h4>
+        <div class="table-wrap"><table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td><code>ttlMs</code>/<code>cacheScope</code></td><td><code>tools/list</code> 等に有効期限とキャッシュスコープを付与</td></tr><tr><td>ロードバランサ</td><td>スティッキーセッション不要。<code>clientAffinityEnabled: false</code></td></tr><tr><td>シークレット管理</td><td>環境変数 or Docker Secrets、イメージ内に書かない</td></tr><tr><td>認証強化</td><td>静的Token → JWT → OAuth 2.1 へ段階的アップグレード</td></tr><tr><td>データ永続化</td><td>コンテナは disposable。Volume マウント or 管理DBを使う</td></tr><tr><td>レート制限</td><td>Nginx か API Gateway でリクエスト制限</td></tr><tr><td>監視・ヘルスチェック</td><td><code>curl -f http://localhost:8000/mcp</code> の定期実行</td></tr></tbody></table></div>
       </div>
-      <span class="page-number">31</span>
+      <span class="page-number">39</span>
     </div>
         
     <div class="page-face page-back">
@@ -2126,7 +2266,35 @@ pip install <span class="tok-str">&quot;a2a-sdk[http-server]&quot;</span> uvicor
           <h2>実装ハンズオン</h2>
           <span class="continued">— 続き —</span>
         </header>
-        <div class="code-block" data-lang="python">
+        <h4>VPS 最小要件</h4>
+<ul><li data-depth="0">1 vCPU / 2 GB RAM / 20 GB SSD</li><li data-depth="0">Ubuntu 22.04 LTS or Debian 12</li><li data-depth="0">Docker Engine 20.10+ / Docker Compose v2</li><li data-depth="0">独自ドメイン（Let&#39;s Encrypt の証明書取得に必要）</li></ul>
+<hr>
+<h3>A2A サーバーをセルフホストする</h3>
+<h4>Step 1: 環境構築</h4>
+<div class="code-block" data-lang="bash">
+            <div class="code-lang">bash</div>
+            <pre><code>mkdir a2a-agent &amp;&amp; cd a2a-agent
+python -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install <span class="tok-str">&quot;a2a-sdk[http-server]&quot;</span> uvicorn</code></pre>
+          </div>
+      </div>
+      <span class="page-number">40</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="20">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">05</span>
+            <span class="chapter-kicker">CHAPTER 05 / 07</span>
+          </div>
+          <h2>実装ハンズオン</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <h4>Step 2: Agent Card を定義</h4>
+<div class="code-block" data-lang="python">
             <div class="code-lang">python</div>
             <pre><code><span class="tok-com"># agent_card.py</span>
 <span class="tok-kw">from</span> a2a.types <span class="tok-kw">import</span> (
@@ -2146,37 +2314,10 @@ public_agent_card = <span class="tok-fn">AgentCard</span>(
     description=<span class="tok-str">&quot;テキスト反転エージェント&quot;</span>,
     version=<span class="tok-str">&quot;1.0.0&quot;</span>,
     default_input_modes=[<span class="tok-str">&quot;text/plain&quot;</span>],
-    default_output_modes=[<span class="tok-str">&quot;text/plain&quot;</span>],
-    capabilities=<span class="tok-fn">AgentCapabilities</span>(streaming=<span class="tok-kw">True</span>),
-    supported_interfaces=[
-        <span class="tok-fn">AgentInterface</span>(
-            protocol_binding=<span class="tok-str">&quot;JSONRPC&quot;</span>,
-            url=<span class="tok-str">&quot;http://127.0.0.1:9999&quot;</span>,
-            protocol_version=<span class="tok-str">&quot;1.0&quot;</span>,
-        )
-    ],
-    skills=[skill],
-)</code></pre>
+    default_output_modes=[<span class="tok-str">&quot;text/plain&quot;</span>],</code></pre>
           </div>
       </div>
-      <span class="page-number">32</span>
-    </div>
-      </div>
-      <div class="page" data-leaf="16">
-        
-    <div class="page-face page-front">
-      <div class="page-content">
-        <header class="chapter-head">
-          <div class="chapter-meta">
-            <span class="chapter-num">05</span>
-            <span class="chapter-kicker">CHAPTER 05 / 07</span>
-          </div>
-          <h2>実装ハンズオン</h2>
-          <span class="continued">— 続き —</span>
-        </header>
-        <h4>Step 3: Agent Executor を実装</h4>
-      </div>
-      <span class="page-number">33</span>
+      <span class="page-number">41</span>
     </div>
         
     <div class="page-face page-back">
@@ -2190,12 +2331,45 @@ public_agent_card = <span class="tok-fn">AgentCard</span>(
           <span class="continued">— 続き —</span>
         </header>
         <div class="code-block" data-lang="python">
+            <div class="code-lang">python · 続き</div>
+            <pre><code>    capabilities=<span class="tok-fn">AgentCapabilities</span>(streaming=<span class="tok-kw">True</span>),
+    supported_interfaces=[
+        <span class="tok-fn">AgentInterface</span>(
+            protocol_binding=<span class="tok-str">&quot;JSONRPC&quot;</span>,
+            url=<span class="tok-str">&quot;http://127.0.0.1:9999&quot;</span>,
+            protocol_version=<span class="tok-str">&quot;1.0&quot;</span>,
+        )
+    ],
+    skills=[skill],
+)</code></pre>
+          </div>
+<h4>Step 3: Agent Executor を実装</h4>
+<div class="code-block" data-lang="python">
             <div class="code-lang">python</div>
             <pre><code><span class="tok-com"># agent_executor.py</span>
 <span class="tok-kw">import</span> asyncio
 <span class="tok-kw">from</span> a2a.<span class="tok-kw">server</span>.agent_execution <span class="tok-kw">import</span> AgentExecutor, RequestContext
-<span class="tok-kw">from</span> a2a.<span class="tok-kw">server</span>.events <span class="tok-kw">import</span> EventQueue
-<span class="tok-kw">from</span> a2a.types <span class="tok-kw">import</span> Task, TaskState, TaskStatus, TaskStatusUpdateEvent
+<span class="tok-kw">from</span> a2a.<span class="tok-kw">server</span>.events <span class="tok-kw">import</span> EventQueue</code></pre>
+          </div>
+      </div>
+      <span class="page-number">42</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="21">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">05</span>
+            <span class="chapter-kicker">CHAPTER 05 / 07</span>
+          </div>
+          <h2>実装ハンズオン</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <div class="code-block" data-lang="python">
+            <div class="code-lang">python · 続き</div>
+            <pre><code><span class="tok-kw">from</span> a2a.types <span class="tok-kw">import</span> Task, TaskState, TaskStatus, TaskStatusUpdateEvent
 <span class="tok-kw">from</span> a2a.utils.message <span class="tok-kw">import</span> new_agent_text_message
 
 
@@ -2214,8 +2388,25 @@ public_agent_card = <span class="tok-fn">AgentCard</span>(
 
         reversed_text = user_text[::-<span class="tok-num">1</span>]
 
-        <span class="tok-kw">await</span> event_queue.<span class="tok-fn">put</span>(
-            <span class="tok-fn">Task</span>(
+        <span class="tok-kw">await</span> event_queue.<span class="tok-fn">put</span>(</code></pre>
+          </div>
+      </div>
+      <span class="page-number">43</span>
+    </div>
+        
+    <div class="page-face page-back">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">05</span>
+            <span class="chapter-kicker">CHAPTER 05 / 07</span>
+          </div>
+          <h2>実装ハンズオン</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <div class="code-block" data-lang="python">
+            <div class="code-lang">python · 続き</div>
+            <pre><code>            <span class="tok-fn">Task</span>(
                 id=context.task_id,
                 context_id=context.context_id,
                 status=<span class="tok-fn">TaskStatus</span>(
@@ -2237,10 +2428,10 @@ public_agent_card = <span class="tok-fn">AgentCard</span>(
         )</code></pre>
           </div>
       </div>
-      <span class="page-number">34</span>
+      <span class="page-number">44</span>
     </div>
       </div>
-      <div class="page" data-leaf="17">
+      <div class="page" data-leaf="22">
         
     <div class="page-face page-front">
       <div class="page-content">
@@ -2271,17 +2462,10 @@ request_handler = <span class="tok-fn">DefaultRequestHandler</span>(
     agent_card=public_agent_card,
 )
 
-routes = []
-routes.<span class="tok-fn">extend</span>(<span class="tok-fn">create_agent_card_routes</span>(public_agent_card))
-routes.<span class="tok-fn">extend</span>(<span class="tok-fn">create_jsonrpc_routes</span>(request_handler, <span class="tok-str">&quot;/&quot;</span>))
-
-app = <span class="tok-fn">Starlette</span>(routes=routes)
-
-<span class="tok-kw">if</span> __name__ == <span class="tok-str">&quot;__main__&quot;</span>:
-    uvicorn.<span class="tok-fn">run</span>(app, host=<span class="tok-str">&quot;127.0.0.1&quot;</span>, port=<span class="tok-num">9999</span>)</code></pre>
+routes = []</code></pre>
           </div>
       </div>
-      <span class="page-number">35</span>
+      <span class="page-number">45</span>
     </div>
         
     <div class="page-face page-back">
@@ -2294,11 +2478,37 @@ app = <span class="tok-fn">Starlette</span>(routes=routes)
           <h2>実装ハンズオン</h2>
           <span class="continued">— 続き —</span>
         </header>
-        <div class="code-block" data-lang="bash">
+        <div class="code-block" data-lang="python">
+            <div class="code-lang">python · 続き</div>
+            <pre><code>routes.<span class="tok-fn">extend</span>(<span class="tok-fn">create_agent_card_routes</span>(public_agent_card))
+routes.<span class="tok-fn">extend</span>(<span class="tok-fn">create_jsonrpc_routes</span>(request_handler, <span class="tok-str">&quot;/&quot;</span>))
+
+app = <span class="tok-fn">Starlette</span>(routes=routes)
+
+<span class="tok-kw">if</span> __name__ == <span class="tok-str">&quot;__main__&quot;</span>:
+    uvicorn.<span class="tok-fn">run</span>(app, host=<span class="tok-str">&quot;127.0.0.1&quot;</span>, port=<span class="tok-num">9999</span>)</code></pre>
+          </div>
+<div class="code-block" data-lang="bash">
             <div class="code-lang">bash</div>
             <pre><code>python <span class="tok-kw">server</span>.py</code></pre>
           </div>
-<h4>Step 5: curl で動作確認</h4>
+      </div>
+      <span class="page-number">46</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="23">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">05</span>
+            <span class="chapter-kicker">CHAPTER 05 / 07</span>
+          </div>
+          <h2>実装ハンズオン</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <h4>Step 5: curl で動作確認</h4>
 <div class="code-block" data-lang="bash">
             <div class="code-lang">bash</div>
             <pre><code><span class="tok-com"># Agent Card の取得</span>
@@ -2318,29 +2528,10 @@ curl -s -X POST http:<span class="tok-com">//127.0.0.1:9999/ \</span>
         <span class="tok-str">&quot;parts&quot;</span>: [{<span class="tok-str">&quot;kind&quot;</span>: <span class="tok-str">&quot;text&quot;</span>, <span class="tok-str">&quot;text&quot;</span>: <span class="tok-str">&quot;Hello A2A!&quot;</span>}],
         <span class="tok-str">&quot;messageId&quot;</span>: <span class="tok-str">&quot;msg-1&quot;</span>
       }
-    }
-  }&#39;</code></pre>
+    }</code></pre>
           </div>
       </div>
-      <span class="page-number">36</span>
-    </div>
-      </div>
-      <div class="page" data-leaf="18">
-        
-    <div class="page-face page-front">
-      <div class="page-content">
-        <header class="chapter-head">
-          <div class="chapter-meta">
-            <span class="chapter-num">05</span>
-            <span class="chapter-kicker">CHAPTER 05 / 07</span>
-          </div>
-          <h2>実装ハンズオン</h2>
-          <span class="continued">— 続き —</span>
-        </header>
-        <blockquote><strong>注意</strong>: <code>A2A-Version: 1.0</code> ヘッダを忘れると SDK が古い 0.3 ワイヤーフォーマットと解釈し、エラーになる。公式ドキュメントでも見落としがちなポイント。</blockquote>
-<h4>Python クライアントから呼び出す</h4>
-      </div>
-      <span class="page-number">37</span>
+      <span class="page-number">47</span>
     </div>
         
     <div class="page-face page-back">
@@ -2353,7 +2544,13 @@ curl -s -X POST http:<span class="tok-com">//127.0.0.1:9999/ \</span>
           <h2>実装ハンズオン</h2>
           <span class="continued">— 続き —</span>
         </header>
-        <div class="code-block" data-lang="python">
+        <div class="code-block" data-lang="bash">
+            <div class="code-lang">bash · 続き</div>
+            <pre><code>  }&#39;</code></pre>
+          </div>
+<blockquote><strong>注意</strong>: <code>A2A-Version: 1.0</code> ヘッダを忘れると SDK が古い 0.3 ワイヤーフォーマットと解釈し、エラーになる。公式ドキュメントでも見落としがちなポイント。</blockquote>
+<h4>Python クライアントから呼び出す</h4>
+<div class="code-block" data-lang="python">
             <div class="code-lang">python</div>
             <pre><code><span class="tok-com"># client.py</span>
 <span class="tok-kw">import</span> asyncio
@@ -2361,8 +2558,27 @@ curl -s -X POST http:<span class="tok-com">//127.0.0.1:9999/ \</span>
 
 
 <span class="tok-kw">async</span> <span class="tok-kw">def</span> <span class="tok-fn">main</span>():
-    <span class="tok-kw">async</span> <span class="tok-kw">with</span> <span class="tok-fn">A2AClient</span>(url=<span class="tok-str">&quot;http://localhost:9999&quot;</span>) <span class="tok-kw">as</span> client:
-        card = <span class="tok-kw">await</span> client.<span class="tok-fn">get_agent_card</span>()
+    <span class="tok-kw">async</span> <span class="tok-kw">with</span> <span class="tok-fn">A2AClient</span>(url=<span class="tok-str">&quot;http://localhost:9999&quot;</span>) <span class="tok-kw">as</span> client:</code></pre>
+          </div>
+      </div>
+      <span class="page-number">48</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="24">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">05</span>
+            <span class="chapter-kicker">CHAPTER 05 / 07</span>
+          </div>
+          <h2>実装ハンズオン</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <div class="code-block" data-lang="python">
+            <div class="code-lang">python · 続き</div>
+            <pre><code>        card = <span class="tok-kw">await</span> client.<span class="tok-fn">get_agent_card</span>()
         <span class="tok-fn">print</span>(f<span class="tok-str">&quot;Connected to: {card.name}&quot;</span>)
         <span class="tok-fn">print</span>(f<span class="tok-str">&quot;Skills: {[s.name for s in card.skills]}&quot;</span>)
 
@@ -2379,14 +2595,11 @@ curl -s -X POST http:<span class="tok-com">//127.0.0.1:9999/ \</span>
 
 asyncio.<span class="tok-fn">run</span>(<span class="tok-fn">main</span>())</code></pre>
           </div>
-<h4>A2A サーバーの本番デプロイ</h4>
       </div>
-      <span class="page-number">38</span>
+      <span class="page-number">49</span>
     </div>
-      </div>
-      <div class="page" data-leaf="19">
         
-    <div class="page-face page-front">
+    <div class="page-face page-back">
       <div class="page-content">
         <header class="chapter-head">
           <div class="chapter-meta">
@@ -2396,7 +2609,8 @@ asyncio.<span class="tok-fn">run</span>(<span class="tok-fn">main</span>())</cod
           <h2>実装ハンズオン</h2>
           <span class="continued">— 続き —</span>
         </header>
-        <p>MCP と全く同じパターン（Docker + Nginx + TLS + systemd）が適用できる。注意点として、A2A は<strong>ステートフル</strong>（<code>TaskStore</code> にタスク状態を保持）なので、複数レプリカで運用する場合は <code>InMemoryTaskStore</code> ではなく Redis や PostgreSQL を使う。</p>
+        <h4>A2A サーバーの本番デプロイ</h4>
+<p>MCP と全く同じパターン（Docker + Nginx + TLS + systemd）が適用できる。注意点として、A2A は<strong>ステートフル</strong>（<code>TaskStore</code> にタスク状態を保持）なので、複数レプリカで運用する場合は <code>InMemoryTaskStore</code> ではなく Redis や PostgreSQL を使う。</p>
 <div class="code-block" data-lang="yaml">
             <div class="code-lang">yaml</div>
             <pre><code><span class="tok-com"># docker-compose.yml</span>
@@ -2409,11 +2623,27 @@ asyncio.<span class="tok-fn">run</span>(<span class="tok-fn">main</span>())</cod
       - A2A_TOKEN=${A2A_TOKEN}
     <span class="tok-kw">restart</span>: unless-stopped</code></pre>
           </div>
-<p>Nginx の設定は MCP と同様で、<code>proxy_buffering off</code> + <code>proxy_read_timeout 300s</code> を忘れずに。</p>
+      </div>
+      <span class="page-number">50</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="25">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">05</span>
+            <span class="chapter-kicker">CHAPTER 05 / 07</span>
+          </div>
+          <h2>実装ハンズオン</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <p>Nginx の設定は MCP と同様で、<code>proxy_buffering off</code> + <code>proxy_read_timeout 300s</code> を忘れずに。</p>
 <h4>Google ADK を使った A2A 簡略化</h4>
 <p>Google Agent Development Kit（ADK）を使うと、既存のAgent を1行で A2A サーバー化できる。</p>
       </div>
-      <span class="page-number">39</span>
+      <span class="page-number">51</span>
     </div>
         
     <div class="page-face page-back">
@@ -2441,12 +2671,11 @@ agent = <span class="tok-fn">Agent</span>(
 app = <span class="tok-fn">to_a2a</span>(agent, port=<span class="tok-num">8001</span>)
 <span class="tok-com"># uvicorn adk_agent:app --host localhost --port 8001</span></code></pre>
           </div>
-<hr>
       </div>
-      <span class="page-number">40</span>
+      <span class="page-number">52</span>
     </div>
       </div>
-      <div class="page" data-leaf="20">
+      <div class="page" data-leaf="26">
         
     <div class="page-face page-front">
       <div class="page-content">
@@ -2469,42 +2698,13 @@ app = <span class="tok-fn">to_a2a</span>(agent, port=<span class="tok-num">8001<
             <div class="code-lang">text</div>
             <pre><code>ユーザー → Orchestrator Agent
               │ A2A
-              ├── Research Agent（調査）
-              ├── Compliance Agent（コンプライアンス審査）
-              └── Report Agent（レポート生成）</code></pre>
+              ├── Research Agent（調査）</code></pre>
           </div>
       </div>
-      <span class="page-number">41</span>
+      <span class="page-number">53</span>
     </div>
         
     <div class="page-face page-back">
-      <div class="page-content">
-        <header class="chapter-head">
-          <div class="chapter-meta">
-            <span class="chapter-num">06</span>
-            <span class="chapter-kicker">CHAPTER 06 / 07</span>
-          </div>
-          <h2>実践ユースケース</h2>
-          <span class="continued">— 続き —</span>
-        </header>
-        <ul><li data-depth="0"><strong>例</strong>: 「競合他社の価格調査をして、コンプライアンスチェックを通したレポートを作って」</li><li data-depth="0"><strong>評価</strong>: 各Agentは外部ツールを必要としない（内部知識or提供データのみ）。A2A でタスク委譲するだけで完結。</li></ul>
-<h3>ケース3: MCP + A2A の併用（推奨） — ハイブリッドアーキテクチャ</h3>
-<div class="code-block" data-lang="">
-            <div class="code-lang">text</div>
-            <pre><code>ユーザー → Orchestrator Agent
-              │ A2A（タスク委譲）
-              ├── Research Agent ── MCP（Web検索・スクレイピング）
-              ├── Compliance Agent ── MCP（法令DB・契約書DB）
-              └── Report Agent ── MCP（CMSツール）</code></pre>
-          </div>
-<p><strong>実例: コンプライアンスパイプライン</strong>（Python + Go のクロスランゲージ協調）</p>
-      </div>
-      <span class="page-number">42</span>
-    </div>
-      </div>
-      <div class="page" data-leaf="21">
-        
-    <div class="page-face page-front">
       <div class="page-content">
         <header class="chapter-head">
           <div class="chapter-meta">
@@ -2515,20 +2715,44 @@ app = <span class="tok-fn">to_a2a</span>(agent, port=<span class="tok-num">8001<
           <span class="continued">— 続き —</span>
         </header>
         <div class="code-block" data-lang="">
+            <div class="code-lang">text · 続き</div>
+            <pre><code>              ├── Compliance Agent（コンプライアンス審査）
+              └── Report Agent（レポート生成）</code></pre>
+          </div>
+<ul><li data-depth="0"><strong>例</strong>: 「競合他社の価格調査をして、コンプライアンスチェックを通したレポートを作って」</li><li data-depth="0"><strong>評価</strong>: 各Agentは外部ツールを必要としない（内部知識or提供データのみ）。A2A でタスク委譲するだけで完結。</li></ul>
+      </div>
+      <span class="page-number">54</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="27">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">06</span>
+            <span class="chapter-kicker">CHAPTER 06 / 07</span>
+          </div>
+          <h2>実践ユースケース</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <h3>ケース3: MCP + A2A の併用（推奨） — ハイブリッドアーキテクチャ</h3>
+<div class="code-block" data-lang="">
+            <div class="code-lang">text</div>
+            <pre><code>ユーザー → Orchestrator Agent
+              │ A2A（タスク委譲）
+              ├── Research Agent ── MCP（Web検索・スクレイピング）
+              ├── Compliance Agent ── MCP（法令DB・契約書DB）
+              └── Report Agent ── MCP（CMSツール）</code></pre>
+          </div>
+<p><strong>実例: コンプライアンスパイプライン</strong>（Python + Go のクロスランゲージ協調）</p>
+<div class="code-block" data-lang="">
             <div class="code-lang">text</div>
             <pre><code>[Python] Extract Agent ─── A2A ───→ [Go] Compliance Agent
-    │ MCP                                    │ MCP
-    ├── 契約書DB読み取り                     ├── ポリシーDB検索
-    └── LLM抽出（Gemini）                    └── 完全決定論的ルール検証
-                                          ↓
-                              [Python] Report Agent
-                                  │ MCP
-                                  └── レポート生成・CMS保存</code></pre>
+    │ MCP                                    │ MCP</code></pre>
           </div>
-<ul><li data-depth="0">Orchestrator は A2A で Extract → Compliance → Report の順にタスク委譲</li><li data-depth="0">各Agent は必要に応じて MCP でツールを呼ぶ</li><li data-depth="0">Go の Compliance Agent は LLM を使わず決定論的な検証 → <strong>監査証跡として信頼性が高い</strong></li><li data-depth="0">Compliance Agent が応答不能の場合は <code>MANUAL_REVIEW</code> 状態に遷移（<strong>フェイルセーフ設計</strong>）</li></ul>
-<h3>ハイブリッド導入の判断基準</h3>
       </div>
-      <span class="page-number">43</span>
+      <span class="page-number">55</span>
     </div>
         
     <div class="page-face page-back">
@@ -2541,15 +2765,39 @@ app = <span class="tok-fn">to_a2a</span>(agent, port=<span class="tok-num">8001<
           <h2>実践ユースケース</h2>
           <span class="continued">— 続き —</span>
         </header>
-        <div class="table-wrap"><table><thead><tr><th>要件</th><th>採用プロトコル</th></tr></thead><tbody><tr><td>外部API連携・DB操作・ファイル操作</td><td>MCP</td></tr><tr><td>社内SaaS（CRM/HRIS/ERP）との統合</td><td>MCP</td></tr><tr><td>専門Agentへのタスク委譲（同一組織内）</td><td>A2A</td></tr><tr><td>組織を越えたAgent間連携</td><td>A2A（必須）</td></tr><tr><td>長時間タスク（数分〜数時間）の非同期実行</td><td>A2A</td></tr><tr><td>Agent同士の双方向対話（質問→回答）</td><td>A2A</td></tr><tr><td>シングルAgent完結のツール呼出</td><td>MCPのみ（A2A不要）</td></tr></tbody></table></div>
-<hr>
+        <div class="code-block" data-lang="">
+            <div class="code-lang">text · 続き</div>
+            <pre><code>    ├── 契約書DB読み取り                     ├── ポリシーDB検索
+    └── LLM抽出（Gemini）                    └── 完全決定論的ルール検証
+                                          ↓
+                              [Python] Report Agent
+                                  │ MCP
+                                  └── レポート生成・CMS保存</code></pre>
+          </div>
+<ul><li data-depth="0">Orchestrator は A2A で Extract → Compliance → Report の順にタスク委譲</li><li data-depth="0">各Agent は必要に応じて MCP でツールを呼ぶ</li><li data-depth="0">Go の Compliance Agent は LLM を使わず決定論的な検証 → <strong>監査証跡として信頼性が高い</strong></li><li data-depth="0">Compliance Agent が応答不能の場合は <code>MANUAL_REVIEW</code> 状態に遷移（<strong>フェイルセーフ設計</strong>）</li></ul>
       </div>
-      <span class="page-number">44</span>
+      <span class="page-number">56</span>
     </div>
       </div>
-      <div class="page" data-leaf="22">
+      <div class="page" data-leaf="28">
         
     <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">06</span>
+            <span class="chapter-kicker">CHAPTER 06 / 07</span>
+          </div>
+          <h2>実践ユースケース</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <h3>ハイブリッド導入の判断基準</h3>
+<div class="table-wrap"><table><thead><tr><th>要件</th><th>採用プロトコル</th></tr></thead><tbody><tr><td>外部API連携・DB操作・ファイル操作</td><td>MCP</td></tr><tr><td>社内SaaS（CRM/HRIS/ERP）との統合</td><td>MCP</td></tr><tr><td>専門Agentへのタスク委譲（同一組織内）</td><td>A2A</td></tr><tr><td>組織を越えたAgent間連携</td><td>A2A（必須）</td></tr><tr><td>長時間タスク（数分〜数時間）の非同期実行</td><td>A2A</td></tr><tr><td>Agent同士の双方向対話（質問→回答）</td><td>A2A</td></tr><tr><td>シングルAgent完結のツール呼出</td><td>MCPのみ（A2A不要）</td></tr></tbody></table></div>
+      </div>
+      <span class="page-number">57</span>
+    </div>
+        
+    <div class="page-face page-back">
       <div class="page-content">
         <header class="chapter-head">
           <div class="chapter-meta">
@@ -2560,9 +2808,26 @@ app = <span class="tok-fn">to_a2a</span>(agent, port=<span class="tok-num">8001<
           
         </header>
         <h3>MCP</h3>
-<div class="table-wrap"><table><thead><tr><th>リンク</th><th>説明</th></tr></thead><tbody><tr><td>https://modelcontextprotocol.io/specification/draft</td><td><strong>2026-07-28 最新仕様（本日リリース）</strong></td></tr><tr><td>https://modelcontextprotocol.io/specification/draft/changelog</td><td>2025-11-25 からの変更点一覧</td></tr><tr><td>https://modelcontextprotocol.io/specification/2025-11-25</td><td>旧安定仕様（2025-11-25）</td></tr><tr><td>https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/</td><td>リリース候補アナウンス（変更点の詳細解説）</td></tr><tr><td>https://blog.modelcontextprotocol.io/posts/sdk-betas-2026-07-28/</td><td>SDK v2 ベータアナウンス</td></tr><tr><td>https://modelcontextprotocol.io/quickstart/server</td><td>公式クイックスタート</td></tr><tr><td>https://github.com/modelcontextprotocol/typescript-sdk</td><td>TypeScript SDK（v2: <code>@modelcontextprotocol/server</code>）</td></tr><tr><td>https://github.com/modelcontextprotocol/python-sdk</td><td>Python SDK（v2: <code>mcp</code>）</td></tr><tr><td>https://github.com/modelcontextprotocol/go-sdk</td><td>Go SDK（Tier1）</td></tr><tr><td>https://github.com/modelcontextprotocol/csharp-sdk</td><td>C# SDK（Tier1）</td></tr><tr><td>https://github.com/modelcontextprotocol/inspector</td><td>MCP Inspector（デバッグツール）</td></tr><tr><td>https://registry.modelcontextprotocol.io/</td><td>公式レジストリ（7,000+ サーバー）</td></tr><tr><td>https://blog.modelcontextprotocol.io/posts/2026-mcp-roadmap/</td><td>2026年ロードマップ</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>リンク</th><th>説明</th></tr></thead><tbody><tr><td>https://modelcontextprotocol.io/specification/draft</td><td><strong>2026-07-28 最新仕様（本日リリース）</strong></td></tr><tr><td>https://modelcontextprotocol.io/specification/draft/changelog</td><td>2025-11-25 からの変更点一覧</td></tr><tr><td>https://modelcontextprotocol.io/specification/2025-11-25</td><td>旧安定仕様（2025-11-25）</td></tr><tr><td>https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/</td><td>リリース候補アナウンス（変更点の詳細解説）</td></tr><tr><td>https://blog.modelcontextprotocol.io/posts/sdk-betas-2026-07-28/</td><td>SDK v2 ベータアナウンス</td></tr><tr><td>https://modelcontextprotocol.io/quickstart/server</td><td>公式クイックスタート</td></tr></tbody></table></div>
       </div>
-      <span class="page-number">45</span>
+      <span class="page-number">58</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="29">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">07</span>
+            <span class="chapter-kicker">CHAPTER 07 / 07</span>
+          </div>
+          <h2>参考リンク</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <div class="table-wrap"><table><thead><tr><th>リンク</th><th>説明</th></tr></thead><tbody><tr><td>https://github.com/modelcontextprotocol/typescript-sdk</td><td>TypeScript SDK（v2: <code>@modelcontextprotocol/server</code>）</td></tr><tr><td>https://github.com/modelcontextprotocol/python-sdk</td><td>Python SDK（v2: <code>mcp</code>）</td></tr><tr><td>https://github.com/modelcontextprotocol/go-sdk</td><td>Go SDK（Tier1）</td></tr><tr><td>https://github.com/modelcontextprotocol/csharp-sdk</td><td>C# SDK（Tier1）</td></tr><tr><td>https://github.com/modelcontextprotocol/inspector</td><td>MCP Inspector（デバッグツール）</td></tr><tr><td>https://registry.modelcontextprotocol.io/</td><td>公式レジストリ（7,000+ サーバー）</td></tr><tr><td>https://blog.modelcontextprotocol.io/posts/2026-mcp-roadmap/</td><td>2026年ロードマップ</td></tr></tbody></table></div>
+      </div>
+      <span class="page-number">59</span>
     </div>
         
     <div class="page-face page-back">
@@ -2577,14 +2842,11 @@ app = <span class="tok-fn">to_a2a</span>(agent, port=<span class="tok-num">8001<
         </header>
         <h3>A2A</h3>
 <div class="table-wrap"><table><thead><tr><th>リンク</th><th>説明</th></tr></thead><tbody><tr><td>https://a2a-protocol.org/latest/</td><td>公式プロトコルドキュメント</td></tr><tr><td>https://a2a-protocol.org/latest/tutorials/python/</td><td>Python チュートリアル</td></tr><tr><td>https://github.com/a2aproject/a2a-samples</td><td>公式サンプルコード</td></tr><tr><td>https://github.com/google/adk-python</td><td>Google Agent Development Kit</td></tr><tr><td>https://opensource.googleblog.com/2026/04/</td><td>A2A 1周年ブログ（署名付きAgent Card等）</td></tr></tbody></table></div>
-<h3>比較・分析</h3>
-<div class="table-wrap"><table><thead><tr><th>リンク</th><th>説明</th></tr></thead><tbody><tr><td>https://redis.io/blog/5-agent-architectures-mcp-a2a-protocol-guide/</td><td>5つのアーキテクチャシナリオ比較</td></tr><tr><td>https://arxiv.org/html/2505.02279v1</td><td>学術サーベイ論文（MCP/ACP/A2A/ANP比較）</td></tr><tr><td>https://www.stackone.com/blog/mcp-vs-a2a-protocol/</td><td>技術比較と使い分けガイド</td></tr></tbody></table></div>
-<h3>セルフホスト参考</h3>
       </div>
-      <span class="page-number">46</span>
+      <span class="page-number">60</span>
     </div>
       </div>
-      <div class="page" data-leaf="23">
+      <div class="page" data-leaf="30">
         
     <div class="page-face page-front">
       <div class="page-content">
@@ -2596,11 +2858,45 @@ app = <span class="tok-fn">to_a2a</span>(agent, port=<span class="tok-num">8001<
           <h2>参考リンク</h2>
           <span class="continued">— 続き —</span>
         </header>
-        <div class="table-wrap"><table><thead><tr><th>リンク</th><th>説明</th></tr></thead><tbody><tr><td>https://render.com/articles/building-and-hosting-mcp-servers-a-complete-guide</td><td>MCPサーバー構築・ホスティング完全ガイド（2026年4月）</td></tr><tr><td>https://www.virtua.cloud/learn/en/tutorials/build-mcp-server-vps</td><td>VPS上のMCPサーバー構築（TypeScript + Nginx + Let&#39;s Encrypt）</td></tr><tr><td>https://nerdleveltech.com/a2a-protocol-python-tutorial</td><td>A2A AgentをPythonで実装するチュートリアル（2026年7月）</td></tr><tr><td>https://perlod.com/tutorials/deploy-a-remote-mcp-server-with-docker/</td><td>Docker + Nginx + TLS デプロイガイド</td></tr></tbody></table></div>
-<hr>
-<blockquote><strong>更新履歴</strong>: 2026-07-28 初版。MCP 仕様 2026-07-28（本日正式リリース）、A2A v1.0 の情報に基づく。MCP v2 の主な変更: ステートレスコア（initialize/セッション廃止）、server/discover、Mcp-Method/Name ヘッダ必須化、レスポンスキャッシュ、MRTR、Tasks/MCP Apps 拡張化。</blockquote>
+        <h3>比較・分析</h3>
+<div class="table-wrap"><table><thead><tr><th>リンク</th><th>説明</th></tr></thead><tbody><tr><td>https://redis.io/blog/5-agent-architectures-mcp-a2a-protocol-guide/</td><td>5つのアーキテクチャシナリオ比較</td></tr><tr><td>https://arxiv.org/html/2505.02279v1</td><td>学術サーベイ論文（MCP/ACP/A2A/ANP比較）</td></tr><tr><td>https://www.stackone.com/blog/mcp-vs-a2a-protocol/</td><td>技術比較と使い分けガイド</td></tr></tbody></table></div>
+<h3>セルフホスト参考</h3>
+<div class="table-wrap"><table><thead><tr><th>リンク</th><th>説明</th></tr></thead><tbody><tr><td>https://render.com/articles/building-and-hosting-mcp-servers-a-complete-guide</td><td>MCPサーバー構築・ホスティング完全ガイド（2026年4月）</td></tr></tbody></table></div>
       </div>
-      <span class="page-number">47</span>
+      <span class="page-number">61</span>
+    </div>
+        
+    <div class="page-face page-back">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">07</span>
+            <span class="chapter-kicker">CHAPTER 07 / 07</span>
+          </div>
+          <h2>参考リンク</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <div class="table-wrap"><table><thead><tr><th>リンク</th><th>説明</th></tr></thead><tbody><tr><td>https://www.virtua.cloud/learn/en/tutorials/build-mcp-server-vps</td><td>VPS上のMCPサーバー構築（TypeScript + Nginx + Let&#39;s Encrypt）</td></tr><tr><td>https://nerdleveltech.com/a2a-protocol-python-tutorial</td><td>A2A AgentをPythonで実装するチュートリアル（2026年7月）</td></tr><tr><td>https://perlod.com/tutorials/deploy-a-remote-mcp-server-with-docker/</td><td>Docker + Nginx + TLS デプロイガイド</td></tr></tbody></table></div>
+<hr>
+      </div>
+      <span class="page-number">62</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="31">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">07</span>
+            <span class="chapter-kicker">CHAPTER 07 / 07</span>
+          </div>
+          <h2>参考リンク</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <blockquote><strong>更新履歴</strong>: 2026-07-28 初版。MCP 仕様 2026-07-28（本日正式リリース）、A2A v1.0 の情報に基づく。MCP v2 の主な変更: ステートレスコア（initialize/セッション廃止）、server/discover、Mcp-Method/Name ヘッダ必須化、レスポンスキャッシュ、MRTR、Tasks/MCP Apps 拡張化。</blockquote>
+      </div>
+      <span class="page-number">63</span>
     </div>
         
     <div class="page-face page-back end-face">
@@ -2613,12 +2909,12 @@ app = <span class="tok-fn">to_a2a</span>(agent, port=<span class="tok-num">8001<
           <a class="end-btn" href="./">← 本棚に戻る</a>
           <button class="end-btn" type="button" data-face="2">目次へ</button>
         </div>
-        <p class="end-note">3D BOOKS · mcp-a2a · 2026.11.04</p>
+        <p class="end-note">3D BOOKS · mcp-a2a · 2026.11.06</p>
       </div>
-      <span class="page-number">48</span>
+      <span class="page-number">64</span>
     </div>
       </div>
-      <div class="page" data-leaf="24">
+      <div class="page" data-leaf="32">
         <div class="page-face page-front"></div>
         
     <div class="page-face page-back backcover-face">
@@ -2833,17 +3129,18 @@ app = <span class="tok-fn">to_a2a</span>(agent, port=<span class="tok-num">8001<
   function layout() {
     const single = window.matchMedia("(max-width: 760px)").matches;
     book.classList.toggle("single", single);
-    let width;
-    let height;
-    if (single) {
-      width = Math.min(window.innerWidth * 0.9, 520);
-      height = Math.min(window.innerHeight * 0.76, 760, width / 0.72);
-    } else {
-      width = Math.min(960, window.innerWidth * 0.9, window.innerHeight * 0.78 * 1.5);
-      height = width / 1.5;
-    }
-    book.style.width = width + "px";
-    book.style.height = height + "px";
+    // 紙面は固定サイズのまま、画面に合わせて全体を拡大縮小する。
+    // これにより、どの画面幅でも 1 ページに入る文字量が変わらない。
+    const designWidth = single ? 480 : 960;
+    const designHeight = 640;
+    const compact = window.innerWidth <= 900;
+    const availableWidth = window.innerWidth - (compact ? 20 : 44);
+    const availableHeight = window.innerHeight - 150;
+    const scale = Math.max(
+      0.2,
+      Math.min(1, availableWidth / designWidth, availableHeight / designHeight)
+    );
+    book.style.setProperty("--book-scale", String(scale));
     update();
   }
 
