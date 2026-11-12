@@ -624,7 +624,7 @@ ${SITE_CSS}
       <div class="hero-stats">
         <div class="hero-stat"><strong>${String(books.length).padStart(2, "0")}</strong><span>Volumes</span></div>
         <div class="hero-stat"><strong>${totalPages}</strong><span>Pages bound</span></div>
-        <div class="hero-stat"><strong>1</strong><span>Markdown file</span></div>
+        <div class="hero-stat"><strong>${String(books.length).padStart(2, "0")}</strong><span>Markdown files</span></div>
         <div class="hero-stat"><strong>2</strong><span>Deploy targets</span></div>
       </div>
     </div>
