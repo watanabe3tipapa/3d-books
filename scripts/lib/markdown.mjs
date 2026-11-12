@@ -226,12 +226,27 @@ export function parseBlocks(source) {
 }
 
 /**
+ * 原稿で使われる <source-chip title="..." url="..." /> を Markdown リンクへ変換する。
+ * 本の組版では HTML タグをそのまま表示しないため、出典名と URL を残す。
+ */
+function replaceSourceChips(text) {
+  return String(text).replace(/<source-chip\b[^>]*\/?>/gi, (tag) => {
+    const title = tag.match(/\btitle\s*=\s*"([^"]*)"/i)?.[1] || "";
+    const url = tag.match(/\burl\s*=\s*"([^"]*)"/i)?.[1] || "";
+    if (title && url) return `[${title}](${url})`;
+    if (title) return title;
+    if (url) return url;
+    return "";
+  });
+}
+
+/**
  * Markdown を本の構造へ変換する。
  * H1 = 書名（front matter がなければ採用）、H2 = 章、H3/H4 = 章内見出し。
  */
 export function parseBook(source, fallbackTitle = "Untitled") {
-  const { meta, body } = splitFrontMatter(source);
-  const blocks = parseBlocks(body);
+  const { meta, body: rawBody } = splitFrontMatter(source);
+  const blocks = parseBlocks(replaceSourceChips(rawBody));
 
   let title = typeof meta.title === "string" ? meta.title : "";
   const intro = [];

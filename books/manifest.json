@@ -1,9 +1,26 @@
 {
-  "generated": "2026.11.06",
-  "generatedAt": "2026-11-06T02:55:01.339Z",
+  "generated": "2026.11.12",
+  "generatedAt": "2026-11-12T13:16:55.421Z",
   "booksBaseUrl": "https://3d-books.vercel.app",
   "siteUrl": "https://watanabe3tipapa.github.io/3d-books/",
   "books": [
+    {
+      "slug": "embeddinggemma2-explanation",
+      "title": "EmbeddingGemma 2 論文解説",
+      "subtitle": "統合された効率的なマルチモーダル表現",
+      "author": "Google DeepMind",
+      "description": "EmbeddingGemma 2 の論文を、概要・背景・アーキテクチャ・学習戦略・実験結果・実用性まで章立てで解説する。",
+      "tags": [
+        "EmbeddingGemma",
+        "埋め込み",
+        "マルチモーダル",
+        "Google DeepMind"
+      ],
+      "pages": 19,
+      "href": "embeddinggemma2-explanation.html",
+      "updated": "2026-11-12T13:14:51.324Z",
+      "volume": 1
+    },
     {
       "slug": "mcp-a2a",
       "title": "MCP と A2A",
@@ -19,7 +36,24 @@
       "pages": 60,
       "href": "mcp-a2a.html",
       "updated": "2026-11-04T00:37:51.625Z",
-      "volume": 1
+      "volume": 2
+    },
+    {
+      "slug": "writingtools",
+      "title": "Apple 作文ツールと Siri と Sarashina AI",
+      "subtitle": "生成AI時代のライティング支援",
+      "author": "Notes - Tech",
+      "description": "Apple Intelligence の「作文ツール」、Siri、Sarashina AI を比較し、実際のライティングシーンでの使い分けを整理する。",
+      "tags": [
+        "Apple Intelligence",
+        "Writing Tools",
+        "Siri",
+        "Sarashina AI"
+      ],
+      "pages": 12,
+      "href": "writingtools.html",
+      "updated": "2026-11-12T13:14:47.144Z",
+      "volume": 3
     }
   ]
 }

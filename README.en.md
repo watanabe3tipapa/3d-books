@@ -8,7 +8,7 @@
 
 3d-books is a static site generator that turns `contents/*.md` into a 3D bookshelf and a page-turning 3D book. The build runs on the Node.js standard library alone, and every artifact is static HTML, CSS, and JavaScript. The bookshelf and books are published on Vercel; the landing page and mechanism diagram are published on GitHub Pages.
 
-> **Status:** v0.1.0 is a **prototype**. It validates the basic flow from a single manuscript to a bookshelf and a 3D book. Multi-book operation, image layout, full-text search, and other capabilities remain future work.
+> **Status:** v0.1.0 is a **prototype**. It validates the basic flow from multiple manuscripts in `contents/` to a bookshelf and 3D books. Image layout, full-text search, and other capabilities remain future work.
 
 > **The manuscript stays in charge:** manuscripts remain plain Markdown files in `contents/`. There is no proprietary database or admin UI.
 

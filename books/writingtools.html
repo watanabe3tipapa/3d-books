@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apple 作文ツールと Siri と Sarashina AI - 3D BOOKS</title>
+<meta name="description" content="Apple Intelligence の「作文ツール」、Siri、Sarashina AI を比較し、実際のライティングシーンでの使い分けを整理する。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&amp;family=Noto+Serif+JP:wght@400;600;700;900&amp;display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --bg: #0c1020;
+  --bg-2: #11162a;
+  --surface: #141a30;
+  --surface-2: #1c2440;
+  --ink: #f5f0e8;
+  --ink-dim: rgba(245, 240, 232, 0.72);
+  --muted: #8c8a9c;
+  --gold: #c9a227;
+  --gold-soft: #e7cd72;
+  --gold-weak: rgba(201, 162, 39, 0.14);
+  --gold-line: rgba(201, 162, 39, 0.3);
+  --rose: #e94560;
+  --rose-weak: rgba(233, 69, 96, 0.14);
+  --paper: #f5f0e8;
+  --paper-dark: #e8e0d4;
+  --paper-line: #d8cdbb;
+  --text: #1d2233;
+  --text-soft: #596074;
+  --code-bg: #20232b;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --serif: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --sans: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --mono: "SFMono-Regular", "JetBrains Mono", "Courier New", monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a { color: var(--gold-soft); text-decoration: none; }
+a:hover { color: #fff; }
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+::selection { background: rgba(201, 162, 39, 0.35); color: #fff; }
+
+.gold-rule {
+  width: 64px;
+  height: 2px;
+  border: 0;
+  background: linear-gradient(90deg, var(--gold), rgba(201, 162, 39, 0.1));
+}
+
+.eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+
+/* ---- 本棚（棚ページと開幕アニメーションで共用） ---- */
+.shelf-room {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1800px;
+  perspective-origin: 50% 42%;
+}
+
+.shelf-room::before {
+  content: "";
+  position: absolute;
+  inset: -10%;
+  background:
+    radial-gradient(ellipse at 50% 18%, rgba(201, 162, 39, 0.16), transparent 55%),
+    radial-gradient(ellipse at 20% 75%, rgba(233, 69, 96, 0.08), transparent 45%);
+  pointer-events: none;
+}
+
+.shelf-cabinet {
+  position: relative;
+  width: min(1000px, 92vw);
+  padding: 28px 38px 20px;
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.05), transparent 10%, transparent 90%, rgba(0,0,0,0.25)),
+    linear-gradient(180deg, #4a3122 0%, #352216 45%, #28180f 100%);
+  border: 1px solid rgba(231, 205, 114, 0.16);
+  box-shadow:
+    0 40px 90px rgba(0, 0, 0, 0.65),
+    0 6px 0 #1b110b,
+    inset 0 1px 0 rgba(255, 226, 170, 0.16);
+  transform: rotateX(2.2deg);
+}
+
+.shelf-cabinet::before,
+.shelf-cabinet::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  width: 14px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #1c120b, #4a3122 45%, #2b1a11);
+  box-shadow: inset 0 0 0 1px rgba(231, 205, 114, 0.1);
+}
+.shelf-cabinet::before { left: 9px; }
+.shelf-cabinet::after { right: 9px; }
+
+.shelf-inner {
+  position: relative;
+  padding: 18px 22px 0;
+  border-radius: 4px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(201, 162, 39, 0.1), transparent 60%),
+    linear-gradient(180deg, #120d09 0%, #1b130d 60%, #0e0906 100%);
+  box-shadow:
+    inset 0 20px 40px rgba(0, 0, 0, 0.8),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.shelf-row {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(4px, 0.8vw, 11px);
+  min-height: 318px;
+  padding: 0 clamp(6px, 1.4vw, 18px);
+  z-index: 1;
+}
+
+.shelf-row::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 28px;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.55));
+  pointer-events: none;
+}
+
+.shelf-board {
+  position: relative;
+  height: 18px;
+  margin: 0 -22px;
+  background:
+    linear-gradient(180deg, #6b472e 0%, #4a2e1e 22%, #2c1a10 78%, #1a0f09 100%);
+  border-top: 1px solid rgba(255, 224, 166, 0.22);
+  box-shadow:
+    0 10px 18px rgba(0, 0, 0, 0.55),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+.shelf-board::after {
+  content: "";
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 4px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(231, 205, 114, 0.28), transparent);
+}
+
+.shelf-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 6px 0;
+  color: rgba(245, 240, 232, 0.46);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* 背表紙 */
+.spine {
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--w, 46px);
+  height: var(--h, 296px);
+  border-radius: 2px 3px 3px 2px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.22), transparent 14%, transparent 82%, rgba(0, 0, 0, 0.32)),
+    linear-gradient(180deg, var(--c1, #5a3a2a), var(--c2, #2c1a12));
+  border: 1px solid rgba(255, 240, 210, 0.1);
+  box-shadow:
+    inset 1px 0 0 rgba(255, 235, 200, 0.18),
+    inset -2px 0 4px rgba(0, 0, 0, 0.35),
+    0 5px 12px rgba(0, 0, 0, 0.45);
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 0;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-family: var(--serif);
+  font-size: clamp(0.7rem, 0.9vw, 0.84rem);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transform: translateZ(0);
+  transition: transform 0.38s cubic-bezier(0.22, 0.8, 0.2, 1), box-shadow 0.38s ease, filter 0.38s ease;
+  user-select: none;
+  overflow: hidden;
+}
+
+.spine::before,
+.spine::after {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(231, 205, 114, 0.72), transparent);
+  opacity: 0.8;
+}
+.spine::before { top: 12px; }
+.spine::after { bottom: 12px; }
+
+.spine .spine-title {
+  max-height: calc(100% - 44px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.spine .spine-dot {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: var(--gold-soft);
+  box-shadow: 0 0 8px rgba(231, 205, 114, 0.75);
+}
+
+.spine:hover,
+.spine:focus-visible,
+.spine.current {
+  transform: translateY(-16px) translateZ(34px) rotateY(-5deg);
+  box-shadow:
+    inset 1px 0 0 rgba(255, 235, 200, 0.25),
+    0 22px 30px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(231, 205, 114, 0.55),
+    0 0 26px rgba(201, 162, 39, 0.28);
+  outline: none;
+  filter: brightness(1.12);
+}
+
+.spine.current {
+  transform: translateY(-22px) translateZ(52px) rotateY(-4deg);
+}
+
+.spine:active {
+  transform: translateY(-8px) translateZ(20px) rotateY(-2deg);
+}
+
+.shelf-empty {
+  margin: 40px auto;
+  padding: 48px;
+  max-width: 460px;
+  text-align: center;
+  color: var(--ink-dim);
+  border: 1px dashed rgba(201, 162, 39, 0.3);
+  border-radius: 6px;
+  line-height: 2;
+}
+.shelf-empty code {
+  color: var(--gold-soft);
+  font-family: var(--mono);
+  font-size: 0.9em;
+}
+
+/* ---- 本棚から取り出すアニメーション ---- */
+.takeout-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(201, 162, 39, 0.08), transparent 60%),
+    rgba(5, 7, 16, 0.72);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+.takeout-layer.done { opacity: 0; pointer-events: none; }
+
+.tb-spine {
+  position: fixed;
+  z-index: 2;
+  border-radius: 2px 3px 3px 2px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.24), transparent 16%, transparent 82%, rgba(0, 0, 0, 0.34)),
+    linear-gradient(180deg, var(--c1, #5a3a2a), var(--c2, #2c1a12));
+  border: 1px solid rgba(255, 240, 210, 0.14);
+  box-shadow:
+    inset 1px 0 0 rgba(255, 235, 200, 0.22),
+    0 24px 50px rgba(0, 0, 0, 0.65),
+    0 0 40px rgba(201, 162, 39, 0.2);
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: vertical-rl;
+  font-family: var(--serif);
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  overflow: hidden;
+}
+.tb-spine::before,
+.tb-spine::after {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(231, 205, 114, 0.75), transparent);
+}
+.tb-spine::before { top: 12px; }
+.tb-spine::after { bottom: 12px; }
+
+.tb-book {
+  position: fixed;
+  z-index: 3;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+}
+
+.tb-pages {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px 5px 5px 2px;
+  background:
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.035) 0 1px, transparent 1px 4px),
+    linear-gradient(180deg, #fbf7ef, #e9e1d3);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.6),
+    inset -8px 0 14px rgba(0, 0, 0, 0.12);
+}
+
+.tb-cover {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  border-radius: 2px 5px 5px 2px;
+}
+
+.tb-cover-front,
+.tb-cover-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 2px 5px 5px 2px;
+  overflow: hidden;
+}
+
+.tb-cover-front {
+  background:
+    radial-gradient(circle at 78% 16%, rgba(201, 162, 39, 0.22), transparent 45%),
+    linear-gradient(145deg, #18203c 0%, #0d1226 55%, #090d1a 100%);
+  border: 1px solid rgba(231, 205, 114, 0.32);
+  box-shadow: inset 0 0 0 6px rgba(231, 205, 114, 0.08);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 13% 12%;
+  text-align: center;
+}
+.tb-cover-front::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(231, 205, 114, 0.28);
+  pointer-events: none;
+}
+.tb-cover-front .tb-kicker {
+  font-size: 0.58em;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.tb-cover-front .tb-title {
+  font-family: var(--serif);
+  font-size: 2em;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.03em;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.5);
+}
+.tb-cover-front .tb-sub {
+  font-size: 0.72em;
+  color: var(--ink-dim);
+  line-height: 1.7;
+}
+.tb-cover-front .tb-author {
+  font-size: 0.62em;
+  letter-spacing: 0.18em;
+  color: rgba(245, 240, 232, 0.55);
+}
+
+.tb-cover-back {
+  transform: rotateY(180deg);
+  background:
+    repeating-linear-gradient(0deg, transparent 0 27px, rgba(0, 0, 0, 0.025) 27px 28px),
+    linear-gradient(180deg, #f4eee2, #e8dfd0);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.08);
+}
+.tb-cover-back::before {
+  content: "3D BOOKS";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--serif);
+  font-size: 1.4em;
+  letter-spacing: 0.3em;
+  color: rgba(29, 34, 51, 0.18);
+}
+
+.takeout-caption {
+  position: fixed;
+  left: 50%;
+  bottom: 7vh;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  color: var(--ink-dim);
+  font-size: 0.72rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: caption-in 0.8s ease 0.5s forwards;
+}
+@keyframes caption-in { to { opacity: 1; } }
+
+.skip-btn {
+  padding: 9px 20px;
+  border: 1px solid rgba(231, 205, 114, 0.35);
+  border-radius: 999px;
+  color: var(--gold-soft);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  background: rgba(12, 16, 32, 0.55);
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+.skip-btn:hover { background: rgba(201, 162, 39, 0.16); border-color: var(--gold); }
+
+@media (max-width: 720px) {
+  .shelf-cabinet { padding: 18px 22px 14px; }
+  .shelf-inner { padding: 10px 12px 0; }
+  .shelf-row { min-height: 240px; }
+  .spine { height: var(--hm, 220px); }
+}
+
+
+.reader {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.7s ease, visibility 0.7s;
+  background:
+    radial-gradient(ellipse at 50% 12%, rgba(201, 162, 39, 0.11), transparent 52%),
+    radial-gradient(ellipse at 12% 88%, rgba(233, 69, 96, 0.07), transparent 46%),
+    linear-gradient(180deg, #0c1020, #070a14);
+}
+.reader.ready { opacity: 1; visibility: visible; }
+
+.reader::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a227' fill-opacity='0.045'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.reader-topbar {
+  position: fixed;
+  top: 18px;
+  left: 22px;
+  right: 22px;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  pointer-events: none;
+}
+.reader-topbar > * { pointer-events: auto; }
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border: 1px solid rgba(201, 162, 39, 0.28);
+  border-radius: 999px;
+  background: rgba(12, 16, 32, 0.58);
+  color: var(--ink-dim);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+}
+.pill:hover { border-color: var(--gold); color: var(--gold-soft); background: rgba(201, 162, 39, 0.1); }
+
+.reader-title {
+  min-width: 0;
+  text-align: center;
+  font-family: var(--serif);
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  color: rgba(245, 240, 232, 0.55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 22px 86px;
+  perspective: 2800px;
+  perspective-origin: 50% 44%;
+}
+
+.book {
+  position: relative;
+  flex: none;
+  width: 960px;
+  height: 640px;
+  transform: scale(var(--book-scale, 1));
+  transform-origin: center center;
+  transform-style: preserve-3d;
+  transition: transform 0.9s cubic-bezier(0.645, 0.045, 0.355, 1);
+  will-change: transform;
+}
+.book.single { width: 480px; }
+.book.closed:not(.single) { transform: translateX(-25%) scale(var(--book-scale, 1)); }
+
+.book-gutter {
+  position: absolute;
+  left: 50%;
+  top: 1%;
+  width: 34px;
+  height: 98%;
+  transform: translateX(-50%);
+  z-index: 60;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.16) 42%, rgba(0, 0, 0, 0.24) 50%, rgba(0, 0, 0, 0.16) 58%, transparent);
+  filter: blur(0.4px);
+}
+.book.single .book-gutter { display: none; }
+
+.page-container {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.page {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform 0.86s cubic-bezier(0.645, 0.045, 0.355, 1);
+  will-change: transform;
+}
+.page.flipped { transform: rotateY(-180deg); }
+.page.flipping { z-index: 999 !important; }
+
+.book.single .page { left: 0; width: 100%; }
+
+.page-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: var(--paper);
+  border-radius: 2px 6px 6px 2px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.25),
+    inset 18px 0 28px rgba(0, 0, 0, 0.045);
+}
+.page-back {
+  transform: rotateY(180deg);
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.045), transparent 9%),
+    var(--paper-dark);
+}
+.page-front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(270deg, transparent 88%, rgba(0, 0, 0, 0.05));
+}
+
+.page-content {
+  position: absolute;
+  inset: 0;
+  padding: 34px 34px 42px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201, 162, 39, 0.5) transparent;
+}
+.page-content::-webkit-scrollbar { width: 5px; }
+.page-content::-webkit-scrollbar-thumb { background: rgba(201, 162, 39, 0.45); border-radius: 3px; }
+/* 最後のブロックの余白で不要なスクロールバーが出ないようにする */
+.page-content > :last-child { margin-bottom: 0; }
+
+.page-number {
+  position: absolute;
+  bottom: 13px;
+  z-index: 2;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: #9a8f7e;
+}
+.page-front .page-number { right: 24px; }
+.page-back .page-number { left: 24px; }
+
+/* ---- 紙面の組版 ---- */
+.chapter-head { margin-bottom: 18px; }
+.chapter-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.chapter-num {
+  font-family: var(--serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+}
+.chapter-kicker {
+  font-size: 0.55rem;
+  letter-spacing: 0.28em;
+  color: #a49a88;
+  text-transform: uppercase;
+}
+.chapter-head h2 {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  color: #16213e;
+  padding-bottom: 9px;
+  border-bottom: 2px solid var(--gold);
+}
+.continued {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: #a49a88;
+}
+
+.page-content h3 {
+  position: relative;
+  margin: 20px 0 9px;
+  padding-left: 13px;
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #0f3460;
+}
+.page-content h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.28em;
+  width: 4px;
+  height: 1.05em;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--gold), rgba(201, 162, 39, 0.2));
+}
+.page-content h4 {
+  margin: 16px 0 7px;
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #7a5a14;
+}
+.page-content p {
+  margin-bottom: 11px;
+  font-size: 0.865rem;
+  line-height: 1.9;
+  color: var(--text);
+  text-align: justify;
+  text-justify: inter-ideograph;
+}
+.page-content strong { color: #11172a; font-weight: 700; }
+.page-content em { font-style: normal; background: linear-gradient(transparent 68%, rgba(201, 162, 39, 0.28) 68%); }
+.page-content del { color: #8e8678; }
+
+.page-content ul,
+.page-content ol { margin: 4px 0 12px 1.25em; }
+.page-content li {
+  margin-bottom: 6px;
+  font-size: 0.845rem;
+  line-height: 1.75;
+  color: var(--text);
+}
+.page-content li[data-depth="1"] { margin-left: 1em; }
+.page-content li[data-depth="2"] { margin-left: 2em; }
+.page-content li[data-depth="3"] { margin-left: 3em; }
+.page-content li::marker { color: var(--gold); }
+.task-box { color: #7a5a14; font-weight: 700; margin-right: 5px; }
+
+.page-content code {
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: #ebe3d4;
+  color: #7a2f22;
+  font-family: var(--mono);
+  font-size: 0.86em;
+}
+
+.page-content a {
+  color: #9a2f45;
+  text-decoration: underline;
+  text-decoration-color: rgba(233, 69, 96, 0.35);
+  text-underline-offset: 2px;
+}
+.page-content a:hover { color: var(--rose); }
+
+.page-content blockquote {
+  margin: 12px 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--gold);
+  background: rgba(201, 162, 39, 0.08);
+  border-radius: 0 4px 4px 0;
+  font-size: 0.83rem;
+  line-height: 1.8;
+  color: #4d4638;
+}
+
+.page-content hr {
+  height: 1px;
+  margin: 18px 0;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--paper-line) 15%, var(--paper-line) 85%, transparent);
+}
+
+.table-wrap {
+  margin: 10px 0 14px;
+  overflow-x: auto;
+  border: 1px solid #ded3c2;
+  border-radius: 5px;
+  background: #fbf7ef;
+}
+.page-content table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 0.7rem;
+  line-height: 1.55;
+}
+.page-content th {
+  padding: 7px 8px;
+  background: #16213e;
+  color: #f5f0e8;
+  font-weight: 600;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.page-content td {
+  padding: 6px 8px;
+  border-top: 1px solid #e6dccd;
+  color: #2b3040;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.page-content tbody tr:nth-child(even) { background: rgba(201, 162, 39, 0.055); }
+
+.code-block {
+  position: relative;
+  margin: 12px 0 16px;
+  border-radius: 5px;
+  background: var(--code-bg);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 3px 10px rgba(0, 0, 0, 0.16);
+  overflow: hidden;
+}
+.code-lang {
+  padding: 6px 12px 0;
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #7d8494;
+}
+.code-block pre {
+  margin: 0;
+  padding: 8px 13px 12px;
+  overflow-x: hidden;
+}
+.code-block code {
+  display: block;
+  padding: 0;
+  background: none;
+  color: #f0eee8;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 2;
+}
+.tok-com { color: #7f8a7a; font-style: italic; }
+.tok-str { color: #b8d98a; }
+.tok-kw { color: #7fd4e8; }
+.tok-num { color: #e8b46a; }
+.tok-fn { color: #f0a45d; }
+
+/* ---- 表紙 ---- */
+.cover-face {
+  background:
+    radial-gradient(circle at 78% 14%, rgba(201, 162, 39, 0.2), transparent 42%),
+    radial-gradient(circle at 16% 88%, rgba(233, 69, 96, 0.12), transparent 46%),
+    linear-gradient(145deg, #18203c 0%, #0e1328 52%, #080c18 100%);
+  color: var(--ink);
+}
+.cover-face::before {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(231, 205, 114, 0.32);
+  border-radius: 2px;
+  pointer-events: none;
+}
+.cover-face::after {
+  content: "";
+  position: absolute;
+  inset: 22px;
+  border: 1px solid rgba(231, 205, 114, 0.1);
+  border-radius: 2px;
+  pointer-events: none;
+}
+.cover-inner {
+  position: absolute;
+  inset: 0;
+  padding: 13% 12%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+}
+.cover-kicker {
+  font-size: 0.62rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.cover-emblem {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  margin: 6px auto 2px;
+  border: 1px solid rgba(231, 205, 114, 0.55);
+  transform: rotate(45deg);
+}
+.cover-emblem::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(231, 205, 114, 0.3);
+}
+.cover-title {
+  max-width: 96%;
+  font-family: var(--serif);
+  font-size: clamp(1.9rem, 4vw, 2.85rem);
+  font-weight: 700;
+  line-height: 1.24;
+  letter-spacing: 0.03em;
+  text-shadow: 0 3px 24px rgba(0, 0, 0, 0.55);
+  overflow-wrap: anywhere;
+}
+.cover-title.long { font-size: 2.3rem; }
+.cover-title.xlong { font-size: 1.85rem; }
+.cover-sub {
+  max-width: 88%;
+  font-size: 0.78rem;
+  line-height: 1.8;
+  letter-spacing: 0.11em;
+  color: var(--ink-dim);
+}
+.cover-line {
+  width: 58px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.cover-author {
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
+  color: rgba(245, 240, 232, 0.55);
+}
+.cover-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.16em;
+  color: rgba(245, 240, 232, 0.4);
+}
+
+/* ---- 奥付・目次・おわり・裏表紙 ---- */
+.about-face { background: var(--paper); }
+.about-inner {
+  position: absolute;
+  inset: 0;
+  padding: 46px 38px 40px;
+  display: flex;
+  flex-direction: column;
+}
+.about-inner h2 {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  color: #16213e;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--gold);
+}
+.about-inner .about-desc {
+  margin-top: 18px;
+  font-size: 0.86rem;
+  line-height: 1.95;
+  color: var(--text);
+}
+.about-meta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  margin-top: 22px;
+  border-top: 1px solid var(--paper-line);
+  font-size: 0.7rem;
+}
+.about-meta dt {
+  padding: 8px 16px 8px 0;
+  border-bottom: 1px solid var(--paper-line);
+  color: #8c8271;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.about-meta dd {
+  min-width: 0;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--paper-line);
+  color: #2b3040;
+  font-family: var(--mono);
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.about-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+.about-tags span {
+  padding: 3px 9px;
+  border: 1px solid rgba(201, 162, 39, 0.4);
+  border-radius: 999px;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: #7a5a14;
+}
+.about-note {
+  margin-top: auto;
+  padding-top: 16px;
+  font-size: 0.64rem;
+  line-height: 1.7;
+  color: #9a9080;
+  border-top: 1px dashed var(--paper-line);
+}
+
+.toc-face { background: var(--paper); }
+.toc-inner { position: absolute; inset: 0; padding: 42px 38px; }
+.toc-inner h2 {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  color: #16213e;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--gold);
+}
+.toc-note { margin: 10px 0 12px; font-size: 0.64rem; letter-spacing: 0.12em; color: #9a9080; }
+.toc-list { list-style: none; }
+.toc-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 2px;
+  border-bottom: 1px dashed #d9cebd;
+  cursor: pointer;
+  transition: color 0.2s ease, padding 0.2s ease;
+}
+.toc-list li:hover { color: var(--rose); padding-left: 6px; }
+.toc-num {
+  flex: 0 0 auto;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+}
+.toc-label {
+  flex: 1;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: #2b3040;
+}
+.toc-page {
+  flex: 0 0 auto;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: #9a9080;
+}
+.toc-foot { margin-top: 18px; font-size: 0.62rem; color: #9a9080; line-height: 1.8; }
+
+.end-face {
+  background:
+    radial-gradient(ellipse at 50% 35%, rgba(201, 162, 39, 0.12), transparent 55%),
+    var(--paper);
+}
+.end-inner {
+  position: absolute;
+  inset: 0;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.end-inner .end-mark {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(201, 162, 39, 0.55);
+  transform: rotate(45deg);
+}
+.end-inner h2 {
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #16213e;
+}
+.end-inner .cover-line { margin: 14px 0 18px; }
+.end-inner p {
+  max-width: 78%;
+  font-size: 0.82rem;
+  line-height: 1.95;
+  color: #5d5648;
+}
+.end-actions { display: flex; gap: 12px; margin-top: 26px; flex-wrap: wrap; justify-content: center; }
+.end-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid rgba(201, 162, 39, 0.5);
+  border-radius: 999px;
+  color: #7a5a14;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.end-btn:hover { background: #16213e; color: var(--paper); }
+.end-note { margin-top: 26px; font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em; color: #9a9080; }
+
+.backcover-face {
+  background:
+    radial-gradient(circle at 72% 20%, rgba(201, 162, 39, 0.16), transparent 42%),
+    radial-gradient(circle at 20% 82%, rgba(233, 69, 96, 0.08), transparent 48%),
+    linear-gradient(145deg, #0e1328 0%, #090d1a 100%);
+  color: var(--ink);
+}
+.backcover-inner {
+  position: absolute;
+  inset: 22px;
+  border: 1px solid rgba(231, 205, 114, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+}
+.backcover-inner .bc-mark {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(231, 205, 114, 0.55);
+  transform: rotate(45deg);
+}
+.backcover-inner .bc-title {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  letter-spacing: 0.32em;
+  color: var(--gold-soft);
+}
+.backcover-inner .bc-note {
+  max-width: 70%;
+  font-size: 0.66rem;
+  line-height: 1.8;
+  letter-spacing: 0.12em;
+  color: rgba(245, 240, 232, 0.45);
+}
+
+/* ---- ナビゲーション ---- */
+.reader-hint {
+  position: fixed;
+  bottom: 82px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 70;
+  color: rgba(245, 240, 232, 0.36);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.nav-controls {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 9px 20px;
+  border: 1px solid rgba(201, 162, 39, 0.22);
+  border-radius: 999px;
+  background: rgba(12, 16, 32, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+.nav-btn {
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(201, 162, 39, 0.45);
+  border-radius: 50%;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
+}
+.nav-btn:hover:not(:disabled) { background: var(--gold); color: #14100a; transform: scale(1.08); }
+.nav-btn:disabled { opacity: 0.28; cursor: not-allowed; }
+.page-indicator {
+  min-width: 100px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+}
+
+/* ---- 開幕の本棚 ---- */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 22%, rgba(201, 162, 39, 0.14), transparent 55%),
+    radial-gradient(ellipse at 80% 90%, rgba(233, 69, 96, 0.06), transparent 40%),
+    linear-gradient(180deg, #0b0f1d, #070a12 65%, #0c0906);
+  opacity: 1;
+  transition: opacity 0.65s ease, visibility 0.65s;
+}
+.intro.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.intro::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 28%;
+  background:
+    linear-gradient(180deg, transparent, rgba(58, 36, 24, 0.28) 35%, rgba(22, 13, 8, 0.85)),
+    repeating-linear-gradient(90deg, rgba(231, 205, 114, 0.035) 0 2px, transparent 2px 90px);
+  pointer-events: none;
+}
+
+.intro-brand {
+  position: absolute;
+  top: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  font-family: var(--serif);
+  font-size: 0.72rem;
+  letter-spacing: 0.42em;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+.intro-shelf {
+  position: absolute;
+  inset: 8vh 0 10vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro-caption {
+  position: absolute;
+  bottom: 5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color: rgba(245, 240, 232, 0.5);
+  font-size: 0.68rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.intro-skip {
+  padding: 8px 18px;
+  border: 1px solid rgba(231, 205, 114, 0.3);
+  border-radius: 999px;
+  color: var(--gold-soft);
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  transition: background 0.25s ease;
+}
+.intro-skip:hover { background: rgba(201, 162, 39, 0.14); }
+
+@media (max-width: 900px) {
+  .reader-topbar { top: 10px; left: 12px; right: 12px; }
+  .reader-title { display: none; }
+  .scene { padding: 60px 10px 90px; }
+  .nav-controls { gap: 10px; padding: 7px 14px; }
+  .reader-hint { display: none; }
+  .intro-shelf { inset: 12vh 0 14vh; }
+  .intro-caption { font-size: 0.58rem; letter-spacing: 0.16em; }
+}
+
+</style>
+<noscript>
+  <style>
+    #intro { display: none !important; }
+    #reader { opacity: 1 !important; visibility: visible !important; }
+    .book { transform: none !important; }
+  </style>
+</noscript>
+</head>
+<body>
+
+<div class="intro" id="intro">
+  <div class="intro-brand">3D BOOKS / TAKE A BOOK</div>
+  <div class="intro-shelf">
+    <div class="shelf-room">
+      
+    <div class="shelf-cabinet">
+      <div class="shelf-inner">
+        
+        <div class="shelf-row" role="list">
+            <button class="spine" type="button"
+              data-slug="embeddinggemma2-explanation"
+              data-title="EmbeddingGemma 2 論文解説"
+              data-subtitle="統合された効率的なマルチモーダル表現"
+              data-author="Google DeepMind"
+              data-c1="#4a3f6b" data-c2="#1c1830"
+              data-href="embeddinggemma2-explanation.html"
+              style="--w:58px;--h:290px;--hm:226px;--c1:#4a3f6b;--c2:#1c1830"
+              aria-label="EmbeddingGemma 2 論文解説 を取り出す">
+              <span class="spine-dot" aria-hidden="true"></span>
+              <span class="spine-title">EmbeddingGemma 2 論文解説</span>
+            </button>
+            <button class="spine" type="button"
+              data-slug="mcp-a2a"
+              data-title="MCP と A2A"
+              data-subtitle="マルチエージェント時代の接続プロトコル"
+              data-author="Notes - Tech"
+              data-c1="#2f4a5e" data-c2="#14222d"
+              data-href="mcp-a2a.html"
+              style="--w:55px;--h:283px;--hm:221px;--c1:#2f4a5e;--c2:#14222d"
+              aria-label="MCP と A2A を取り出す">
+              <span class="spine-dot" aria-hidden="true"></span>
+              <span class="spine-title">MCP と A2A</span>
+            </button>
+            <button class="spine current" type="button"
+              data-slug="writingtools"
+              data-title="Apple 作文ツールと Siri と Sarashina AI"
+              data-subtitle="生成AI時代のライティング支援"
+              data-author="Notes - Tech"
+              data-c1="#3e3a5e" data-c2="#19172b"
+              data-href="writingtools.html"
+              style="--w:64px;--h:265px;--hm:207px;--c1:#3e3a5e;--c2:#19172b"
+              aria-label="Apple 作文ツールと Siri と Sarashina AI を取り出す">
+              <span class="spine-dot" aria-hidden="true"></span>
+              <span class="spine-title">Apple 作文ツールと Siri と Sarashina AI</span>
+            </button></div>
+        <div class="shelf-board" aria-hidden="true"></div>
+        <div class="shelf-caption">
+          <span>3D BOOKS / LIBRARY</span>
+          <span>3 VOLUMES</span>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+  <div class="intro-caption">
+    <span>本棚から取り出しています…</span>
+    <button class="intro-skip" id="skipIntro" type="button">スキップ</button>
+  </div>
+</div>
+
+<div class="reader" id="reader" aria-hidden="true">
+  <div class="reader-topbar">
+    <a class="pill" href="./">← 本棚</a>
+    <div class="reader-title">Apple 作文ツールと Siri と Sarashina AI</div>
+    <button class="pill" id="replayBtn" type="button">取り出しを再生</button>
+  </div>
+
+  <div class="scene">
+    <div class="book closed" id="book">
+      <div class="book-gutter" aria-hidden="true"></div>
+      <div class="page-container" id="pageContainer">
+        
+      <div class="page" data-leaf="0">
+        
+    <div class="page-face page-front cover-face">
+      <div class="cover-inner">
+        <div class="cover-kicker">3D BOOKS / VOL. 03</div>
+        <div class="cover-emblem" aria-hidden="true"></div>
+        <h1 class="cover-title long">Apple 作文ツールと Siri と Sarashina AI</h1>
+        <div class="cover-line" aria-hidden="true"></div>
+        <p class="cover-sub">生成AI時代のライティング支援</p>
+        <div class="cover-author">Notes - Tech</div>
+        <div class="cover-meta"><span>12 PAGES</span><span>·</span><span>2026.11.12</span></div>
+      </div>
+    </div>
+        
+    <div class="page-face page-back about-face">
+      <div class="about-inner">
+        <h2>この本について</h2>
+        <p class="about-desc">Apple Intelligence の「作文ツール」、Siri、Sarashina AI を比較し、実際のライティングシーンでの使い分けを整理する。</p>
+        <div class="about-tags"><span>Apple Intelligence</span><span>Writing Tools</span><span>Siri</span><span>Sarashina AI</span></div>
+        <dl class="about-meta">
+          <dt>原稿</dt><dd>contents/writingtools.md</dd>
+          <dt>製本</dt><dd>books/writingtools.html</dd>
+          <dt>ページ</dt><dd>12 pages</dd>
+          <dt>生成</dt><dd>2026.11.12</dd>
+          <dt>公開</dt><dd>Vercel / GitHub Pages</dd>
+        </dl>
+        <p class="about-note">この本は <strong>contents/*.md</strong> から自動製本されました。Markdown を置くと、本棚と 3D ブックが更新されます。</p>
+      </div>
+      <span class="page-number">02</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="1">
+        
+    <div class="page-face page-front toc-face">
+      <div class="toc-inner">
+        <h2>目次</h2>
+        <p class="toc-note">CONTENTS / 章を選ぶとそのページへ移動します</p>
+        <ul class="toc-list"><li data-face="3" tabindex="0" role="button">
+        <span class="toc-num">01</span>
+        <span class="toc-label">それぞれの機能に関する比較</span>
+        <span class="toc-page">p.04</span>
+      </li><li data-face="9" tabindex="0" role="button">
+        <span class="toc-num">02</span>
+        <span class="toc-label">比較まとめ</span>
+        <span class="toc-page">p.10</span>
+      </li><li data-face="11" tabindex="0" role="button">
+        <span class="toc-num">03</span>
+        <span class="toc-label">実際のライティングシーンでの使い分け</span>
+        <span class="toc-page">p.12</span>
+      </li></ul>
+        <p class="toc-foot">← → キー、スワイプ、下のボタンでもページをめくれます。</p>
+      </div>
+      <span class="page-number">03</span>
+    </div>
+        
+    <div class="page-face page-back">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">01</span>
+            <span class="chapter-kicker">CHAPTER 01 / 03</span>
+          </div>
+          <h2>それぞれの機能に関する比較</h2>
+          
+        </header>
+        <h3>Apple「作文ツール」（Writing Tools）</h3>
+<p>Apple Intelligenceが提供する「作文ツール」は、iPhone、iPad、Macのテキスト入力フィールド全般で利用できる、OS統合型ライティング支援機能です。2025年3月に日本語対応が開始され、国内ユーザーも本格的に活用できるようになりました。<a href="https://www.apple.com/jp/newsroom/2025/03/apple-intelligence-features-are-now-available-in-more-languages/" target="_blank" rel="noopener noreferrer">Apple (日本)</a></p>
+<p>主な機能は以下の通りです。</p>
+<ul><li data-depth="0"><strong>書き直し（リライト）</strong>: 元のトーンを維持しつつ、複数の表現バリエーションを提示。</li><li data-depth="0"><strong>スタイル変更</strong>: 「プロフェッショナル」「簡潔」「フレンドリー」など、目的に応じたトーン調整が可能。</li></ul>
+      </div>
+      <span class="page-number">04</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="2">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">01</span>
+            <span class="chapter-kicker">CHAPTER 01 / 03</span>
+          </div>
+          <h2>それぞれの機能に関する比較</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <ul><li data-depth="0"><strong>校正</strong>: 文法誤りや表現の改善点を検出し、一括または個別で適用。</li><li data-depth="0"><strong>要約・整理</strong>: 長文の要点抽出や、箇条書きへの再構成を支援。</li><li data-depth="0"><strong>指示による編集</strong>: テキストフィールド内で具体的な指示を入力することで、精密な修正が可能。</li></ul>
+<p>最大の特徴は、純正アプリに限らずサードパーティアプリやWebフォームなど、ほぼすべてのテキスト入力場面で利用可能な点にあります。また、ChatGPTとの連携により、外部モデルを活用した生成機能も拡張できます。<a href="https://forest.watch.impress.co.jp/docs/special/appleai/2026982.html" target="_blank" rel="noopener noreferrer">窓の杜</a></p>
+      </div>
+      <span class="page-number">05</span>
+    </div>
+        
+    <div class="page-face page-back">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">01</span>
+            <span class="chapter-kicker">CHAPTER 01 / 03</span>
+          </div>
+          <h2>それぞれの機能に関する比較</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <h3>Siri</h3>
+<p>Siriは、Apple Intelligenceの進化により「Siri AI」として大幅に強化された音声・テキスト対応アシスタントです。2026年10月に日本語対応が完了し、自然言語理解とタスク実行能力が大きく向上しました。<a href="https://www.apple.com/jp/newsroom/2026/10/siri-ai-is-available-today-in-more-languages/" target="_blank" rel="noopener noreferrer">Apple (日本)</a></p>
+<p>ライティング支援における主な機能は以下の通りです。</p>
+<ul><li data-depth="0"><strong>音声・タイプ入力の両方に対応</strong>: 話しかけても、キーボード入力でも指示可能。</li><li data-depth="0"><strong>文章の作成・書き直し・校正</strong>: 作文ツールと同等の編集機能を対話形式で提供。</li><li data-depth="0"><strong>フィードバック機能</strong>: ユーザーが書いた文章に対し、改善提案や感想を提供。</li></ul>
+      </div>
+      <span class="page-number">06</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="3">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">01</span>
+            <span class="chapter-kicker">CHAPTER 01 / 03</span>
+          </div>
+          <h2>それぞれの機能に関する比較</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <ul><li data-depth="0"><strong>パーソナルコンテクストの理解</strong>: メッセージ、メール、写真などのユーザー情報を文脈として活用。</li><li data-depth="0"><strong>画面認識（オンスクリーン認識）</strong>: 表示中のテキストやUI要素を読み取り、操作や生成に反映。</li></ul>
+<p>Siri AIの強みは、作文ツールが「選択→メニュー操作」であるのに対し、<strong>対話型のインターフェースを通じて文章を共創できる点</strong>にあります。<a href="https://support.apple.com/ja-jp/guide/mac-help/ipho54eqrx4ms3j/mac" target="_blank" rel="noopener noreferrer">Apple サポート (日本)</a></p>
+<h3>Sarashina AI</h3>
+<p>Sarashina AIは、SB Intuitions株式会社が開発する、日本語に特化した国産大規模言語モデルです。</p>
+      </div>
+      <span class="page-number">07</span>
+    </div>
+        
+    <div class="page-face page-back">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">01</span>
+            <span class="chapter-kicker">CHAPTER 01 / 03</span>
+          </div>
+          <h2>それぞれの機能に関する比較</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <p>日本語の表記体系（漢字・ひらがな・カタカナの混在）、敬語のニュアンス、文化的背景（例：「空気を読む」「忖度」）を自然に扱うことに長けています。<a href="https://sarashina.ai/" target="_blank" rel="noopener noreferrer">Sarashina</a></p>
+<p>主な特徴は以下の通りです。</p>
+      </div>
+      <span class="page-number">08</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="4">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">01</span>
+            <span class="chapter-kicker">CHAPTER 01 / 03</span>
+          </div>
+          <h2>それぞれの機能に関する比較</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <ul><li data-depth="0"><strong>日本語特化の生成能力</strong>: 汎用モデルでは再現が難しい日本語の複雑さを的確に反映。</li><li data-depth="0"><strong>モデルの選択肢</strong>: 用途に応じて「Sarashina3 mini」（標準対話）、「Sarashina3.2 mini thinking」（推論重視）、「Sarashina3 nano」（高速・軽量）を選択可能。</li><li data-depth="0"><strong>提供形態の柔軟性</strong>: ブラウザでのチャット利用に加え、API経由でのシステム連携も可能。</li><li data-depth="0"><strong>安全性判定（Guard）</strong>: 入力内容の適切性を判定する専用モデルを搭載。</li><li data-depth="0"><strong>法規制・倫理への配慮</strong>: 国産モデルならではの、国内基準に沿った設計。</li></ul>
+<p>2026年10月より、一般向け無償ベータ版が公開され、事前登録なしでチャットや翻訳機能を試せるようになりました。<a href="https://www.itmedia.co.jp/aiplus/article/2610/13/2000002210/" target="_blank" rel="noopener noreferrer">ITmedia AI+</a></p>
+      </div>
+      <span class="page-number">09</span>
+    </div>
+        
+    <div class="page-face page-back">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">02</span>
+            <span class="chapter-kicker">CHAPTER 02 / 03</span>
+          </div>
+          <h2>比較まとめ</h2>
+          
+        </header>
+        <div class="table-wrap"><table><thead><tr><th>項目</th><th>Apple 作文ツール</th><th>Siri AI</th><th>Sarashina AI</th></tr></thead><tbody><tr><td><strong>提供元</strong></td><td>Apple</td><td>Apple</td><td>SB Intuitions（ソフトバンク傘下）</td></tr><tr><td><strong>統合環境</strong></td><td>iOS/iPadOS/macOS（OSレベル）</td><td>iOS/iPadOS/macOS（OSレベル）</td><td>ブラウザ / API（クロスプラットフォーム）</td></tr><tr><td><strong>操作方式</strong></td><td>テキスト選択＋メニュー</td><td>音声・タイプ入力（対話型）</td><td>チャット入力 / API連携</td></tr><tr><td><strong>主な機能</strong></td><td>書き直し、校正、要約、スタイル変更</td><td>作成、書き直し、校正、フィードバック</td><td>文章生成、対話、翻訳、推論</td></tr><tr><td><strong>日本語対応</strong></td><td>2025年3月〜</td><td>2026年10月（Siri AI）</td><td>開発当初から日本語特化</td></tr><tr><td><strong>強み</strong></td><td>どこでも使える統合性、プライバシー保護</td><td>コンテクスト理解、対話型支援</td><td>日本語のニュアンス・文化理解、国産モデル</td></tr></tbody></table></div>
+      </div>
+      <span class="page-number">10</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="5">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">02</span>
+            <span class="chapter-kicker">CHAPTER 02 / 03</span>
+          </div>
+          <h2>比較まとめ</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <div class="table-wrap"><table><thead><tr><th>項目</th><th>Apple 作文ツール</th><th>Siri AI</th><th>Sarashina AI</th></tr></thead><tbody><tr><td><strong>対象ユーザー</strong></td><td>Appleデバイスユーザーの日常的ライティング</td><td>Appleユーザー向けの手軽な文章支援</td><td>日本語重視の個人・法人開発者</td></tr></tbody></table></div>
+<p>Appleの作文ツールとSiri AIは、Appleエコシステム内でのシームレスな体験と、<strong>ユーザーデータのプライバシー保護</strong>を最大の武器としています。作文ツールは「今書いている文章」を即座に磨きたいときに、Siri AIは「対話を通じて文章を育てたい」ときに有効です。</p>
+<p>一方、Sarashina AIはAppleデバイスに依存せず、WebやAPIを通じてどの環境でも利用可能です。日本語の繊細な表現や文化的文脈を重視するライティング、あるいは自社サービスへのAI組み込みを検討する場合、その特性が大きなアドバンテージになります。</p>
+      </div>
+      <span class="page-number">11</span>
+    </div>
+        
+    <div class="page-face page-back">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">03</span>
+            <span class="chapter-kicker">CHAPTER 03 / 03</span>
+          </div>
+          <h2>実際のライティングシーンでの使い分け</h2>
+          
+        </header>
+        <p>ツールの選択は、書く内容の性質や利用環境によって異なります。以下に、典型的なシーンごとの使い分けを示します。</p>
+<h3>日常の短文・メール返信</h3>
+<p>「メールの返事を丁寧にまとめたい」「SNS投稿を洗練させたい」といった場面では、<strong>Appleの作文ツールが最も効率的</strong>です。テキストを選択し、メニューから操作するだけで、OSのどこでも即座に校正や書き直しが可能です。アプリの切り替えやログインが不要なため、日常の小さな文章作りに最適です。<a href="https://toyokeizai.net/articles/-/868991?display=b" target="_blank" rel="noopener noreferrer">東洋経済オンライン</a></p>
+      </div>
+      <span class="page-number">12</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="6">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">03</span>
+            <span class="chapter-kicker">CHAPTER 03 / 03</span>
+          </div>
+          <h2>実際のライティングシーンでの使い分け</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <h3>長文の作成・構成相談</h3>
+<p>レポート、ブログ記事、プレゼン資料の原稿など、ゼロから文章を組み立てる場面では、<strong>Siri AIやSarashina AIの対話型インターフェースが有効</strong>です。特にSiri AIは、ユーザーの過去のメッセージやメールといったコンテクストを踏まえて、よりパーソナライズされた提案を行います。一方、Sarashina AIは、日本語の文化的ニュアンスを意識した表現や、論理的な構成の立案に優れています。</p>
+<h3>機密性の高い文書の校正</h3>
+<p>日記、医療記録、未公開の企画書など、極めて機密性の高い文書を扱う場合は、<strong>Appleの作文ツールやSiri AIが最適</strong>です。</p>
+      </div>
+      <span class="page-number">13</span>
+    </div>
+        
+    <div class="page-face page-back">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">03</span>
+            <span class="chapter-kicker">CHAPTER 03 / 03</span>
+          </div>
+          <h2>実際のライティングシーンでの使い分け</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <p>これらのツールは、処理を主にデバイス内（オンデバイス）で行い、必要に応じて「プライベートクラウドコンピューティング（PCC）」を利用します。PCCでは、処理中のデータがAppleに保存・アクセスされることなく、処理後に即座に破棄される設計です。Appleはユーザーの個人データを収集せず、パーソナルインテリジェンスを提供することを目指しており、<strong>プライバシー保護が最大の強み</strong>です。<a href="https://www.apple.com/legal/privacy/data/ja/intelligence-engine/" target="_blank" rel="noopener noreferrer">Apple</a></p>
+<h3>国内管理と法人向けオプション</h3>
+<p>Sarashina AIはクラウド型サービスのため、入力データはSB Intuitionsのサーバーで処理されます。ただし、法人向けには「Cloud PF Type A」という、<strong>日本国内のデータセンターで管理・運用されるクラウド基盤</strong>を通じた提供形態があり、データの国内滞留が保証されます。</p>
+      </div>
+      <span class="page-number">14</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="7">
+        
+    <div class="page-face page-front">
+      <div class="page-content">
+        <header class="chapter-head">
+          <div class="chapter-meta">
+            <span class="chapter-num">03</span>
+            <span class="chapter-kicker">CHAPTER 03 / 03</span>
+          </div>
+          <h2>実際のライティングシーンでの使い分け</h2>
+          <span class="continued">— 続き —</span>
+        </header>
+        <p>これにより、データ主権と運用主権の両方を確保でき、国内法規制や企業のガバナンス要件に対応しやすくなります。<a href="https://www.softbank.jp/business/news/2026/0630-01" target="_blank" rel="noopener noreferrer">ソフトバンク</a></p>
+<p>一方、無償ベータ版の利用規約では、入力・出力データがモデルの学習や新サービス開発に利用される可能性があり、学習利用の拒否設定は有償プランに限定されています。個人を識別できる情報の入力は禁止されていますが、機密性の高い社内資料を無償版に入力することは避ける</p>
+      </div>
+      <span class="page-number">15</span>
+    </div>
+        
+    <div class="page-face page-back end-face">
+      <div class="end-inner">
+        <div class="end-mark" aria-hidden="true"></div>
+        <h2>おわり</h2>
+        <div class="cover-line" aria-hidden="true"></div>
+        <p>Apple 作文ツールと Siri と Sarashina AI を読み終えました。<br>気になった章は目次からいつでも開けます。</p>
+        <div class="end-actions">
+          <a class="end-btn" href="./">← 本棚に戻る</a>
+          <button class="end-btn" type="button" data-face="2">目次へ</button>
+        </div>
+        <p class="end-note">3D BOOKS · writingtools · 2026.11.12</p>
+      </div>
+      <span class="page-number">16</span>
+    </div>
+      </div>
+      <div class="page" data-leaf="8">
+        <div class="page-face page-front"></div>
+        
+    <div class="page-face page-back backcover-face">
+      <div class="backcover-inner">
+        <div class="bc-mark" aria-hidden="true"></div>
+        <div class="bc-title">3D BOOKS</div>
+        <p class="bc-note">Markdown を置く。本になる。<br>contents/ → books/ → Vercel</p>
+      </div>
+    </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reader-hint">← → キー / スワイプでページをめくる</div>
+
+  <nav class="nav-controls" aria-label="ページ送り">
+    <button class="nav-btn" id="prevBtn" type="button" aria-label="前のページ">&#9664;</button>
+    <span class="page-indicator" id="pageIndicator">表紙</span>
+    <button class="nav-btn" id="nextBtn" type="button" aria-label="次のページ">&#9654;</button>
+  </nav>
+</div>
+
+<script>
+
+(function () {
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let active = false;
+
+  const esc = (value) =>
+    String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+
+  function play(spine, options) {
+    options = options || {};
+    if (active) return;
+    if (reduced) {
+      if (options.onDone) options.onDone();
+      return;
+    }
+
+    active = true;
+    const rect = spine.getBoundingClientRect();
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
+    const targetW = Math.min(380, window.innerWidth * 0.72, window.innerHeight * 0.46);
+    const targetH = targetW * 1.36;
+    const dx = rect.left + rect.width / 2 - cx;
+    const dy = rect.top + rect.height / 2 - cy;
+    const title = spine.dataset.title || "";
+    const subtitle = spine.dataset.subtitle || "";
+    const author = spine.dataset.author || "";
+    const c1 = spine.dataset.c1 || "#5a3a2a";
+    const c2 = spine.dataset.c2 || "#2c1a12";
+
+    const layer = document.createElement("div");
+    layer.className = "takeout-layer";
+    layer.innerHTML = [
+      '<div class="tb-spine" style="left:' + rect.left + "px;top:" + rect.top +
+        "px;width:" + rect.width + "px;height:" + rect.height +
+        "px;--c1:" + c1 + ";--c2:" + c2 + '">' + esc(title) + "</div>",
+      '<div class="tb-book" style="left:' + (cx - targetW / 2) + "px;top:" + (cy - targetH / 2) +
+        "px;width:" + targetW + "px;height:" + targetH + "px;font-size:" +
+        Math.max(13, Math.min(22, targetW / 26)) + 'px">',
+      '  <div class="tb-pages"></div>',
+      '  <div class="tb-cover">',
+      '    <div class="tb-cover-front">',
+      '      <span class="tb-kicker">3D BOOKS / VOLUME</span>',
+      '      <span class="tb-title">' + esc(title) + "</span>",
+      '      <span class="tb-sub">' + esc(subtitle) + "</span>",
+      '      <span class="tb-author">' + esc(author) + "</span>",
+      "    </div>",
+      '    <div class="tb-cover-back"></div>',
+      "  </div>",
+      "</div>",
+      '<div class="takeout-caption"><span>本棚から取り出しています…</span><button type="button" class="skip-btn">スキップ</button></div>',
+    ].join("");
+
+    document.body.appendChild(layer);
+    const spineEl = layer.querySelector(".tb-spine");
+    const bookEl = layer.querySelector(".tb-book");
+    const coverEl = layer.querySelector(".tb-cover");
+    const animations = [];
+    let finished = false;
+
+    const finish = (immediate) => {
+      if (finished) return;
+      finished = true;
+      animations.forEach((animation) => {
+        try { animation.cancel(); } catch (error) { /* noop */ }
+      });
+      layer.classList.add("done");
+      window.setTimeout(() => {
+        layer.remove();
+        active = false;
+        if (options.onDone) options.onDone();
+      }, immediate ? 120 : 480);
+    };
+
+    const skip = (event) => {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      finish(true);
+    };
+    layer.addEventListener("click", (event) => {
+      if (event.target.closest(".skip-btn") || event.target === layer) skip(event);
+    });
+    const onKey = (event) => {
+      if (event.key === "Escape" || event.key === " ") skip(event);
+    };
+    window.addEventListener("keydown", onKey);
+
+    animations.push(
+      spineEl.animate(
+        [
+          { transform: "translate3d(0,0,0) rotateY(0deg)", opacity: 1, offset: 0 },
+          {
+            transform:
+              "translate3d(" + dx * 0.32 + "px," + dy * 0.32 + "px,70px) rotateY(10deg)",
+            opacity: 1,
+            offset: 0.38,
+          },
+          {
+            transform:
+              "translate3d(" + dx + "px," + dy + "px,190px) rotateY(88deg)",
+            opacity: 0,
+            offset: 0.86,
+          },
+        ],
+        { duration: 1050, easing: "cubic-bezier(.22,.8,.2,1)", fill: "forwards" }
+      )
+    );
+
+    animations.push(
+      bookEl.animate(
+        [
+          {
+            transform:
+              "translate3d(" + dx + "px," + dy + "px,0) rotateY(-88deg) scale(" +
+              (rect.width / targetW) + "," + (rect.height / targetH) + ")",
+            opacity: 0,
+            offset: 0,
+          },
+          {
+            transform:
+              "translate3d(" + dx * 0.45 + "px," + (dy * 0.45 - 24) + "px,90px) rotateY(-42deg) scale(.62,.68)",
+            opacity: 0.45,
+            offset: 0.34,
+          },
+          {
+            transform: "translate3d(0,0,190px) rotateY(0deg) scale(1,1)",
+            opacity: 1,
+            offset: 0.84,
+          },
+          {
+            transform: "translate3d(0,0,190px) rotateY(0deg) scale(1,1)",
+            opacity: 1,
+            offset: 1,
+          },
+        ],
+        { duration: 1350, delay: 60, easing: "cubic-bezier(.22,.8,.2,1)", fill: "forwards" }
+      )
+    );
+
+    Promise.allSettled(animations.map((animation) => animation.finished)).then(() => {
+      if (finished) return;
+      // 表紙を開く
+      const open = coverEl.animate(
+        [
+          { transform: "rotateY(0deg)", offset: 0 },
+          { transform: "rotateY(-16deg)", offset: 0.22 },
+          { transform: "rotateY(-168deg)", offset: 1 },
+        ],
+        { duration: 980, easing: "cubic-bezier(.6,.04,.2,1)", fill: "forwards" }
+      );
+      animations.push(open);
+      open.finished.then(() => {
+        if (finished) return;
+        window.removeEventListener("keydown", onKey);
+        window.setTimeout(() => finish(false), 260);
+      }).catch(() => {});
+    });
+  }
+
+  window.Takeout = { play: play };
+})();
+
+
+(function () {
+  const book = document.getElementById("book");
+  const leaves = Array.from(document.querySelectorAll(".page"));
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const indicator = document.getElementById("pageIndicator");
+  const intro = document.getElementById("intro");
+  const reader = document.getElementById("reader");
+  const skipIntro = document.getElementById("skipIntro");
+  const replayBtn = document.getElementById("replayBtn");
+  const currentSpine = intro ? intro.querySelector(".spine.current") : null;
+
+  let turned = 0;
+  let animating = false;
+  let introBusy = false;
+  let introDone = false;
+
+  function layout() {
+    const single = window.matchMedia("(max-width: 760px)").matches;
+    book.classList.toggle("single", single);
+    // 紙面は固定サイズのまま、画面に合わせて全体を拡大縮小する。
+    // これにより、どの画面幅でも 1 ページに入る文字量が変わらない。
+    const designWidth = single ? 480 : 960;
+    const designHeight = 640;
+    const compact = window.innerWidth <= 900;
+    const availableWidth = window.innerWidth - (compact ? 20 : 44);
+    const availableHeight = window.innerHeight - 150;
+    const scale = Math.max(
+      0.2,
+      Math.min(1, availableWidth / designWidth, availableHeight / designHeight)
+    );
+    book.style.setProperty("--book-scale", String(scale));
+    update();
+  }
+
+  function update() {
+    leaves.forEach((leaf, index) => {
+      const flipped = index < turned;
+      leaf.classList.toggle("flipped", flipped);
+      leaf.style.zIndex = flipped ? String(index + 1) : String(leaves.length - index + 10);
+    });
+    book.classList.toggle("closed", turned === 0 && !book.classList.contains("single"));
+    if (prevBtn) prevBtn.disabled = turned === 0;
+    if (nextBtn) nextBtn.disabled = turned >= leaves.length;
+    if (indicator) {
+      indicator.textContent =
+        turned === 0
+          ? "表紙 / " + leaves.length
+          : "見開き " + turned + " / " + leaves.length;
+    }
+  }
+
+  function flip(direction) {
+    if (animating) return;
+    if (direction > 0 && turned >= leaves.length) return;
+    if (direction < 0 && turned <= 0) return;
+
+    const leaf = direction > 0 ? leaves[turned] : leaves[turned - 1];
+    animating = true;
+    leaf.classList.add("flipping");
+    turned += direction;
+    update();
+    window.setTimeout(() => {
+      leaf.classList.remove("flipping");
+      animating = false;
+    }, 900);
+  }
+
+  function goToFace(face) {
+    if (animating) return;
+    const target = Math.max(0, Math.min(leaves.length, Math.ceil(face / 2)));
+    const step = () => {
+      if (turned === target) { animating = false; return; }
+      animating = true;
+      const direction = target > turned ? 1 : -1;
+      const leaf = direction > 0 ? leaves[turned] : leaves[turned - 1];
+      leaf.classList.add("flipping");
+      turned += direction;
+      update();
+      window.setTimeout(() => {
+        leaf.classList.remove("flipping");
+        animating = false;
+        step();
+      }, 430);
+    };
+    step();
+  }
+
+  function showReader(opened) {
+    introDone = true;
+    introBusy = false;
+    if (opened) turned = 1;
+    update();
+    if (intro) intro.classList.add("hidden");
+    reader.classList.add("ready");
+    reader.setAttribute("aria-hidden", "false");
+  }
+
+  function startIntro() {
+    if (introBusy || introDone || !currentSpine) return;
+    introBusy = true;
+    intro.classList.remove("hidden");
+    reader.classList.remove("ready");
+    reader.setAttribute("aria-hidden", "true");
+    turned = 0;
+    update();
+    window.setTimeout(() => {
+      if (!introBusy || introDone) return;
+      if (!window.Takeout) { showReader(true); return; }
+      window.Takeout.play(currentSpine, {
+        onDone: function () { showReader(true); }
+      });
+    }, 900);
+  }
+
+  if (prevBtn) prevBtn.addEventListener("click", () => flip(-1));
+  if (nextBtn) nextBtn.addEventListener("click", () => flip(1));
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowRight" || event.key === "PageDown") { event.preventDefault(); flip(1); }
+    if (event.key === "ArrowLeft" || event.key === "PageUp") { event.preventDefault(); flip(-1); }
+  });
+
+  let touchStartX = 0;
+  document.addEventListener("touchstart", (event) => {
+    touchStartX = event.changedTouches[0].screenX;
+  }, { passive: true });
+  document.addEventListener("touchend", (event) => {
+    const diff = touchStartX - event.changedTouches[0].screenX;
+    if (Math.abs(diff) > 50) flip(diff > 0 ? 1 : -1);
+  }, { passive: true });
+
+  document.querySelectorAll("[data-face]").forEach((item) => {
+    const open = () => {
+      showReader(false);
+      goToFace(Number(item.dataset.face));
+    };
+    item.addEventListener("click", open);
+    item.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); open(); }
+    });
+  });
+
+  if (skipIntro) {
+    skipIntro.addEventListener("click", () => {
+      introBusy = false;
+      showReader(true);
+    });
+  }
+  if (replayBtn) {
+    replayBtn.addEventListener("click", () => {
+      if (introBusy) return;
+      introDone = false;
+      startIntro();
+    });
+  }
+
+  window.addEventListener("resize", layout);
+  layout();
+  window.setTimeout(startIntro, 500);
+})();
+
+</script>
+</body>
+</html>

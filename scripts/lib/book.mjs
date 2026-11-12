@@ -444,7 +444,10 @@ const BOOK_CSS = `
   line-height: 1.24;
   letter-spacing: 0.03em;
   text-shadow: 0 3px 24px rgba(0, 0, 0, 0.55);
+  overflow-wrap: anywhere;
 }
+.cover-title.long { font-size: 2.3rem; }
+.cover-title.xlong { font-size: 1.85rem; }
 .cover-sub {
   max-width: 88%;
   font-size: 0.78rem;
@@ -876,13 +879,22 @@ function pageNumber(faceIndex) {
   return `<span class="page-number">${String(faceIndex + 1).padStart(2, "0")}</span>`;
 }
 
+function coverTitleClass(title) {
+  const words = String(title).split(/\s+/);
+  const longest = Math.max(...words.map((word) => [...word].length));
+  const total = [...String(title)].length;
+  if (longest >= 12 || total > 60) return " xlong";
+  if (longest >= 9 || total > 34) return " long";
+  return "";
+}
+
 function coverFace(book, meta) {
   return `
     <div class="page-face page-front cover-face">
       <div class="cover-inner">
         <div class="cover-kicker">3D BOOKS / VOL. ${String(meta.volume).padStart(2, "0")}</div>
         <div class="cover-emblem" aria-hidden="true"></div>
-        <h1 class="cover-title">${escapeHtml(book.title)}</h1>
+        <h1 class="cover-title${coverTitleClass(book.title)}">${escapeHtml(book.title)}</h1>
         <div class="cover-line" aria-hidden="true"></div>
         <p class="cover-sub">${escapeHtml(book.subtitle)}</p>
         <div class="cover-author">${escapeHtml(book.author)}</div>

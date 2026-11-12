@@ -940,7 +940,10 @@ button {
   line-height: 1.24;
   letter-spacing: 0.03em;
   text-shadow: 0 3px 24px rgba(0, 0, 0, 0.55);
+  overflow-wrap: anywhere;
 }
+.cover-title.long { font-size: 2.3rem; }
+.cover-title.xlong { font-size: 1.85rem; }
 .cover-sub {
   max-width: 88%;
   font-size: 0.78rem;
@@ -1320,6 +1323,18 @@ button {
       <div class="shelf-inner">
         
         <div class="shelf-row" role="list">
+            <button class="spine" type="button"
+              data-slug="embeddinggemma2-explanation"
+              data-title="EmbeddingGemma 2 論文解説"
+              data-subtitle="統合された効率的なマルチモーダル表現"
+              data-author="Google DeepMind"
+              data-c1="#4a3f6b" data-c2="#1c1830"
+              data-href="embeddinggemma2-explanation.html"
+              style="--w:58px;--h:290px;--hm:226px;--c1:#4a3f6b;--c2:#1c1830"
+              aria-label="EmbeddingGemma 2 論文解説 を取り出す">
+              <span class="spine-dot" aria-hidden="true"></span>
+              <span class="spine-title">EmbeddingGemma 2 論文解説</span>
+            </button>
             <button class="spine current" type="button"
               data-slug="mcp-a2a"
               data-title="MCP と A2A"
@@ -1327,15 +1342,27 @@ button {
               data-author="Notes - Tech"
               data-c1="#2f4a5e" data-c2="#14222d"
               data-href="mcp-a2a.html"
-              style="--w:52px;--h:279px;--hm:218px;--c1:#2f4a5e;--c2:#14222d"
+              style="--w:55px;--h:283px;--hm:221px;--c1:#2f4a5e;--c2:#14222d"
               aria-label="MCP と A2A を取り出す">
               <span class="spine-dot" aria-hidden="true"></span>
               <span class="spine-title">MCP と A2A</span>
+            </button>
+            <button class="spine" type="button"
+              data-slug="writingtools"
+              data-title="Apple 作文ツールと Siri と Sarashina AI"
+              data-subtitle="生成AI時代のライティング支援"
+              data-author="Notes - Tech"
+              data-c1="#3e3a5e" data-c2="#19172b"
+              data-href="writingtools.html"
+              style="--w:64px;--h:265px;--hm:207px;--c1:#3e3a5e;--c2:#19172b"
+              aria-label="Apple 作文ツールと Siri と Sarashina AI を取り出す">
+              <span class="spine-dot" aria-hidden="true"></span>
+              <span class="spine-title">Apple 作文ツールと Siri と Sarashina AI</span>
             </button></div>
         <div class="shelf-board" aria-hidden="true"></div>
         <div class="shelf-caption">
           <span>3D BOOKS / LIBRARY</span>
-          <span>1 VOLUME</span>
+          <span>3 VOLUMES</span>
         </div>
       </div>
     </div>
@@ -1363,13 +1390,13 @@ button {
         
     <div class="page-face page-front cover-face">
       <div class="cover-inner">
-        <div class="cover-kicker">3D BOOKS / VOL. 01</div>
+        <div class="cover-kicker">3D BOOKS / VOL. 02</div>
         <div class="cover-emblem" aria-hidden="true"></div>
         <h1 class="cover-title">MCP と A2A</h1>
         <div class="cover-line" aria-hidden="true"></div>
         <p class="cover-sub">マルチエージェント時代の接続プロトコル</p>
         <div class="cover-author">Notes - Tech</div>
-        <div class="cover-meta"><span>60 PAGES</span><span>·</span><span>2026.11.06</span></div>
+        <div class="cover-meta"><span>60 PAGES</span><span>·</span><span>2026.11.12</span></div>
       </div>
     </div>
         
@@ -1382,7 +1409,7 @@ button {
           <dt>原稿</dt><dd>contents/mcp-a2a.md</dd>
           <dt>製本</dt><dd>books/mcp-a2a.html</dd>
           <dt>ページ</dt><dd>60 pages</dd>
-          <dt>生成</dt><dd>2026.11.06</dd>
+          <dt>生成</dt><dd>2026.11.12</dd>
           <dt>公開</dt><dd>Vercel / GitHub Pages</dd>
         </dl>
         <p class="about-note">この本は <strong>contents/*.md</strong> から自動製本されました。Markdown を置くと、本棚と 3D ブックが更新されます。</p>
@@ -2909,7 +2936,7 @@ app = <span class="tok-fn">to_a2a</span>(agent, port=<span class="tok-num">8001<
           <a class="end-btn" href="./">← 本棚に戻る</a>
           <button class="end-btn" type="button" data-face="2">目次へ</button>
         </div>
-        <p class="end-note">3D BOOKS · mcp-a2a · 2026.11.06</p>
+        <p class="end-note">3D BOOKS · mcp-a2a · 2026.11.12</p>
       </div>
       <span class="page-number">64</span>
     </div>
